@@ -1,114 +1,88 @@
 from django.db import models
 
-class sources(db.Model):
+office_choices = (
+    ('SSG', 'Strategic Stuides Group'),
+    ('PAS', 'Policy Analysis Service'),
+    ('SPS', 'Strategic Planning Service'),
+    ('AS', 'Front Office'),
+)
+
+class Tag(models.Model):
+    name = models.CharField(max_length=50)
+
+class Keyword(models.Model):
+    name = models.CharField(max_length=50)
+
+class Concept(models.Model):
+    name = models.CharField(max_length=50)
+
+class Report(models.Model):
+    name = models.CharField(max_length=50)
+
+class Options(models.Model):
+    name = models.CharField(max_length=50)
+
+class Imperative(models.Model):
+    name = models.CharField(max_length=50)
+
+class Capability(models.Model):
+    name = models.CharField(max_length=50)
+    category = models.CharField(max_length=500)
+
+class Data_source(models.Model):
+    name = models.CharField(max_length=50)
+
+class Topic(models.Model):
+    name = models.CharField(max_length=500)
+    description = models.TextField()
+    options = models.ManyToManyField(Options)
+    data_sources = models.ManyToManyField(Data_source)
+    imperatives = models.ManyToManyField(Imperative)
+    capabilities = models.ManyToManyField(Capability)
+
+class Feed(models.Model):
+    url = models.CharField(max_length=500)
+    name = models.CharField(max_length=500)
+    owner = models.CharField(max_length=500)
+    office = models.CharField(max_length=50, choices=office_choices)
+    description = models.CharField(max_length=500)
+
+    esil = models.ManyToManyField(Topic)
+    tags = models.ManyToManyField(Tag)
+    keywords = models.ManyToManyField(Keyword)
+    concepts = models.ManyToManyField(Concept)
+    reports = models.ManyToManyField(Report)
+
+    last_updated = models.DateTimeField()
+
+class sources(models.Model):
     # for versioning
-    date = db.DateTimeProperty()
-    date_added = db.DateTimeProperty()
-    last_updated = db.DateTimeProperty()
-    feed_url = db.StringProperty()
+    date = models.DateTimeField()
+    date_added = models.DateTimeField(auto_now=True)
+    last_updated = models.DateTimeField()
+    office = models.CharField(max_length=50, choices=office_choices)
+    title = models.CharField(max_length=500)
+    link = models.CharField(max_length=500, unique=True)
 
-    #Weekly Read Stuff
-    office = db.StringProperty()
-    title = db.StringProperty()
-    link = db.StringProperty(required=True)
-    tags = db.ListProperty(str)
-    description = db.TextProperty()
-    relevance = db.TextProperty()
+    description = models.TextField()
+    relevance = models.TextField()
+    content = models.TextField()
 
-    #ESIL Stuff
-    esil = db.ListProperty(str)
+    feed = models.ForeignKey(Feed)
+    esil = models.ManyToManyField(Topic)
+    tags = models.ManyToManyField(Tag)
+    keywords = models.ManyToManyField(Keyword)
+    concepts = models.ManyToManyField(Concept)
+    reports = models.ManyToManyField(Report)
 
-    #Alchemy Stuff
-    content = db.TextProperty()
-    keywords = db.ListProperty(str)
-    concepts = db.ListProperty(str)
+class deletedlinks(models.Model):
+    link = models.CharField(max_length=500)
+    date = models.DateTimeField(auto_now=True)
 
-    posted_by = db.StringProperty() # AKA Feed Owner
-
-
-    # Report Selectors
-    report = db.ListProperty(str)
-
-    processed = db.BooleanProperty()
-    def put(self):
-        k = super(sources, self).put()
-        create_document(self)
-        return k
-
-    def delete(self):
-        search.Index(name="sources_docs").delete(str(self.key()))
-        k = super(sources, self).delete()
-        return k
-
-class blacklist(db.Model):
-    link = db.StringProperty(required=True)
-    date_deleted = db.DateTimeProperty()
-
-class feeds(db.Model):
-    owner = db.StringProperty (required=True)
-    office = db.StringProperty (required=True)
-    name = db.StringProperty ()
-    url = db.StringProperty (required=True)
-    for_tags = db.ListProperty(str)
-    for_esil = db.ListProperty(str)
-    for_report = db.ListProperty(str)
-    date_added = db.DateTimeProperty()
-    description = db.StringProperty()
-    last_updated = db.DateTimeProperty()
-
-class deletedlinks(db.Model):
-    link = db.StringProperty (required=True)
-    date = db.DateTimeProperty(required=True)
-
-class capabilities(db.Model):
-    name = db.StringProperty (required=True)
-    code = db.StringProperty (required=True)
-    category = db.StringProperty (required=True)
-
-class criteria(db.Model):
-    name = db.StringProperty (required=True)
-    group = db.StringProperty (required=True)
-    area = db.StringProperty (required=True)
-
-class topics(db.Model):
-    name = db.StringProperty (required=True)
-    description = db.TextProperty()
-    options = db.ListProperty(str)
-    data_sources = db.ListProperty(str)
-    imperatives = db.ListProperty(str)
-    capabilities = db.ListProperty(str)
-
-class comments(db.Model):
-    name = db.StringProperty (required=True)
-    email = db.StringProperty()
-    org = db.StringProperty()
-    comment = db.TextProperty (required=True)
-    date = db.DateTimeProperty(required=True)
-    deleted = db.BooleanProperty()
-
-class selectors(db.Model):
-    phrases_list = db.ListProperty(str)
-    values = db.ListProperty(int)
-    name = db.StringProperty (required=True)
-
-class my_errors(db.Model):
-    description = db.StringProperty (required=True)
-    date = db.DateTimeProperty(required=True)
-
-class search_log(db.Model):
-    search_term = db.StringProperty (required=True)
-    date = db.DateTimeProperty(required=True)
-    referal = db.StringProperty()
-    user = db.StringProperty()
-
-class clicks(db.Model):
-    link = db.StringProperty (required=True)
-    date = db.DateTimeProperty(required=True)
-    referal = db.StringProperty()
-    user = db.StringProperty()
-
-
-class alt_names(db.Model):
-    field = db.StringProperty (required=True)
-    name = db.StringProperty (required=True)
-    alternatives = db.ListProperty(str)
+class comments(models.Model):
+    name = models.CharField(max_length=500)
+    email = models.EmailField()
+    org = models.CharField(max_length=500)
+    comment = models.TextField()
+    date = models.DateTimeField(auto_now=True)
+    deleted = models.BooleanField()
