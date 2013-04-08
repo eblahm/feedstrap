@@ -19,7 +19,7 @@ class Concept(models.Model):
 class Report(models.Model):
     name = models.CharField(max_length=50)
 
-class Options(models.Model):
+class Option(models.Model):
     name = models.CharField(max_length=50)
 
 class Imperative(models.Model):
@@ -35,15 +35,15 @@ class Data_source(models.Model):
 class Topic(models.Model):
     name = models.CharField(max_length=500)
     description = models.TextField()
-    options = models.ManyToManyField(Options)
+    options = models.ManyToManyField(Option)
     data_sources = models.ManyToManyField(Data_source)
     imperatives = models.ManyToManyField(Imperative)
     capabilities = models.ManyToManyField(Capability)
 
 class Feed(models.Model):
     url = models.CharField(max_length=500)
-    name = models.CharField(max_length=500)
-    owner = models.CharField(max_length=500)
+    name = models.CharField(max_length=100)
+    owner = models.CharField(max_length=100)
     office = models.CharField(max_length=50, choices=office_choices)
     description = models.CharField(max_length=500)
 
@@ -55,7 +55,7 @@ class Feed(models.Model):
 
     last_updated = models.DateTimeField()
 
-class sources(models.Model):
+class Resource(models.Model):
     # for versioning
     date = models.DateTimeField()
     date_added = models.DateTimeField(auto_now=True)
@@ -75,14 +75,16 @@ class sources(models.Model):
     concepts = models.ManyToManyField(Concept)
     reports = models.ManyToManyField(Report)
 
-class deletedlinks(models.Model):
+class Deleted_link(models.Model):
     link = models.CharField(max_length=500)
     date = models.DateTimeField(auto_now=True)
 
-class comments(models.Model):
+class Comment(models.Model):
     name = models.CharField(max_length=500)
     email = models.EmailField()
     org = models.CharField(max_length=500)
     comment = models.TextField()
     date = models.DateTimeField(auto_now=True)
     deleted = models.BooleanField()
+
+allow_admin_for = [Tag, Keyword, Concept, Report, Option, Imperative, Capability, Data_source, Topic, Feed, Resource, Deleted_link, Comment]
