@@ -1,0 +1,23 @@
+{% if not standalone %}{% extends "/templates/main/table_structure.html" %}{% endif %}
+{% block inner_table %}
+   {% for rec in processed_results %}
+     <tr id="{{ rec['key'] }}" class="bulk_row">
+     {% for f in rec['values'] %}
+         {% if f != 'key' %}
+         <td id="{{ f[0] }}_{{ rec['key'] }}" class="result_cell" style="width:{{ f[2] }}">{{ f[1] }}</td>
+        {% endif %}
+     {% endfor %}    
+    </tr>   
+    {% endfor %}
+    
+
+        <tr class="show_more_row">
+           <td colspan="5" style="text-align:center">
+           {% if next_cursor %}
+               <button class="btn btn-primary show_more" data-view="table" data-query="/?qt={{ query_type }}&view=table&term={{ term }}&c={{ next_cursor }}">Show More</button>
+           {% else %}
+                <strong>------ END -----</strong>
+            {% endif %}                  
+            </td>
+        </tr>
+{% endblock %}

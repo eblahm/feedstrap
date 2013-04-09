@@ -1,0 +1,36 @@
+{% extends "/templates/main/base.html" %}
+
+{% block content_box %}
+<div class="row">
+    <div class="span12" style="text-align:center">
+
+    <h2>Advanced Search</h2>
+            <table id="adv_table">
+                  <thead>
+                        <tr style="border-bottom: solid 1px black">
+                            <th style="width:20%">AND/OR</th>
+                            <th style="width:30%">Database Field</th>
+                            <th style="width:20%">Operator</th>
+                            <th style="width:30%">Conditional Value</th>
+                     
+                        </tr>
+                  </thead>
+                  <tbody id="all_conditions">
+                  
+                    {% include '/templates/main/advanced_search_conditions.html' %}
+                  
+                  </tbody>
+            </table>
+    </div>
+</div>
+
+<div class="row">
+  <div class="span12" style="text-align:right">
+      <button id="add_conditions" class="btn btn-small"><i class="icon-plus"></i></button><br><br>
+      <button id="advanced_submit" class="btn">Submit</button><br>
+      <span id="advanced_status"></span>
+  </div>    
+</div>
+
+
+{% endblock %} 

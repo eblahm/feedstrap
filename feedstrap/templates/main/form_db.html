@@ -1,0 +1,41 @@
+<style>
+  
+  .db_rec label {font-weight:bold;}
+  .db_rec input  {text-align: left;}
+  .db_rec textarea {text-align: left; height:150px; width:680px}
+  
+</style>
+
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h4 id="myModalLabel" style="margin-bottom: 0px"><a href="{{ rec.link }}">{{ rec.title }}</a></h4>
+    <div style="text-align: right">added {{ rec.date.strftime('%d %b %y') }} {% if rec.posted_by %}by {{ rec.posted_by }}{% endif %}</div>
+</div>
+
+<div class="modal-body">
+    
+    <form id="popup_form" class="db_rec" action="/db_save" method="POST">
+      <input type="hidden" name="db_key" value="{{ rec.key() }}" />
+
+      <label for="title">Title:</label> <input id="title" name="title" type="text" class="input-xxlarge" value="{{ rec.title }}" /><br>
+
+      <label for="description">Description:</label><textarea id="description" name="description">{% if rec.description %}{{ rec.description }}{%  endif  %}</textarea>
+
+      <label for="relevance">Relevance:</label><textarea id="relevance" name="relevance">{% if rec.relevance %}{{ rec.relevance }}{%  endif  %}</textarea>
+        
+      <label for="tags">Tags:</label><input id="tags" name="tags" type="text" class="input-xlarge"  class="ui-autocomplete2 tag_selector" {% if rec.tags %}value="{{ ", ".join(rec.tags) }}"{%  endif  %}></input>
+
+      <label for="esil">Emerging Issue:</label>
+      <select id="esil" name="esil" multiple="multiple">
+        <option value=""></option>
+        {% for topic in esil %}<option value="{{ topic.value }}"{% if topic.value in rec.esil %} selected{% endif %}>{{ topic.name }}</option>{% endfor %}
+      </select>
+
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button id="save_btn" class="btn">Save</button>
+    <div id="save_status" style="text-align:right"></div>
+</div>

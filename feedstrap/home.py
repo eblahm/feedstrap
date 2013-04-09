@@ -181,7 +181,6 @@ class db_save_click(webapp2.RequestHandler):
     message = message.lower() + " EST"
     self.response.out.write(message)
 
-
 class AjaxHandler(webapp2.RequestHandler):
     def get(self, ajax_type):
         html = '--'

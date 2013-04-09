@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    {% block head %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    
+    {% block javascript %}
+    <!-- jquery -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>
+    
+    
+    <script src="/js/bootstrap.min.js"></script>
+    
+    <!-- my code -->
+    <script type="text/javascript" rel="js" src="/js/main_page_effects.js"></script>      
+    {% endblock %}
+    
+    {% block stylesheets %}
+    <!-- jquery -->
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
+    
+    <!-- twitter bootstrap -->
+    <link href="/stylesheets/bootstrap.css" rel="stylesheet" media="screen">
+    
+    <link href="/stylesheets/main.css" rel="stylesheet" >
+    {% endblock %} 
+    
+    {% block google_analytics %}
+    <!-- google analytics -->
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-33782330-1']);
+      _gaq.push(['_trackPageview']);
+      
+      (function () {
+        var ga = document.createElement('script');
+        ga.type = 'text/javascript';
+        ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    {% endblock %}
+
+    <title>{% block title %}Feed_Strap{% endblock %}</title>
+
+    <link rel="stylesheet" href="/stylesheets/hint.min.css"></link>
+    {% endblock %}
+  </head>  
+  <body>
+  
+    <div class="container">
+        <!-- navbar-->
+
+                <div id="my_nav" class="navbar navbar-fixed-top">
+                    <div class="navbar-inner">
+                        <div class="container">
+                            <ul class="nav nav-pills">
+                                  <li {% if nav == 'home' %}class="active"{% endif %}><a href="/">Database</a></li>
+                                  <li {% if nav == 'esil' %}class="active"{% endif %}><a href="/esil">Issues</a></li>
+                                  <li {% if nav == 'trends' %}class="active"{% endif %}><a href="/trends">Trends</a></li>
+                            </ul>
+
+
+
+                            <ul class="nav pull-right" >
+                        		  <li class="dropdown">
+                        				<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-chevron-down"></i></a>
+                        				<ul class="dropdown-menu" >
+                        				  <li><a href="/advanced_search"><i class="icon-search"></i> Advanced Search</a></li>
+                        				  <li class="divider"></li>
+                        				  <li><a href="admin/feeds"><i class="icon-list-alt"></i> Feeds</a></li>
+                        				  <li><a href="admin/default_formating"><i class="icon-text-width"></i> Default Formating</a></li>
+                        				  <li><a href="admin/default_values"><i class="icon-cog"></i> Default Values</a></li>
+                        				  <li><a href="admin/utilities"><i class="icon-wrench"></i> Database Utitlities</a></li>
+                        				</ul>
+                        		  </li>
+                        	</ul>
+
+                            <form action="/search" class="navbar-form pull-right">
+                                <input type="text" class="span2" name="term"{% if term %}value="{{ term }}"{% endif %}>
+                                <input id="view_select" type="text" style="display:none" value="{% if view %}{{ view }}{% else %}list{% endif %}" name="view" >
+                                <button type="submit" class="btn">Search</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+   
+        <!-- CONTENT BOX -->
+
+            <div id="content_box">
+        {% block content_box %}{% endblock %}
+            </div>
+
+        <!-- Footer -->
+        <div class="footer">
+          <img src="https://developers.google.com/appengine/images/appengine-noborder-120x30.gif" alt="Powered by Google App Engine"></img>
+        </div>
+        
+    </div>
+
+
+  </body>
+  
+</html>

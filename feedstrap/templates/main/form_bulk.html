@@ -1,0 +1,32 @@
+<div style="position:fixed; bottom: 0px;">
+    <div class="container">
+
+
+            <div class="navbar-inner" style="padding:5px; background-color: white">
+                <input id="select_all" type="checkbox" class="bulk_inline" style="float:left"></input>
+                <form id="bulk_form" action="/bulk_post" method="POST" class="form-inline" style="text-align:right; margin:0 0 5px">
+                    <select id="db_field_select" name="field" class="bulk_inline">
+                        <option value=""></option>
+                        {% for f in model_properties %}
+                            <option value="{{ f }}">{{ f }}:</option>
+                        {% endfor %}
+                    </select>
+
+
+                    <span id="bulk_holder" class="bulk_inline"><input type="text" class="wide"></span>
+
+                    <em>Currently Selected: <span id="num_selected" class="bulk_inline" style="float:left; margin-left:5px"></span></em>
+
+                    <input type="radio" name="method" value="overwrite"> O </input>
+                    <input type="radio" name="method" value="append"> A </input>
+
+                    <span id="bulk_submit" class="btn bulk_inline">Submit Changes</span>
+
+                    <span id="bulk_save_status bulk_inline"></span>
+                </form>
+            </div>
+
+    </div>
+
+</div>
+</div>

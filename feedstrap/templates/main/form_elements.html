@@ -1,0 +1,41 @@
+{% if input_type == 'date' %}
+
+
+<input class="{{ field_name }} advanced_values" type="text" name="{{ field_name }}" size="30" />
+
+<script type="text/javascript">
+    $(function() {
+        $( ".{{ field_name }}" ).datepicker();
+        $( ".{{ field_name }}" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
+    });
+</script>
+
+{% endif %}
+
+{% if input_type == 'text' %}
+
+    <input name="{{ field_name }}" type="text" class="selected_bulk advanced_values wide {{ field_name }}"></input>
+
+    {% if autofill %}
+    <script type="text/javascript">
+        $(function() {
+        var t = [{% for i in autofill %}'{{ i }}',{% endfor %}];
+        $( ".{{ field_name }}" ).autocomplete({source: t});
+        });        
+    </script>
+    {% endif %}
+
+
+{% endif %}
+
+{% if input_type == 'select' %}
+
+    <select id="{{ field_name }}" name="{{ field_name }}" class="selected_bulk advanced_values wide">
+    <option value=""></option>
+    {% for selector in selectors %}
+    <option value="{% if selector.value %}{{ selector.value }}{% else %}{{ selector }}{% endif %}">
+        {% if selector.name %}{{ selector.name }}{% else %}{{ selector }}{% endif %}</option>
+    {% endfor %}
+    </select>
+
+{% endif %}

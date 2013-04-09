@@ -1,0 +1,17 @@
+{% extends "/templates/main/base.html" %}
+
+{% block content_box %}
+
+<div class="btn-group options_dropdown">
+    <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">Fields <span class="caret"></span></button>
+    <ul id="fields_list" class="dropdown-menu" style="text-align:left">
+        {% for f in model_properties %}
+            <li class="field_drag"><span class="xbox_area"><input id="{{ f }}" class="field_select_box" type="checkbox" onclick="event.stopPropagation()" {% if f in default_checked %}checked{% endif %}></input></span> {{ f }}</li>
+        {% endfor %}
+        <li style="padding:5px;"><button id="new_fields_submit" class="btn">Save</button></li>
+        <li style="padding:5px;"><button id="resize_headers" class="btn" data-toggle="modal" data-target="#modal_column_resize">Default Columns Width</button></li>
+        <li id="save_status_new_fields"></li>
+    </ul>
+</div>
+
+{% endblock %}

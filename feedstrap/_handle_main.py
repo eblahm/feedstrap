@@ -17,4 +17,3 @@ urlpatterns = patterns('',
     url('/bulk_post', home.AjaxHandler),
     url('/remap_fields', home.NewFieldsHandler),
 )
-
