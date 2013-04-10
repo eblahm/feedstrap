@@ -10,12 +10,6 @@ office_choices = (
 class Tag(models.Model):
     name = models.CharField(max_length=50)
 
-class Keyword(models.Model):
-    name = models.CharField(max_length=50)
-
-class Concept(models.Model):
-    name = models.CharField(max_length=50)
-
 class Report(models.Model):
     name = models.CharField(max_length=50)
 
@@ -29,29 +23,31 @@ class Capability(models.Model):
     name = models.CharField(max_length=50)
     category = models.CharField(max_length=500)
 
-class Data_source(models.Model):
+class ResourceOrigin(models.Model):
     name = models.CharField(max_length=50)
 
 class Topic(models.Model):
     name = models.CharField(max_length=500)
     description = models.TextField()
-    options = models.ManyToManyField(Option)
-    data_sources = models.ManyToManyField(Data_source)
-    imperatives = models.ManyToManyField(Imperative)
-    capabilities = models.ManyToManyField(Capability)
+    options = models.ManyToManyField(Option,null=True, blank=True)
+    resource_origins = models.ManyToManyField(ResourceOrigin,null=True, blank=True)
+    imperatives = models.ManyToManyField(Imperative,null=True, blank=True)
+    capabilities = models.ManyToManyField(Capability,null=True, blank=True)
+
+class Office(models.Model):
+    name = models.CharField(max_length=50, choices=office_choices)
 
 class Feed(models.Model):
     url = models.CharField(max_length=500)
     name = models.CharField(max_length=100)
     owner = models.CharField(max_length=100)
-    office = models.CharField(max_length=50, choices=office_choices)
+
     description = models.CharField(max_length=500)
 
-    esil = models.ManyToManyField(Topic)
-    tags = models.ManyToManyField(Tag)
-    keywords = models.ManyToManyField(Keyword)
-    concepts = models.ManyToManyField(Concept)
-    reports = models.ManyToManyField(Report)
+    offices = models.ManyToManyField(Office, null=True, blank=True)
+    topics = models.ManyToManyField(Topic, null=True, blank=True)
+    tags = models.ManyToManyField(Tag, null=True, blank=True)
+    reports = models.ManyToManyField(Report, null=True, blank=True)
 
     last_updated = models.DateTimeField()
 
@@ -59,32 +55,29 @@ class Resource(models.Model):
     # for versioning
     date = models.DateTimeField()
     date_added = models.DateTimeField(auto_now=True)
-    last_updated = models.DateTimeField()
-    office = models.CharField(max_length=50, choices=office_choices)
     title = models.CharField(max_length=500)
     link = models.CharField(max_length=500, unique=True)
 
     description = models.TextField()
     relevance = models.TextField()
-    content = models.TextField()
+    content = models.TextField(blank=True)
 
-    feed = models.ForeignKey(Feed)
-    esil = models.ManyToManyField(Topic)
-    tags = models.ManyToManyField(Tag)
-    keywords = models.ManyToManyField(Keyword)
-    concepts = models.ManyToManyField(Concept)
-    reports = models.ManyToManyField(Report)
+    offices = models.ManyToManyField(Office,null=True, blank=True)
+    feed = models.ForeignKey(Feed, null=True, blank=True)
+    topics = models.ManyToManyField(Topic, null=True, blank=True)
+    tags = models.ManyToManyField(Tag, null=True, blank=True)
+    reports = models.ManyToManyField(Report, null=True, blank=True)
 
-class Deleted_link(models.Model):
+class DeletedLink(models.Model):
     link = models.CharField(max_length=500)
     date = models.DateTimeField(auto_now=True)
 
 class Comment(models.Model):
     name = models.CharField(max_length=500)
     email = models.EmailField()
-    org = models.CharField(max_length=500)
+    org = models.CharField(max_length=100,null=True, blank=True)
     comment = models.TextField()
     date = models.DateTimeField(auto_now=True)
     deleted = models.BooleanField()
 
-allow_admin_for = [Tag, Keyword, Concept, Report, Option, Imperative, Capability, Data_source, Topic, Feed, Resource, Deleted_link, Comment]
+allow_admin_for = [Tag, Report, Office, Option, Imperative, Capability, ResourceOrigin, Topic, Feed, Resource, DeletedLink, Comment]

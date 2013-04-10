@@ -1,0 +1,29 @@
+<tr class="filter">
+    <td style="width:20%">
+        <select name="row{% if condition_index %}{{ condition_index }}{% else %}1{% endif %}_andor" class="advanced_values">
+            <option value="AND">AND</option>
+            <option value="OR">OR</option>              
+        </select></td>
+    <td style="width:30%">
+        <select class="filter_field advanced_values" name="row{% if condition_index %}{{ condition_index }}{% else %}1{% endif %}_field">
+            <option value=""></option>
+                   {% for f in model_properties %}
+                        <option value="{{ f }}">{{ f }}</option>
+                  {% endfor %}  
+        </select><br><span></span>
+    </td>
+
+    <td style="width:20%"> 
+        <select name="row{% if condition_index %}{{ condition_index }}{% else %}1{% endif %}_operator" class="advanced_values">
+            <option value=""></option>
+            <option value="EQUALS">EQUALS</option>
+            <option value="NOT EQUALS">NOT EQUALS</option>
+            <option value="IN">IN</option>
+            <option value="NOT IN">NOT IN</option>
+            <option value="CONTAINS">CONTAINS</option>
+        </select>                                
+    </td>
+    <td id="row{% if condition_index %}{{ condition_index }}{% else %}1{% endif %}_field_result" style="width:30%">
+     ---
+    </td>
+</tr>
