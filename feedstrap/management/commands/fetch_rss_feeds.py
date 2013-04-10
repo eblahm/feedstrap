@@ -1,5 +1,6 @@
 import os
 import urllib2
+import pytz
 from time import mktime
 from datetime import datetime
 import xml.etree.ElementTree as etree
@@ -7,12 +8,8 @@ from ssg_site import feedparser, AlchemyAPI
 from feedstrap import models
 from django.core.management.base import BaseCommand, CommandError
 
-
-
-
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
-        ## Update 3 at a time
         ## Query fetches in ascending order according to when feeds were last updated
         feeds_query = models.Feed.objects.all().order_by('last_updated')
         for feed in feeds_query:
@@ -20,15 +17,18 @@ class Command(BaseCommand):
             parsed_feed = feedparser.parse(feed.url)
             # query for latest database item according to this particular feed
             ## The latest item in the RSS feed is compared with latest item in the database to determine
-            ## weather or not a new item is present, futher processing will happen to determin in the links are actually new
+            ## weather or not a new item is present, further processing will happen to determine if the links are actually new
             try:
-                most_recent_from_feed = models.Resource.objects.all().filter(feed__pk=feed.pk).order_by("-date")[0].date
+                most_recent_from_db = models.Resource.objects.filter(feeds__pk=feed.pk).order_by("-date")[0].date
             except:
-                # AKA no item from this feed yet in db
-                most_recent_from_feed = datetime(1901,12,25)
+                most_recent_from_db = datetime(1901, 12, 25)
 
-            ## date test
-            if most_recent_from_feed.time < parsed_feed.entries[0].published_parsed:
+            most_recent_from_db = most_recent_from_db.replace(tzinfo=pytz.utc)
+
+            most_recent_from_feed = datetime.fromtimestamp(mktime(parsed_feed.entries[0].published_parsed))
+            most_recent_from_feed = most_recent_from_feed.replace(tzinfo=pytz.utc)
+
+            if most_recent_from_db < most_recent_from_feed:
                 ## new items should now be present
                 for item in parsed_feed.entries:
                     found = 0
@@ -46,6 +46,7 @@ class Command(BaseCommand):
                     else:
                         if membership_query.count() == 0:
                             dt = datetime.fromtimestamp(mktime(item.published_parsed))
+                            dt = dt.replace(tzinfo=pytz.utc)
                             r = models.Resource(title=item.title,
                                                 link=item.link,
                                                 date=dt,
