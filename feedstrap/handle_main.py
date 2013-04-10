@@ -1,9 +1,9 @@
-# from django.conf.urls import patterns, url
-#
-# from feedstrap import home, ssg_app, sharepoint
-#
-# urlpatterns = patterns('',
-#     url(r'^$', home.MainPage, name='index'),
+from django.conf.urls import patterns, url
+
+from feedstrap import home #, ssg_app, sharepoint
+
+urlpatterns = patterns('',
+    url(r'^$', home.MainPage, name='index'),
 #     url('/db_edit', home.db_edit_click),
 #     url('/db_save', home.db_save_click),
 #     url('/search', home.MainPage),
@@ -16,4 +16,4 @@
 #     url('/ajax/url(.+)', home.AjaxHandler),
 #     url('/bulk_post', home.AjaxHandler),
 #     url('/remap_fields', home.NewFieldsHandler),
-# )
+)

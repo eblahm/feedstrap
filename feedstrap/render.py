@@ -1,8 +1,7 @@
-import os
-import jinja2
+from jinja2 import Environment, PackageLoader
 
-jinja_environment = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+env = Environment(loader=PackageLoader('feedstrap', 'templates'))
 
 def load(template_file, template_values={}):
-    template = jinja_environment.get_template(template_file)
+    template = env.get_template(template_file)
     return template.render(template_values)

@@ -63,7 +63,7 @@ class Resource(models.Model):
     content = models.TextField(blank=True)
 
     offices = models.ManyToManyField(Office,null=True, blank=True)
-    feed = models.ForeignKey(Feed, null=True, blank=True)
+    feeds = models.ManyToManyField(Feed, null=True, blank=True)
     topics = models.ManyToManyField(Topic, null=True, blank=True)
     tags = models.ManyToManyField(Tag, null=True, blank=True)
     reports = models.ManyToManyField(Report, null=True, blank=True)

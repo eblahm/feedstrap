@@ -1,8 +1,5 @@
-{% block content_view %} 
-    
-
-    {% for i in results %}
-        <div class="row feed_item" id="{{ i.key() }}">
+{% for i in results %}
+        <div class="row feed_item" id="{{ i.pk }}">
             <div class="span11">
                 <article class="ar">
                     <header>
@@ -19,10 +16,10 @@
                     </section>
                     <section class="ar_details">
                         {{i.date.strftime('%d %b %y') }}
-                        {% if i.posted_by %}<span class="spacer">|</span>posted by {{ i.posted_by }}{% endif %}
-                        {% if i.tags %}<span class="spacer">|</span><i class="icon-tag"></i> {{ ", ".join(i.tags) }}{% endif %}
-                              <span class="ar_tools" id="article_tools_{{ i.key() }}">
-                                <a class="db_view" data-target="#modal_content" data-toggle="modal" href="#" data-dbk="{{ i.key() }}">
+                        <span class="spacer">|</span>posted by {% for feed in i.feeds.all() %}{{ feed.owner }} {% endfor %}
+                        {% if i.tags.all() %}<span class="spacer">|</span><i class="icon-tag"></i> {% for tag in i.tags.all() %}{{ tag.name }}{% endfor %}{% endif %}
+                              <span class="ar_tools" id="article_tools_{{ i.pk }}">
+                                <a class="db_view" data-target="#modal_content" data-toggle="modal" href="#" data-dbk="{{ i.pk }}">
                                     <i class="icon-edit"></i>
                                 </a>
                             </span>
@@ -41,6 +38,3 @@
             {% else %} 
             <strong>------ END -----</strong> {% endif %}
         </div>
-
-    
-{% endblock %}

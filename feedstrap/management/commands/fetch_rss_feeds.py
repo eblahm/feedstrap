@@ -37,7 +37,7 @@ class Command(BaseCommand):
                         continue
                         ## check membership in Resource Table
                     membership_query = models.Resource.objects.all().filter(link=item.link)
-                    feed_limited_query = membership_query.filter(feed__pk=feed.pk)
+                    feed_limited_query = membership_query.filter(feeds__pk=feed.pk)
                     if feed_limited_query.count() > 0:
                         found += 1
                         if found > 4:
@@ -50,6 +50,8 @@ class Command(BaseCommand):
                                                 link=item.link,
                                                 date=dt,
                                                 description=item.description)
+                            r.save()
+                            r.feeds.add(feed)
                             try:
                                 page = urllib2.urlopen(item.link)
                                 page_content = page.read()
@@ -63,7 +65,8 @@ class Command(BaseCommand):
                             r.save()
                         else:
                             r = membership_query.get()
-
+                        if feed not in r.feeds.all():
+                            r.feeds.add(feed)
                         for tag in feed.tags.all():
                             if tag not in r.tags.all():
                                 r.tags.add(tag)
