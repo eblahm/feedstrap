@@ -22,7 +22,6 @@ class Command(BaseCommand):
                 most_recent_from_db = models.Resource.objects.filter(feeds__pk=feed.pk).order_by("-date")[0].date
             except:
                 most_recent_from_db = datetime(1901, 12, 25)
-
             most_recent_from_db = most_recent_from_db.replace(tzinfo=pytz.utc)
 
             most_recent_from_feed = datetime.fromtimestamp(mktime(parsed_feed.entries[0].published_parsed))

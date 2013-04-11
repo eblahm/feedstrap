@@ -9,22 +9,22 @@
 
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h4 id="myModalLabel" style="margin-bottom: 0px"><a href="{{ rec.link }}">{{ rec.title }}</a></h4>
-    <div style="text-align: right">added {{ rec.date.strftime('%d %b %y') }} {% if rec.posted_by %}by {{ rec.posted_by }}{% endif %}</div>
+    <h4 id="myModalLabel" style="margin-bottom: 0px"><a href="{{ rec.link }}">{{ rec.title|e }}</a></h4>
+    <div style="text-align: right">added {{ rec.date.strftime('%d %b %y') }} by {% for feed in rec.feeds.all() %}{{ feed.owner|e }} {% endfor %}</div>
 </div>
 
 <div class="modal-body">
     
     <form id="popup_form" class="db_rec" action="/db_save" method="POST">
-      <input type="hidden" name="db_key" value="{{ rec.key() }}" />
+      <input type="hidden" name="db_key" value="{{ rec.pk }}" />
 
-      <label for="title">Title:</label> <input id="title" name="title" type="text" class="input-xxlarge" value="{{ rec.title }}" /><br>
+      <label for="title">Title:</label> <input id="title" name="title" type="text" class="input-xxlarge" value="{{ rec.title|e }}"></input><br>
 
-      <label for="description">Description:</label><textarea id="description" name="description">{% if rec.description %}{{ rec.description }}{%  endif  %}</textarea>
+      <label for="description">Description:</label><textarea id="description" name="description">{% if rec.description %}{{ rec.description|e }}{%  endif  %}</textarea>
 
-      <label for="relevance">Relevance:</label><textarea id="relevance" name="relevance">{% if rec.relevance %}{{ rec.relevance }}{%  endif  %}</textarea>
+      <label for="relevance">Relevance:</label><textarea id="relevance" name="relevance">{% if rec.relevance %}{{ rec.relevance|e  }}{%  endif  %}</textarea>
         
-      <label for="tags">Tags:</label><input id="tags" name="tags" type="text" class="input-xlarge"  class="ui-autocomplete2 tag_selector" {% if rec.tags %}value="{{ ", ".join(rec.tags) }}"{%  endif  %}></input>
+      <label for="tags">Tags:</label><input id="tags" name="tags" type="text" class="input-xlarge"  class="ui-autocomplete2 tag_selector"{% if rec.tags.all() %}value="{% for t in rec.tags.all() %}{{ t.name|e }} " {% endfor %}{% endif %}></input>
 
       <label for="esil">Emerging Issue:</label>
       <select id="esil" name="esil" multiple="multiple">

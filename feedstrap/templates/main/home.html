@@ -17,31 +17,36 @@
     {% endblock %}  
 
        
-    {% block content_header %}
 
-            <div id="header_bar" class="row">
+    
+    
+
+    <div id="content_view" class="container">
+        {% block content_header %}
+
+            <div class="row">
                 <div class="span6">
-                {% if term != "" %}{{ result_count }} Results{% else %}{{ result_count }} * Total Records *{% endif %}<br>
-
-
+                    <div>foo</div>
                 </div>
-                
-                <div class="span6">
-
-                    
+                <div class="span6" style="text-align: right">
+                    <div class="btn-group">
+                        <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
+                            <i class="icon-share"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="/export/weekly_reads"><i class="icon-file"></i> Weekly Reads Format</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 
-     {% endblock %}
-    
-    
-    {% block content_view %}
-    <div id="content_view" class="container">
+        {% endblock %}
 
-    {% include '/main/list_view.html' %}
-
+        {% block content_view %}
+        {% include '/main/list_view.html' %}
+        {% endblock %}
     </div>
-    {% endblock %}
+
 
     
     

@@ -1,15 +1,9 @@
 from django.conf.urls import patterns, include, url
-
-# Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'feedstrap._handle_main.app', name='home'),
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-    # Uncomment the next line to enable the admin:
+   (r'^dbedit', 'feedstrap.home.dbedit'),
+   (r'^$', 'feedstrap.home.MainPage'),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', include('feedstrap.handle_main')),
 )
