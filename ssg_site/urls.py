@@ -1,9 +1,10 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+from feedstrap import handle_main
 admin.autodiscover()
 
 urlpatterns = patterns('',
-   (r'^dbedit', 'feedstrap.home.dbedit'),
-   (r'^$', 'feedstrap.home.MainPage'),
+    url(r'^$', 'feedstrap.home.MainPage'),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^db/', include(handle_main)),
 )

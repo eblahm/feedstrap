@@ -1,0 +1,37 @@
+<div class="span12 ar">
+    <article>
+        <section class="ar_inner ar_clip">
+            <h4>
+                <a href="{{ i.link }}" target="_blank">{{ i.title }}</a>
+            </h4>
+            {% if i.description %}<p> Description: {{ i.description }}</p>{% endif %}
+            {% if i.relevance %} <p>Relevance: {{ i.relevance }}</p>{% endif %}
+
+        </section>
+
+
+        <section class="ar_details">
+
+            <section style="float: left">
+
+                <em>{{i.date.strftime('%d %b %y') }}</em>
+                <span class="spacer">|</span><em>posted by {% for feed in i.feeds.all() %}{% if loop.index > 1 %}, {% endif %}{{ feed.owner }} {% endfor %}</em>
+                {% if i.tags.all() %}
+                    <span class="spacer">|</span>
+                    {% for tag in i.tags.all() %}{% if loop.index > 1 %}, {% endif %}<a href="#">{{ tag.name }}</a>{% endfor %}
+                {% endif %}
+
+            </section>
+
+            <section style="float: right;">
+                                <span class="ar_tools" id="article_tools_{{ i.pk }}">
+                                    <a class="db_view" data-target="#modal_content" data-toggle="modal" href="#" data-dbk="{{ i.pk }}">
+                                        <i class="icon-edit"></i>
+                                    </a>
+                                </span>
+            </section>
+
+        </section>
+    </article>
+
+</div>

@@ -13,11 +13,12 @@ function load_modal(db_key) {
     var datastring = "k=" + db_key;
     $("#modal_content").html('<div style="text-align:center; vertical-align: middle;"><img src="/img/loader.gif" /></div>');
     $.ajax({
-        url: "/dbedit",
+        url: "db/edit/resource",
         data: datastring,
         dataType: "html",
         error: function() { $("#modal_content").html('Load Failed :(')},
         success: (function (data) {
+
             $("#modal_content").html(data);
         })
     });
@@ -37,21 +38,21 @@ $(function () {
 });
 
 
-function adjust_table_header() {
-    var header_top_offset = $("#results_table_body").offset()['top'] - ($("#table_header_div").height()) + 5;
-    var window_position = $(window).scrollTop();
-    var nav_height = $("#my_nav").height();
-    if (window_position > header_top_offset) {
-        $("#table_header_div").css('position', 'fixed').css('top', nav_height);
-    }
-    else {
-        $("#table_header_div").css('position', '').css('top', '');
-    }
-}
+//function adjust_table_header() {
+//    var header_top_offset = $("#results_table_body").offset()['top'] - ($("#table_header_div").height()) + 5;
+//    var window_position = $(window).scrollTop();
+//    var nav_height = $("#my_nav").height();
+//    if (window_position > header_top_offset) {
+//        $("#table_header_div").css('position', 'fixed').css('top', nav_height);
+//    }
+//    else {
+//        $("#table_header_div").css('position', '').css('top', '');
+//    }
+//}
 
-$(window).scroll( function() {
-    adjust_table_header();
-    });
+//$(window).scroll( function() {
+//    adjust_table_header();
+//    });
     
 $(function() {
     $( "#fields_list" ).sortable({
@@ -118,10 +119,14 @@ $(document).ready(function () {
     $("#modal_content").on("click", "#save_btn", function () {  
         $.ajax({
                type: "POST",
-               url: "/db_save",
+               url: "db/edit/resource/",
                data: $("#popup_form").serialize(), // serializes the form's elements.
                error: function () {$("#save_status").html("error! :(")},
-               success: function(data){ $("#save_status").html(data)}
+               success: function(data){
+                   var d = jQuery.parseJSON(data);
+                   $("#save_status").html(d['save_status'])
+                   $("#"+d['id']).html(d['ajax_html'])
+               }
                
              });
     });
@@ -192,25 +197,25 @@ $(document).ready(function () {
              });
     });
     
-    $(function() {$( ".table_col" ).resizable({maxHeight: 30,});});
-    
-    $("#resize_save").click(function(){
-      var DataString = "";
-      var row_width = $("#sample_row").width();
-      $(".table_col").each(function(){
-          var this_ratio = String($(this).width()/row_width);
-          var this_name = $(this).attr('id').replace("_header","");
-          DataString += "col="+this_name+","+this_ratio+"&";
-      });
-      DataString += "with_ratios=yes";
-        $.ajax({
-               type: "GET",
-               url: "/remap_fields",
-               data: DataString,
-               error: function () {alert("error! :(")},
-               success: function() {location.reload();}
-             });
-    });
+//    $(function() {$( ".table_col" ).resizable({maxHeight: 30,});});
+//
+//    $("#resize_save").click(function(){
+//      var DataString = "";
+//      var row_width = $("#sample_row").width();
+//      $(".table_col").each(function(){
+//          var this_ratio = String($(this).width()/row_width);
+//          var this_name = $(this).attr('id').replace("_header","");
+//          DataString += "col="+this_name+","+this_ratio+"&";
+//      });
+//      DataString += "with_ratios=yes";
+//        $.ajax({
+//               type: "GET",
+//               url: "/remap_fields",
+//               data: DataString,
+//               error: function () {alert("error! :(")},
+//               success: function() {location.reload();}
+//             });
+//    });
       
     $("#add_conditions").click(function(){
       var geturl = "/advanced_search?action=new_conditons&filter_count=" + String($(".filter").length);

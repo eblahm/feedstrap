@@ -1,10 +1,11 @@
 from django.conf.urls import patterns, url
+import home
 
 from feedstrap import home #, ssg_app, sharepoint
 
 urlpatterns = patterns('',
-                       (r'^dbedit', 'feedstrap.home.dbedit'),
-                       (r'^$', 'feedstrap.home.MainPage'),
+                       url(r'^edit/resource/', 'feedstrap.home.dbedit'),
+
 )
 
 
