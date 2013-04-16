@@ -18,10 +18,6 @@ class Report(models.Model):
     name = models.CharField(max_length=50)
 
 
-class Option(models.Model):
-    name = models.CharField(max_length=50)
-
-
 class Imperative(models.Model):
     name = models.CharField(max_length=50)
 
@@ -38,9 +34,7 @@ class ResourceOrigin(models.Model):
 class Topic(models.Model):
     name = models.CharField(max_length=500)
     description = models.TextField()
-    options = models.ManyToManyField(Option, null=True, blank=True)
-    resource_origins = models.ManyToManyField(ResourceOrigin,
-                                              null=True, blank=True)
+    resource_origins = models.ManyToManyField(ResourceOrigin, null=True, blank=True)
     imperatives = models.ManyToManyField(Imperative, null=True, blank=True)
     capabilities = models.ManyToManyField(Capability, null=True, blank=True)
 
@@ -97,8 +91,3 @@ class Comment(models.Model):
     comment = models.TextField()
     date = models.DateTimeField(auto_now=True)
     deleted = models.BooleanField()
-
-
-allow_admin_for = [Tag, Report, Office, Option,
-                   Imperative, Capability, ResourceOrigin,
-                   Topic, Feed, Resource, DeletedLink, Comment]

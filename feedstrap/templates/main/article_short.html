@@ -18,17 +18,17 @@
                 <span class="spacer">|</span><em>posted by {% for feed in i.feeds.all() %}{% if loop.index > 1 %}, {% endif %}{{ feed.owner }} {% endfor %}</em>
                 {% if i.tags.all() %}
                     <span class="spacer">|</span>
-                    {% for tag in i.tags.all() %}{% if loop.index > 1 %}, {% endif %}<a href="#">{{ tag.name }}</a>{% endfor %}
+                    {% for tag in i.tags.all() %}{% if loop.index > 1 %}, {% endif %}<a href="/db/q?tag={{ tag.name|e }}">{{ tag.name }}</a>{% endfor %}
                 {% endif %}
 
             </section>
 
             <section style="float: right;">
-                                <span class="ar_tools" id="article_tools_{{ i.pk }}">
-                                    <a class="db_view" data-target="#modal_content" data-toggle="modal" href="#" data-dbk="{{ i.pk }}">
-                                        <i class="icon-edit"></i>
-                                    </a>
-                                </span>
+                    <span class="ar_tools" id="article_tools_{{ i.pk }}">
+                        <a class="db_view" data-target="#modal_content" data-toggle="modal" href="#" data-dbk="{{ i.pk }}">
+                            <i class="icon-edit"></i>
+                        </a>
+                    </span>
             </section>
 
         </section>

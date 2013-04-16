@@ -7,6 +7,30 @@ import pytz
 import json
 from datetime import datetime
 
+def apply_filter(query_filter):
+    per_page_limit = 10
+    new_template_values = {}
+    tag_filter = query_filter.get('tag', "")
+    if tag_filter <> "":
+        tag_rec = models.Tag.objects.get(name=query_filter['tag'])
+        q = Resource.objects.filter(tags=tag_rec).order_by('-date')
+        new_template_values['tag'] = tag_filter
+    else:
+        q = Resource.objects.all().order_by('-date')
+    try:
+        start_offset = int(query_filter['s'])
+    except:
+        start_offset = 0
+    if start_offset == 0:
+        q = q[:per_page_limit]
+    else:
+        q = Resource.objects.all().order_by('-date')[start_offset:start_offset+per_page_limit]
+
+    if q.count() == per_page_limit:
+        new_template_values['next_offset'] = start_offset + per_page_limit
+
+    new_template_values['results'] = q
+    return new_template_values
 
 def dbedit(request):
     if request.method == "GET":
@@ -50,9 +74,14 @@ def dbedit(request):
         return HttpResponse(json_response)
 
 
-def MainPage(request):
+def MainPage(request,  template=""):
     v = {}
+    query_filter = request.GET.dict()
+    v.update(apply_filter(query_filter))
     v['nav'] = 'home'
-    template_file = '/main/home.html'
-    v['results'] = Resource.objects.all().order_by('-date')
+    if template == "ajax":
+        template_file = '/main/list_view.html'
+    else:
+        template_file = '/main/home.html'
+
     return HttpResponse(render.load(template_file, v))

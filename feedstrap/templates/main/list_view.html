@@ -5,8 +5,8 @@
     {% endfor %}
 
         <div class="row span12" style="text-align:center;">
-            {% if next_cursor %} 
-            <button class="btn btn-primary show_more" data-view="list" data-query="/?qt={{ query_type }}&view=list&term={{ term }}&c={{ next_cursor }}"> Show More </button> 
-            {% else %} 
+            {% if next_offset %}
+            <span class="eb"><button class="btn btn-primary show_more" data-query="q/ajax/?{% if tag %}tag={{ tag }}&{% endif %}s={{ next_offset }}"> Show More </button></span>
+            {% else %}
             <strong>------ END -----</strong> {% endif %}
         </div>
