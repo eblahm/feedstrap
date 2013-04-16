@@ -25,3 +25,7 @@ for i in tag_type:
     class AdminFormat(admin.ModelAdmin):
         list_display = ('name',)
     admin.site.register(i, AdminFormat)
+    
+    
+for data_field in [Topic, ResourceOrigin, Imperative, Capability]:
+    admin.site.register(data_field)

@@ -17,24 +17,43 @@ class Tag(models.Model):
 class Report(models.Model):
     name = models.CharField(max_length=50)
 
+imperative_choices = (
+    ('Be A Pro-Active and Agile Institution', 'Be A Pro-Active and Agile Institution'),
+    ('Be Recognized for Providing a Quality Experience', 'Be Recognized for Providing a Quality Experience'),
+    ('Be a Trusted Partner', 'Be a Trusted Partner'),
+)
 
 class Imperative(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
+    category = models.CharField(max_length=100, choices=imperative_choices)
 
+capability_choices = (
+    ('Provide Services for Veterans and Eligible Beneficiaries', 'Provide Services for Veterans and Eligible Beneficiaries'),
+    ('Support Delivery of Services', 'Support Delivery of Services'),
+    ('Manage Government Resources', 'Manage Government Resources'),
+)
 
 class Capability(models.Model):
-    name = models.CharField(max_length=50)
-    category = models.CharField(max_length=500)
+    name = models.CharField(max_length=100)
+    category = models.CharField(max_length=100, choices=capability_choices)
 
 
+origin_choices = (
+    ('Inter-Office', 'Inter-Office'),
+    ('Inter-Departmental', 'Inter-Departmental'),
+    ('Inter-Governmental Partners', 'Inter-Governmental Partners'),
+    ('Non-Governmental Partners', 'Non-Governmental Partners'),
+    ('Other', 'Other'),
+)
 class ResourceOrigin(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
+    category = models.CharField(max_length=100, choices=origin_choices)
 
 
 class Topic(models.Model):
     name = models.CharField(max_length=500)
     description = models.TextField()
-    resource_origins = models.ManyToManyField(ResourceOrigin, null=True, blank=True)
+    resourceorigins = models.ManyToManyField(ResourceOrigin, null=True, blank=True)
     imperatives = models.ManyToManyField(Imperative, null=True, blank=True)
     capabilities = models.ManyToManyField(Capability, null=True, blank=True)
 

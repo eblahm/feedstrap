@@ -59,7 +59,6 @@
                             <ul class="nav nav-pills">
                                   <li {% if nav == 'home' %}class="active"{% endif %}><a href="/">Database</a></li>
                                   <li {% if nav == 'esil' %}class="active"{% endif %}><a href="/esil">Issues</a></li>
-                                  <li {% if nav == 'trends' %}class="active"{% endif %}><a href="/trends">Trends</a></li>
                             </ul>
 
 
@@ -69,18 +68,14 @@
                         				<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-chevron-down"></i></a>
                         				<ul class="dropdown-menu" >
                         				  <li><a href="/advanced_search"><i class="icon-search"></i> Advanced Search</a></li>
-                        				  <li class="divider"></li>
-                        				  <li><a href="admin/feeds"><i class="icon-list-alt"></i> Feeds</a></li>
-                        				  <li><a href="admin/default_formating"><i class="icon-text-width"></i> Default Formating</a></li>
-                        				  <li><a href="admin/default_values"><i class="icon-cog"></i> Default Values</a></li>
-                        				  <li><a href="admin/utilities"><i class="icon-wrench"></i> Database Utitlities</a></li>
+                        				  <li><a href="/admin/"><i class="icon-cog"></i> Admin Console</a></li>
+                        				 
                         				</ul>
                         		  </li>
                         	</ul>
 
                             <form action="/search" class="navbar-form pull-right">
                                 <input type="text" class="span2" name="term"{% if term %}value="{{ term }}"{% endif %}>
-                                <input id="view_select" type="text" style="display:none" value="{% if view %}{{ view }}{% else %}list{% endif %}" name="view" >
                                 <button type="submit" class="btn">Search</button>
                             </form>
                         </div>
@@ -95,7 +90,7 @@
 
         <!-- Footer -->
         <div class="footer">
-          created by Matt using Django
+          powered by Django
         </div>
         
     </div>
