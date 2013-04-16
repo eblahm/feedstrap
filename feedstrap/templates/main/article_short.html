@@ -20,6 +20,10 @@
                     <span class="spacer">|</span>
                     {% for tag in i.tags.all() %}{% if loop.index > 1 %}, {% endif %}<a href="/db/q?tag={{ tag.name|e }}">{{ tag.name }}</a>{% endfor %}
                 {% endif %}
+                {% if i.reports.all() %}
+                    <span class="spacer">|</span>
+                    {% for report in i.reports.all() %}{% if loop.index > 1 %}, {% endif %}<a href="/db/q?report={{ report.name|e }}" class="label label-info">{{ report.name }}</a>{% endfor %}
+                {% endif %}
 
             </section>
 

@@ -63,7 +63,7 @@ class Resource(models.Model):
     date = models.DateTimeField()
     date_added = models.DateTimeField(auto_now=True)
     title = models.CharField(max_length=500)
-    link = models.CharField(max_length=500, unique=True)
+    link = models.CharField(max_length=250, unique=True)
     description = models.TextField()
     relevance = models.TextField()
     content = models.TextField(blank=True)
