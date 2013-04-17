@@ -3,7 +3,7 @@ function load_modal(db_key) {
     var datastring = "k=" + db_key;
     $("#modal_content").html(loader_gif);
     $.ajax({
-        url: "db/edit/resource",
+        url: "/db/edit/resource",
         data: datastring,
         dataType: "html",
         error: function() { $("#modal_content").html('Load Failed :(')},
@@ -31,7 +31,7 @@ $(document).ready(function () {
         $.ajax({
             url: url_request,
             dataType: "html",
-            error: function() { ajax_body.append('request failed :(');},
+            error: function() { content_body.append('request failed :(');},
             success: (function (data) {
                 $(".eb").html("").removeClass("eb")
                 content_body.append(data);
@@ -43,7 +43,7 @@ $(document).ready(function () {
     $("#modal_content").on("click", "#save_btn", function () {  
         $.ajax({
                type: "POST",
-               url: "db/edit/resource/",
+               url: "/db/edit/resource/",
                data: $("#popup_form").serialize(), // serializes the form's elements.
                error: function () {$("#save_status").html("error! :(")},
                success: function(data){

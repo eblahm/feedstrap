@@ -4,9 +4,14 @@
             <h4>
                 <a href="{{ i.link }}" target="_blank">{{ i.title }}</a>
             </h4>
+        {% if search_snippets %}
+            <p class="ar_snippet">
+            {% for snip in search_snippets[i.pk]['content'] %}...{{ snip }}...{% endfor %}
+            </p>
+        {% else %}
             {% if i.description %}<p> Description: {{ i.description }}</p>{% endif %}
             {% if i.relevance %} <p>Relevance: {{ i.relevance }}</p>{% endif %}
-
+        {% endif %}
         </section>
 
 

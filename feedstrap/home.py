@@ -6,6 +6,7 @@ import render
 import pytz
 import json
 from datetime import datetime
+from ssg_site import pysolr
 
 def apply_filter(query_filter):
     q = Resource.objects.all()
@@ -13,6 +14,18 @@ def apply_filter(query_filter):
     new_template_values = {}
     tag_filter = query_filter.get('tag', "")
     report_filter = query_filter.get('report', "")
+    term_filter = query_filter.get('term', "")
+    if term_filter <> "":
+        solr = pysolr.Solr('http://localhost:8983/solr/', timeout=10)
+        results = solr.search(term_filter, **{'hl': 'true','hl.fl': '*', 'hl.fragsize': 200, 'hl.snippets':3})
+        new_template_values['search_snippets'] = {}
+        new_template_values['term'] = term_filter
+        hl = results.highlighting
+        pk_list = []
+        for r in results:
+            new_template_values['search_snippets'][int(r['id'])] = hl[r['id']]
+            pk_list.append(r['id'])
+        q = q.filter(pk__in=pk_list)
     if tag_filter <> "":
         tag_rec = models.Tag.objects.get(name=query_filter['tag'])
         q = q.filter(tags=tag_rec)
@@ -20,16 +33,16 @@ def apply_filter(query_filter):
     if report_filter <> "":
         report_rec = models.Report.objects.get(name=query_filter['report'])
         q = q.filter(reports=report_rec)
-        new_template_values['report'] = report_filter    
-    q = q.order_by('-date')
-    try:
-        start_offset = int(query_filter['s'])
-    except:
-        start_offset = 0
+        new_template_values['report'] = report_filter
+    if term_filter <> "":
+        q = q.order_by('-date')
+
+    start_offset = query_filter.get('s', '0')
+    start_offset = int(start_offset)
     if start_offset == 0:
         q = q[:per_page_limit]
     else:
-        q = Resource.objects.all().order_by('-date')[start_offset:start_offset+per_page_limit]
+        q = q[start_offset:start_offset+per_page_limit]
 
     if q.count() == per_page_limit:
         new_template_values['next_offset'] = start_offset + per_page_limit

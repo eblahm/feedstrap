@@ -41,7 +41,9 @@
     /*border: dotted grey 1px;*/
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
 }
-
+.ar_snippet em{
+    background-color: lightyellow;
+}
 .ar_clip {
     padding: 10px 10px 0px 20px;
 }
