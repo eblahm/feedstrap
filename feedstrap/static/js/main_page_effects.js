@@ -1,9 +1,9 @@
 var loader_gif = '<div style="text-align:center; vertical-align: middle;"><img src="/feedstrap/static/img/loader.gif" /></div>'
-function load_modal(db_key) {
+function load_modal(db_key, url_string="/db/edit/resource") {
     var datastring = "k=" + db_key;
     $("#modal_content").html(loader_gif);
     $.ajax({
-        url: "/db/edit/resource",
+        url: url_string,
         data: datastring,
         dataType: "html",
         error: function() { $("#modal_content").html('Load Failed :(')},
@@ -22,6 +22,11 @@ $(document).ready(function () {
         var db_key = $(this).data('dbk');
         load_modal(db_key);
     });
+
+//    $("#content_box").on("click", ".read", function (event) {
+//        var db_key = $(this).data('dbk');
+//        load_modal(db_key, url_string="/db/read");
+//    });
     
     $("#content_box").on("click", ".show_more", function (event) {
         var url_request = $(this).data('query');
