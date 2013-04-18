@@ -1,4 +1,4 @@
-{% extends "/main/base.html" %}
+{% extends "/main/home.html" %}
 {% block head %}
     {{ super() }}
     <style>
@@ -14,15 +14,15 @@
     .javascript_link:active {text-decoration:underline;}
     .no_edge {border:none; margin:0px; padding:0px;}
     </style>
-    <script type="text/javascript" rel="js" src="/js/sp_effects.js"></script>
+    <script type="text/javascript" rel="js" src="/feedstrap/static/js/sp.js"></script>
 {% endblock %}
 {% block title %}{{ title }}{% endblock %}
-{% block content_box %}
+{% block content_view %}
 
   
-  <div class="row">
+  <div>
 
-    <div class="span12" style="text-align:center">
+    <div style="text-align:center">
       <h3>Emerging Strategic Issues List</h3>
       <table class="table table-hover">
         <thead>
@@ -36,10 +36,10 @@
         </thead>
         <tbody>
           {% for topic in topics %}
-        <tr id="topic_{{ topic.pk }}">
+        <tr data-k="{{ topic.pk }}" class="topic_row">
           <td class="rpoint">{{ topic.name }}</td>
           <td id="des_{{ topic.pk }}" class="rpoint" rowspan="2">{{ topic.description[:100] }}
-          <span class="show_des javascript_link" id="topic_{{ topic.pk }}" data-full_description="{{ topic.description }}"><em> (expand...)</em></span></td>
+          <span class="show_des javascript_link" data-parent="des_{{ topic.pk }}" data-full="{{ topic.description }}"><em> (expand...)</em></span></td>
           <td class="rpoint" rowspan="2" style="text-align:center">{{ topic.intensity }}</td>
           <td class="rpoint" rowspan="2" style="text-align:center">{{ topic.relevance }}</td>
           <td class="rpoint" style="text-align:center; vertical-align:top; height:100%">{{ topic.impact }}</td>

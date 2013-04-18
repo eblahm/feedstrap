@@ -3,29 +3,30 @@
   <head>
     {% block head %}
     <meta charset="UTF-8" />
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    
-    {% block javascript %}
-    <!-- jquery -->
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
-    <script src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>
-    
-    
-    <script src="/feedstrap/static/js/bootstrap.min.js"></script>
-    
-    <!-- my code -->
-    <script type="text/javascript" rel="js" src="/feedstrap/static/js/main_page_effects.js"></script>
-    {% endblock %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     {% block stylesheets %}
     <!-- jquery -->
     <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
-    
     <!-- twitter bootstrap -->
-    <link href="/feedstrap/static/css/bootstrap.css" rel="stylesheet" media="screen">
-    
+    <link href="/feedstrap/static/css/bootstrap-responsive.css" rel="stylesheet">     
+    <link href="/feedstrap/static/css/bootstrap.css" rel="stylesheet">         
+    <!-- my code -->
     <link href="/feedstrap/static/css/main.css" rel="stylesheet" >
     {% endblock %} 
+
+
+    {% block javascript %}
+    <!-- jquery -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>
+    <!-- twitter bootstrap -->
+    <script src="/feedstrap/static/js/bootstrap.min.js"></script>
+    <!-- my code -->
+    <script type="text/javascript" rel="js" src="/feedstrap/static/js/main.js"></script>
+    {% endblock %}
+    
+
     
     {% block google_analytics %}
     <!-- google analytics -->
@@ -50,30 +51,14 @@
   </head>  
   <body>
   
-    <div class="container">
+    <div class="container-fluid">
         <!-- navbar-->
 
                 <div id="my_nav" class="navbar navbar-fixed-top">
                     <div class="navbar-inner">
-                        <div class="container">
-                            <ul class="nav nav-pills">
-                                  <li {% if nav == 'home' %}class="active"{% endif %}><a href="/">Database</a></li>
-                                  <li {% if nav == 'esil' %}class="active"{% endif %}><a href="/esil">Issues</a></li>
-                            </ul>
-
-
-
-                            <ul class="nav pull-right" >
-                        		  <li class="dropdown">
-                        				<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-chevron-down"></i></a>
-                        				<ul class="dropdown-menu" >
-                        				  <li><a href="/advanced_search"><i class="icon-search"></i> Advanced Search</a></li>
-                        				  <li><a href="/admin/"><i class="icon-cog"></i> Admin Console</a></li>
-                        				 
-                        				</ul>
-                        		  </li>
-                        	</ul>
-
+                        <div class="container-fluid">
+                            <a class="brand" href="/">SSG Database</a>
+    
                             <form action="/db/q" class="navbar-form pull-right">
                                 <input type="text" class="span2" name="term"{% if term %}value="{{ term }}"{% endif %}>
                                 <button type="submit" class="btn">Search</button>
@@ -81,17 +66,14 @@
                         </div>
                     </div>
                 </div>
-   
-        <!-- CONTENT BOX -->
 
-            <div id="content_box">
-        {% block content_box %}{% endblock %}
-            </div>
+            
+        {% block content_box %}
+        {% endblock %}
+           
 
-        <!-- Footer -->
-        <div class="footer">
-          powered by Django
-        </div>
+
+
         
     </div>
 

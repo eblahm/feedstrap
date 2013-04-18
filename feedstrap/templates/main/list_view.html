@@ -1,10 +1,10 @@
 {% for i in results %}
-        <div id="ar_{{ i.pk }}" class="row feed_item">
+        <div id="ar_{{ i.pk }}" class="feed_item">
         {% include '/main/article_short.html' %}
         </div>
-    {% endfor %}
+{% endfor %}
 
-        <div class="row span12" style="text-align:center;">
+        <div style="text-align:center;">
             {% if next_offset %}
             <span class="eb"><button class="btn btn-primary show_more" data-query="/db/q/ajax/?{% if tag %}tag={{ tag }}&{% endif %}{% if report %}report={{ report }}&{% endif %}{% if term %}term={{ term }}&{% endif %}s={{ next_offset }}"> Show More </button></span>
             {% else %}

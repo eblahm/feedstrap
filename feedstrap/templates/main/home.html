@@ -16,36 +16,57 @@
     </div> 
     {% endblock %}  
 
-       
-
+    <div id="content_box" class="row-fluid">
+        <div class="span2">
+            <ul class="nav nav-tabs nav-stacked">
+            
+                <li {% if nav == 'home' %}class="active"{% endif %}>
+                    <a href="/">
+                       FEED
+                       <i style="float: right; margin-right: -6px;" class="icon-chevron-right"></i>
+                    </a>
+                </li>
+                <li {% if nav == 'esil' %}class="active"{% endif %}>
+                    <a href="/esil">
+                       ESIL
+                       <i style="float: right; margin-right: -6px;" class="icon-chevron-right"></i>
+                    </a>
+                </li>
+                <li {% if nav == 'admin' %}class="active"{% endif %}>
+                    <a href="/admin">
+                       ADMIN
+                       <i style="float: right; margin-right: -6px;" class="icon-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div id="content_view" class="span10">
+            {% block content_header %}
     
-    
-
-    <div id="content_view" class="container">
-        {% block content_header %}
-
-            <div class="row">
-                <div class="span6">
-{#                    <div>{% if term %}<span style="line-height:4em" class="label label-info"><button type="button">×</button> term: {{ term }}</span>{% endif %}</div>#}
-                </div>
-                <div class="span6" style="text-align: right">
-                    <div class="btn-group">
-                        <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
-                            <i class="icon-share"></i>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a href="/export/weekly_reads"><i class="icon-file"></i> Weekly Reads Format</a></li>
-                        </ul>
+                <div>
+                    <div>
+    {#                    <div>{% if term %}<span style="line-height:4em" class="label label-info"><button type="button">×</button> term: {{ term }}</span>{% endif %}</div>#}
+                    </div>
+                    <div style="text-align: right">
+                        <div class="btn-group">
+                            <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
+                                <i class="icon-share"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="/export/weekly_reads"><i class="icon-file"></i> Weekly Reads Format</a></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-        {% endblock %}
-
-        {% block content_view %}
-        {% include '/main/list_view.html' %}
-        {% endblock %}
+    
+            {% endblock %}
+            
+            {% block content_view %}
+            {% include '/main/list_view.html' %}
+            {% endblock %}
+        </div>
     </div>
+
 
 
     
