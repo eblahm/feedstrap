@@ -7,7 +7,7 @@ urlpatterns = patterns('',
                        url(r'^edit/resource/', 'feedstrap.home.dbedit'),
                        url(r'^q/(?P<template>.+)/', 'feedstrap.home.MainPage'),
                        url(r'^q', 'feedstrap.home.MainPage'),
-                       url(r'^read', 'feedstrap.home.read'),
+                       # url(r'^read', 'feedstrap.home.read'),
 )
 
 # urlpatterns = patterns('',

@@ -5,6 +5,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^$', 'feedstrap.home.MainPage'),
+    url(r'esil', 'feedstrap.esil.main'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^db/', include(handle_main)),
 )

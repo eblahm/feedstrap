@@ -1,0 +1,56 @@
+{% extends "/main/base.html" %}
+{% block head %}
+    {{ super() }}
+    <style>
+    body {
+        margin-bottom: 100px;
+      }
+      span.rpoint:hover, td.rpoint:hover {cursor:pointer;}
+    
+    .javascript_link {
+    color:#3366CC;
+    }
+    .javascript_link:hover {text-decoration:underline; color:3399FF; cursor:pointer;}
+    .javascript_link:active {text-decoration:underline;}
+    .no_edge {border:none; margin:0px; padding:0px;}
+    </style>
+    <script type="text/javascript" rel="js" src="/js/sp_effects.js"></script>
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block content_box %}
+
+  
+  <div class="row">
+
+    <div class="span12" style="text-align:center">
+      <h3>Emerging Strategic Issues List</h3>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+          <th style="width:129px">Name</th>
+            <th style="width:280px">Description</th>
+             <th style="text-align:center"><abbr title="Intensity represents the frequency an issue." class="initialism">Intensity</abbr></th>
+            <th style="text-align:center"><abbr title="Relevance represents the topics resonance with current VA strategic ideas.  If the topic can help illustrate Strategic Imperatives, the Relevance will be high." class="initialism">Relevance</abbr></th>
+            <th style="text-align:center"><abbr title="Impact represents the topics potential to effect VA capabilities.  Each topic is cross walked against the VA capabilities, then given a score.  Topics that involve many different VA capabilities will have a high score." class="initialism">Impact</abbr></th>
+        </tr>
+        </thead>
+        <tbody>
+          {% for topic in topics %}
+        <tr id="topic_{{ topic.pk }}">
+          <td class="rpoint">{{ topic.name }}</td>
+          <td id="des_{{ topic.pk }}" class="rpoint" rowspan="2">{{ topic.description[:100] }}
+          <span class="show_des javascript_link" id="topic_{{ topic.pk }}" data-full_description="{{ topic.description }}"><em> (expand...)</em></span></td>
+          <td class="rpoint" rowspan="2" style="text-align:center">{{ topic.intensity }}</td>
+          <td class="rpoint" rowspan="2" style="text-align:center">{{ topic.relevance }}</td>
+          <td class="rpoint" style="text-align:center; vertical-align:top; height:100%">{{ topic.impact }}</td>
+        </tr>
+          {% endfor %}        
+        </tbody>
+      </table>
+      
+    </div>
+  </div>
+
+  
+{% endblock %}
+  

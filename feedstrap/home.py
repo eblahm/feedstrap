@@ -6,7 +6,7 @@ import render
 import pytz
 import json
 from datetime import datetime
-from ssg_site import pysolr #, markdown
+# from ssg_site import pysolr #, markdown
 
 def apply_filter(query_filter):
     q = Resource.objects.all()
@@ -15,17 +15,17 @@ def apply_filter(query_filter):
     tag_filter = query_filter.get('tag', "")
     report_filter = query_filter.get('report', "")
     term_filter = query_filter.get('term', "")
-    if term_filter <> "":
-        solr = pysolr.Solr('http://localhost:8983/solr/', timeout=10)
-        results = solr.search(term_filter, **{'hl': 'true','hl.fl': '*', 'hl.fragsize': 200, 'hl.snippets':3})
-        new_template_values['search_snippets'] = {}
-        new_template_values['term'] = term_filter
-        hl = results.highlighting
-        pk_list = []
-        for r in results:
-            new_template_values['search_snippets'][int(r['id'])] = hl[r['id']]
-            pk_list.append(r['id'])
-        q = q.filter(pk__in=pk_list)
+    # if term_filter <> "":
+    #     solr = pysolr.Solr('http://localhost:8983/solr/', timeout=10)
+    #     results = solr.search(term_filter, **{'hl': 'true','hl.fl': '*', 'hl.fragsize': 200, 'hl.snippets':3})
+    #     new_template_values['search_snippets'] = {}
+    #     new_template_values['term'] = term_filter
+    #     hl = results.highlighting
+    #     pk_list = []
+    #     for r in results:
+    #         new_template_values['search_snippets'][int(r['id'])] = hl[r['id']]
+    #         pk_list.append(r['id'])
+    #     q = q.filter(pk__in=pk_list)
     if tag_filter <> "":
         tag_rec = models.Tag.objects.get(name=query_filter['tag'])
         q = q.filter(tags=tag_rec)

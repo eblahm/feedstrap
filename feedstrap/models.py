@@ -9,7 +9,6 @@ office_choices = (
     ('AS', 'Front Office'),
 )
 
-
 class Tag(models.Model):
     name = models.CharField(max_length=50)
 
@@ -39,12 +38,13 @@ class Capability(models.Model):
 
 
 origin_choices = (
-    ('Inter-Office', 'Inter-Office'),
-    ('Inter-Departmental', 'Inter-Departmental'),
-    ('Inter-Governmental Partners', 'Inter-Governmental Partners'),
-    ('Non-Governmental Partners', 'Non-Governmental Partners'),
+    ('Office', 'Office'),
+    ('Departmental', 'Departmental'),
+    ('Governmental', 'Governmental'),
+    ('Non-Governmental', 'Non-Governmental'),
     ('Other', 'Other'),
 )
+
 class ResourceOrigin(models.Model):
     name = models.CharField(max_length=100)
     category = models.CharField(max_length=100, choices=origin_choices)
@@ -101,12 +101,4 @@ class ResourceForm(ModelForm):
 class DeletedLink(models.Model):
     link = models.CharField(max_length=500)
     date = models.DateTimeField(auto_now=True)
-
-
-class Comment(models.Model):
-    name = models.CharField(max_length=500)
-    email = models.EmailField()
-    org = models.CharField(max_length=100, null=True, blank=True)
-    comment = models.TextField()
-    date = models.DateTimeField(auto_now=True)
-    deleted = models.BooleanField()
+    
