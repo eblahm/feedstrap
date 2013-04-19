@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
+    
     {% block stylesheets %}
     <!-- jquery -->
     <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
@@ -52,31 +53,11 @@
   <body>
   
     <div class="container-fluid">
-        <!-- navbar-->
-
-                <div id="my_nav" class="navbar navbar-fixed-top">
-                    <div class="navbar-inner">
-                        <div class="container-fluid">
-                            <a class="brand" href="/">SSG Database</a>
-    
-                            <form action="/db/q" class="navbar-form pull-right">
-                                <input type="text" class="span2" name="term"{% if term %}value="{{ term }}"{% endif %}>
-                                <button type="submit" class="btn">Search</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
             
         {% block content_box %}
         {% endblock %}
-           
-
-
-
         
     </div>
-
 
   </body>
   

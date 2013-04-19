@@ -1,0 +1,46 @@
+<div class="well" style="max-width: 340px; padding: 8px 0;">
+<ul class="nav nav-list">
+    <li class="nav-header">Feeds</li>
+    <li {% if nav == 'home' %}class="active"{% endif %}>
+        <a href="/">
+           Recent
+        </a>
+    </li>
+    <li {% if nav == 'ssg' %}class="active"{% endif %}>
+        <a href="/">
+           SSG
+        </a>
+    </li>
+    <li {% if nav == 'weekly_reads' %}class="active"{% endif %}>
+        <a href="/db/q?report=Weekly Reads">
+           Weekly Reads
+        </a>
+    </li>               
+    <li class="nav-header">Tools</li>
+    <li {% if nav == 'esil' %}class="active"{% endif %}>
+        <a href="/esil">  
+           ESIL
+        </a>
+    </li>
+    <li>
+        <a class="modal_view" data-target="#modal_content" data-toggle="modal" href="#" data-url="/db/filter/" data-dbk="">
+            Advanced Filter
+        </a>    
+    </li>    
+
+    <li {% if nav == 'admin' %}class="active"{% endif %}>
+        <a href="/admin">
+           Admin Console
+        </a>
+    </li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+

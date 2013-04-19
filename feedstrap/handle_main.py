@@ -1,14 +1,14 @@
 from django.conf.urls import patterns, url
-import home
 
-from feedstrap import home #, ssg_app, sharepoint
 
 urlpatterns = patterns('',
                        url(r'^edit/resource/', 'feedstrap.home.dbedit'),
                        url(r'^q/(?P<template>.+)/', 'feedstrap.home.MainPage'),
                        url(r'^q', 'feedstrap.home.MainPage'),
                        # url(r'^read', 'feedstrap.home.read'),
+                       url(r'^filter', 'feedstrap.filter.main'),
 )
+
 
 # urlpatterns = patterns('',
 # #     url('/db_save', home.db_save_click),

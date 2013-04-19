@@ -2,11 +2,26 @@
 
 {% block content_box %}
 
+    <!-- navbar-->
+
+    <div id="my_nav" class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container-fluid">
+                <a class="brand" href="/">SSG Database</a>
+
+                <form action="/db/q" class="navbar-form pull-right">
+                    <input type="text" class="span2" name="term"{% if term %}value="{{ term }}"{% endif %}>
+                    <button type="submit" class="btn">Search</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     {% block modal %}
     <div id="modal_content" class="modal hide fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false" style="display: none;">    
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 id="myModalLabel">Database Viewer</h3>
+            <h3 id="myModalLabel">Hello</h3>
         </div>   
         <div class="modal-body">    
         </div>
@@ -15,54 +30,37 @@
         </div>
     </div> 
     {% endblock %}  
-
-    <div id="content_box" class="row-fluid">
+    
+    {% block content_header %}
+    <div id="content_header" class="row-fluid">
         <div class="span2">
-            <ul class="nav nav-tabs nav-stacked">
-            
-                <li {% if nav == 'home' %}class="active"{% endif %}>
-                    <a href="/">
-                       FEED
-                       <i style="float: right; margin-right: -6px;" class="icon-chevron-right"></i>
-                    </a>
-                </li>
-                <li {% if nav == 'esil' %}class="active"{% endif %}>
-                    <a href="/esil">
-                       ESIL
-                       <i style="float: right; margin-right: -6px;" class="icon-chevron-right"></i>
-                    </a>
-                </li>
-                <li {% if nav == 'admin' %}class="active"{% endif %}>
-                    <a href="/admin">
-                       ADMIN
-                       <i style="float: right; margin-right: -6px;" class="icon-chevron-right"></i>
-                    </a>
-                </li>
-            </ul>
+{#          <div>{% if term %}<span style="line-height:4em" class="label label-info"><button type="button">×</button> term: {{ term }}</span>{% endif %}</div>#}
         </div>
-        <div id="content_view" class="span10">
-            {% block content_header %}
-    
-                <div>
-                    <div>
-    {#                    <div>{% if term %}<span style="line-height:4em" class="label label-info"><button type="button">×</button> term: {{ term }}</span>{% endif %}</div>#}
-                    </div>
-                    <div style="text-align: right">
-                        <div class="btn-group">
-                            <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
-                                <i class="icon-share"></i>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a href="/export/weekly_reads"><i class="icon-file"></i> Weekly Reads Format</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-    
+        
+        <div class="span10" style="text-align: right">
+            <div class="btn-group">
+                <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
+                    <i class="icon-share"></i>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="/export/weekly_reads"><i class="icon-file"></i> Weekly Reads Format</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+        
+        
+    <div class="row-fluid">
+        <div class="span2">
+            {% block sidebar %}
+                {% include '/main/sidebar.html' %}
             {% endblock %}
-            
+        </div>
+        
+        <div id="content_view" class="span10">
             {% block content_view %}
-            {% include '/main/list_view.html' %}
+                {% include '/main/list_view.html' %}
             {% endblock %}
         </div>
     </div>
