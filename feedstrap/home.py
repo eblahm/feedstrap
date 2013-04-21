@@ -6,49 +6,54 @@ import render
 import pytz
 import json
 from datetime import datetime
-# from ssg_site import pysolr #, markdown
+from ssg_site import pysolr  # , markdown
 
-def apply_filter(query_filter):
+
+def apply_filter(query_filters):
     q = Resource.objects.all()
     per_page_limit = 10
-    new_template_values = {}
-    tag_filter = query_filter.get('tag', "")
-    report_filter = query_filter.get('report', "")
-    term_filter = query_filter.get('term', "")
-    # if term_filter <> "":
-    #     solr = pysolr.Solr('http://localhost:8983/solr/', timeout=10)
-    #     results = solr.search(term_filter, **{'hl': 'true','hl.fl': '*', 'hl.fragsize': 200, 'hl.snippets':3})
-    #     new_template_values['search_snippets'] = {}
-    #     new_template_values['term'] = term_filter
-    #     hl = results.highlighting
-    #     pk_list = []
-    #     for r in results:
-    #         new_template_values['search_snippets'][int(r['id'])] = hl[r['id']]
-    #         pk_list.append(r['id'])
-    #     q = q.filter(pk__in=pk_list)
-    if tag_filter <> "":
-        tag_rec = models.Tag.objects.get(name=query_filter['tag'])
-        q = q.filter(tags=tag_rec)
-        new_template_values['tag'] = tag_filter
-    if report_filter <> "":
-        report_rec = models.Report.objects.get(name=query_filter['report'])
-        q = q.filter(reports=report_rec)
-        new_template_values['report'] = report_filter
-    if term_filter == '':
-        q = q.order_by('-date')
+    v = {}
+    for filter in query_filters:
+        if filter == 'tag':
+            tags = filter['tag'].split(',')
+            tag_recs = models.Tag.objects.filter(name__in=tags)
+            q = q.filter(tags__in=tag_recs)
+            v['tag'] = filter['tag']
+        elif filter == "term":
+            solr = pysolr.Solr('http://localhost:8983/solr/', timeout=10)
+            results = solr.search(filter['term'], **{'hl': 'true',
+                                                'hl.fl': '*',
+                                                'hl.fragsize': 200,
+                                                'hl.snippets': 3})
+            v['search_snippets'] = {}
+            v['term'] = filter['term']
+            hl = results.highlighting
+            pk_list = []
+            for r in results:
+                v['search_snippets'][int(r['id'])] = hl[r['id']]
+                pk_list.append(r['id'])
+            q = q.filter(pk__in=pk_list)
+        elif filter == 'report':
+            report_rec = models.Report.objects.get(name=filter['report'])
+            q = q.filter(reports=report_rec)
+            if filter['report'] == 'Weekly Reads':
+                v['nav'] = 'weekly_reads'
+            v['report'] = filter['report']
 
-    start_offset = query_filter.get('s', '0')
+    start_offset = query_filters.get('s', '0')
     start_offset = int(start_offset)
     if start_offset == 0:
         q = q[:per_page_limit]
     else:
-        q = q[start_offset:start_offset+per_page_limit]
+        q = q[start_offset:start_offset + per_page_limit]
 
     if q.count() == per_page_limit:
-        new_template_values['next_offset'] = start_offset + per_page_limit
+        v['next_offset'] = start_offset + per_page_limit
 
-    new_template_values['results'] = q
-    return new_template_values
+    v['results'] = q
+    return v
+
+
 
 def dbedit(request):
     if request.method == "GET":
@@ -73,20 +78,20 @@ def dbedit(request):
             wr_response = data_lists.get('weekly_reads',"")
             wrr = models.Report.objects.get(name="Weekly Reads")
             if wr_response == ["on"]:
-                rec.reports.add(wrr) 
+                rec.reports.add(wrr)
             else:
                 rec.reports.remove(wrr)
             for i in data_lists:
                 if i in ['pk', 'csrf_token', 'weekly_reads']:
-                    continue          
-                # if i in ['reports', 'topics']:    
+                    continue
+                # if i in ['reports', 'topics']:
                 #     mmField = getattr(rec, i)
                 #     for mm in mmField.all():
                 #         mmField.remove(mm)
                 #     for manytomany_pk in data_lists[i]:
                 #         mmRec = getattr(models, i.title()[:-1]).objects.get(pk=int(manytomany_pk))
-                #         mmField.add(mmRec)            
-                elif len(data_lists[i]) == 1 and i <> 'tags':
+                #         mmField.add(mmRec)
+                elif len(data_lists[i]) == 1 and i != 'tags':
                     setattr(rec, i, data_lists[i][0])
                 elif i == 'tags':
                     tag_inputs = [t.strip() for t in data_lists[i][0].split(',')]
@@ -99,7 +104,7 @@ def dbedit(request):
                         except:
                             tag_rec = models.Tag.objects.create(name=tag)
                         rec.tags.add(tag_rec)
-                
+
             rec.save()
             now_est = datetime.now().replace(tzinfo=pytz.timezone('America/New_York'))
             message = '<em>updated %s</em>' % (now_est.strftime('%I:%M:%S%p'))
@@ -111,17 +116,20 @@ def dbedit(request):
             return HttpResponse(json_response)
 
 
-def MainPage(request,  template=""):
+
+def MainPage(request, template=""):
     v = {}
-    query_filter = request.GET.dict()
-    v.update(apply_filter(query_filter))
     v['nav'] = 'home'
+    query_filters = request.GET.dict()
+    v.update(apply_filter(query_filters))
     if template == "ajax":
         template_file = '/main/list_view.html'
     else:
         template_file = '/main/home.html'
 
     return HttpResponse(render.load(template_file, v))
+
+
 
 # def read(request):
 #     if request.method == "GET":
