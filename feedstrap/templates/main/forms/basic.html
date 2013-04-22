@@ -71,7 +71,7 @@ return false;
       <label for="topics">ESIL:</label>
         <select multiple="multiple" id="topics" name="topics">
             <option value=""></option>
-            {% for t in rec.topics.all() %}<option value="{{ t.name|e }}">{{ t.name|e }}<option>{% endfor %}
+            {% for t in topics %}<option value="{{ t.pk }}"{% if t in rec.topics.all() %} selected="selected"{% endif %}>{{ t.name|e }}</option>{% endfor %}
         </select>
 
         <div style="text-align:right">

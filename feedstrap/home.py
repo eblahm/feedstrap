@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from models import Resource, ResourceForm
+from models import Resource, ResourceForm, Topic
 import models
 from django.core.context_processors import csrf
 import render
@@ -68,6 +68,7 @@ def dbedit(request):
         v = {'rec': rec}
         v.update(csrf(request))
         v['resource_form'] = ResourceForm(instance=rec)
+        v['topics'] = Topic.objects.all()
         return HttpResponse(render.load(template_file, v))
     elif request.method == "POST":
         response_data = {}
@@ -88,13 +89,13 @@ def dbedit(request):
             for i in data_lists:
                 if i in ['pk', 'csrf_token', 'weekly_reads']:
                     continue
-                # if i in ['reports', 'topics']:
-                #     mmField = getattr(rec, i)
-                #     for mm in mmField.all():
-                #         mmField.remove(mm)
-                #     for manytomany_pk in data_lists[i]:
-                #         mmRec = getattr(models, i.title()[:-1]).objects.get(pk=int(manytomany_pk))
-                #         mmField.add(mmRec)
+                elif i in ['reports', 'topics']:
+                    mmField = getattr(rec, i)
+                    for mm in mmField.all():
+                        mmField.remove(mm)
+                    for manytomany_pk in data_lists[i]:
+                        mmRec = getattr(models, i.title()[:-1]).objects.get(pk=int(manytomany_pk))
+                        mmField.add(mmRec)
                 elif len(data_lists[i]) == 1 and i != 'tags':
                     setattr(rec, i, data_lists[i][0])
                 elif i == 'tags':

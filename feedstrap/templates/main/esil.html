@@ -38,10 +38,10 @@
           {% for topic in topics %}
         <tr data-k="{{ topic.pk }}" class="topic_row">
           <td class="rpoint">{{ topic.name }}</td>
-          <td id="des_{{ topic.pk }}" class="rpoint" rowspan="2">{{ topic.description[:100] }}
+          <td id="des_{{ topic.pk }}" class="rpoint">{{ topic.description[:100] }}
           <span class="show_des javascript_link" data-parent="des_{{ topic.pk }}" data-full="{{ topic.description }}"><em> (expand...)</em></span></td>
-          <td class="rpoint" rowspan="2" style="text-align:center">{{ topic.intensity }}</td>
-          <td class="rpoint" rowspan="2" style="text-align:center">{{ topic.relevance }}</td>
+          <td class="rpoint" style="text-align:center">{{ topic.intensity }}</td>
+          <td class="rpoint" style="text-align:center">{{ topic.relevance }}</td>
           <td class="rpoint" style="text-align:center; vertical-align:top; height:100%">{{ topic.impact }}</td>
         </tr>
           {% endfor %}        
