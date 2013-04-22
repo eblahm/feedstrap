@@ -1,4 +1,5 @@
 import config
+from models import generate_choices
 from django.shortcuts import render
 from django.http import HttpResponse
 import models
@@ -7,11 +8,7 @@ from django.core.context_processors import csrf
 from datetime import datetime
 
 
-def generate_choices(model, field='name'):
-    options = (("", ""),)
-    for r in model.objects.all():
-        options += ((str(r.pk), getattr(r, field)),)
-    return options
+
 
 
 # office_choices = (

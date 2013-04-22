@@ -1,6 +1,11 @@
 from django.db import models
 from django.forms import ModelForm
 
+def generate_choices(model, field='name'):
+    options = (("", ""),)
+    for r in model.objects.all():
+        options += ((str(r.pk), getattr(r, field)),)
+    return options
 
 office_choices = (
     ('SSG', 'Strategic Stuides Group'),

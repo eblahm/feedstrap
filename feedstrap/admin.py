@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.admin import widgets
+from django import forms
 from feedstrap.models import *
 
 tag_type = [Tag, Report, Office]
@@ -9,9 +10,20 @@ tag_type = [Tag, Report, Office]
 # Topic, Feed,
 # Resource, DeletedLink, Comment
 
+class ResourceForm(forms.ModelForm):
+    tags = forms.MultipleChoiceField(choices=generate_choices(Tag))
+    feeds = forms.MultipleChoiceField(choices=generate_choices(Feed))
+    topics = forms.MultipleChoiceField(choices=generate_choices(Topic))
+    offices = forms.MultipleChoiceField(choices=generate_choices(Office))
+    reports = forms.MultipleChoiceField(choices=generate_choices(Report))
+    class Meta:
+        model = Resource
+
 class ResourceAdmin(admin.ModelAdmin):
+    form = ResourceForm
     date_hierarchy = 'date'
     list_display = ('title','date')
+
 
 admin.site.register(Resource, ResourceAdmin)
 
