@@ -14,11 +14,12 @@ def apply_filter(query_filters):
     per_page_limit = 10
     v = {}
     for filter in query_filters:
+        filter_value = query_filters[filter]
         if filter == 'tag':
-            tags = filter['tag'].split(',')
+            tags = query_filters['tag'].split(',')
             tag_recs = models.Tag.objects.filter(name__in=tags)
             q = q.filter(tags__in=tag_recs)
-            v['tag'] = filter['tag']
+            v['tag'] = filter_value
         elif filter == "term":
             solr = pysolr.Solr('http://localhost:8983/solr/', timeout=10)
             results = solr.search(filter['term'], **{'hl': 'true',
@@ -26,7 +27,7 @@ def apply_filter(query_filters):
                                                 'hl.fragsize': 200,
                                                 'hl.snippets': 3})
             v['search_snippets'] = {}
-            v['term'] = filter['term']
+            v['term'] = query_filters['term']
             hl = results.highlighting
             pk_list = []
             for r in results:
@@ -34,11 +35,11 @@ def apply_filter(query_filters):
                 pk_list.append(r['id'])
             q = q.filter(pk__in=pk_list)
         elif filter == 'report':
-            report_rec = models.Report.objects.get(name=filter['report'])
+            report_rec = models.Report.objects.get(name=filter_value)
             q = q.filter(reports=report_rec)
-            if filter['report'] == 'Weekly Reads':
+            if filter_value == 'Weekly Reads':
                 v['nav'] = 'weekly_reads'
-            v['report'] = filter['report']
+            v['report'] = filter_value
 
     start_offset = query_filters.get('s', '0')
     start_offset = int(start_offset)
