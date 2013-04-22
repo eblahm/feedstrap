@@ -68,6 +68,11 @@ return false;
 
       <label for="tags">Tags:</label><input id="tags" name="tags" type="text" class="input-xlarge"  class="ui-autocomplete2 tag_selector"{% if rec.tags.all() %}value="{% for t in rec.tags.all() %}{% if loop.index > 1 %}, {% endif %}{{ t.name|e }}{% endfor %}"{% endif %}></input>
       <br>
+      <label for="topics">ESIL:</label>
+        <select multiple="multiple" id="topics" name="topics">
+            <option value=""></option>
+            {% for t in rec.topics.all() %}<option value="{{ t.name|e }}">{{ t.name|e }}<option>{% endfor %}
+        </select>
 
         <div style="text-align:right">
         <span style="vertical-align: bottom; margin-right:5px">Include in Weekly Reads Report?  </span><input id="wrcheck" style="vertical-align: middle; position: relative; bottom: 1px;" name="weekly_reads" type='checkbox' {% if 1 in rec.all_reports %} checked{% endif %}>

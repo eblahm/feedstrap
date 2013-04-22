@@ -66,14 +66,11 @@ class Feed(models.Model):
     url = models.CharField(max_length=500)
     name = models.CharField(max_length=100)
     owner = models.CharField(max_length=100)
-
     description = models.CharField(max_length=500)
-
     offices = models.ManyToManyField(Office, null=True, blank=True)
     topics = models.ManyToManyField(Topic, null=True, blank=True)
     tags = models.ManyToManyField(Tag, null=True, blank=True)
     reports = models.ManyToManyField(Report, null=True, blank=True)
-
     last_updated = models.DateTimeField()
 
 
@@ -83,8 +80,8 @@ class Resource(models.Model):
     date_added = models.DateTimeField(auto_now=True)
     title = models.CharField(max_length=500)
     link = models.CharField(max_length=250, unique=True)
-    description = models.TextField()
-    relevance = models.TextField()
+    description = models.TextField(null=True, blank=True)
+    relevance = models.TextField(null=True, blank=True)
     content = models.TextField(blank=True)
     offices = models.ManyToManyField(Office, null=True, blank=True)
     feeds = models.ManyToManyField(Feed, null=True, blank=True)

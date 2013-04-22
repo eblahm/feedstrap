@@ -10,39 +10,43 @@ from ssg_site import pysolr  # , markdown
 
 
 def apply_filter(query_filters):
+
+
     q = Resource.objects.all()
     per_page_limit = 10
     v = {}
     for filter in query_filters:
         filter_value = query_filters[filter]
-        if filter == 'tag':
-            tags = query_filters['tag'].split(',')
-            tag_recs = models.Tag.objects.filter(name__in=tags)
-            q = q.filter(tags__in=tag_recs)
-            v['tag'] = filter_value
-        elif filter == "term":
+        if filter[-3:] == 'tag':
+            mm_rec = models.Tag.objects.filter(name__in=filter_value)
+            q = q.filter(tags__in=mm_rec)
+        elif filter[-4:] == "term":
             solr = pysolr.Solr('http://localhost:8983/solr/', timeout=10)
-            results = solr.search(filter['term'], **{'hl': 'true',
+            results = solr.search(" ".join(filter_value), **{'hl': 'true',
                                                 'hl.fl': '*',
                                                 'hl.fragsize': 200,
                                                 'hl.snippets': 3})
             v['search_snippets'] = {}
-            v['term'] = query_filters['term']
             hl = results.highlighting
             pk_list = []
             for r in results:
                 v['search_snippets'][int(r['id'])] = hl[r['id']]
                 pk_list.append(r['id'])
             q = q.filter(pk__in=pk_list)
-        elif filter == 'report':
-            report_rec = models.Report.objects.get(name=filter_value)
-            q = q.filter(reports=report_rec)
-            if filter_value == 'Weekly Reads':
+        elif filter[-6:] == 'report':
+            mm_rec = models.Report.objects.filter(name__in=filter_value)
+            q = q.filter(reports__in=mm_rec)
+            if filter_value == ['Weekly Reads']:
                 v['nav'] = 'weekly_reads'
-            v['report'] = filter_value
+        elif filter[-6:] == 'office':
+            mm_rec = models.Office.objects.filter(name__in=filter_value)
+            mm_rec = models.Feed.objects.filter(offices__in=mm_rec)
+            q = q.filter(feeds__in=mm_rec)
+            if filter_value == ['SSG']:
+                v['nav'] = 'SSG'
 
-    start_offset = query_filters.get('s', '0')
-    start_offset = int(start_offset)
+    start_offset = query_filters.get('s', ['0'])
+    start_offset = int(start_offset[0])
     if start_offset == 0:
         q = q[:per_page_limit]
     else:
@@ -50,7 +54,6 @@ def apply_filter(query_filters):
 
     if q.count() == per_page_limit:
         v['next_offset'] = start_offset + per_page_limit
-
     v['results'] = q
     return v
 
@@ -69,7 +72,7 @@ def dbedit(request):
     elif request.method == "POST":
         response_data = {}
         if not request.user.is_authenticated():
-            response_data['save_status'] = 'You are not authorized to edit this record. If this is a mistake, please login <a href="/admin">here</a>'
+            response_data['save_status'] = 'You are not authorized to edit this record. If this is a mistake, <a href="/admin">please login</a>'
             json_response = json.dumps(response_data)
             return HttpResponse(json_response)
         else:
@@ -121,7 +124,7 @@ def dbedit(request):
 def MainPage(request, template=""):
     v = {}
     v['nav'] = 'home'
-    query_filters = request.GET.dict()
+    query_filters = dict(request.GET.lists())
     v.update(apply_filter(query_filters))
     if template == "ajax":
         template_file = '/main/list_view.html'
