@@ -8,16 +8,6 @@ from django.core.context_processors import csrf
 from datetime import datetime
 
 
-
-
-
-# office_choices = (
-#     ('SSG', 'Strategic Stuides Group'),
-#     ('PAS', 'Policy Analysis Service'),
-#     ('SPS', 'Strategic Planning Service'),
-#     ('AS', 'Front Office'),
-# )
-
 class FilterForm(forms.Form):
     search_term = forms.CharField(max_length=100)
     tags = forms.CharField(max_length=100)

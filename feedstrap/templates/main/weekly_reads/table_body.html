@@ -37,6 +37,6 @@
 {% endfor %}
 <tr>
   <td colspan=5 align=center>  
-    {% if next_cursor %}<button class="end_button" name="/sp_search?search_term={{ term|e }}&c={{ next_cursor }}&query_type=text">Show 10 More</button>
+    {% if next_offset %}<button data-url="{{ show_more_url }}&s={{ next_offset }}">Show 10 More</button>
     {% else %} <em>------ END ------</em>{% endif %}
  </tr>

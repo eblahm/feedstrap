@@ -1,6 +1,3 @@
-{% if site == 'sharepoint' %}{% extends "/main/base.html" %}{% else &}{% extends "/main/home.html" %}{% endif %}
-{% block head %}
-    {{ super() }}
     <style>
     body {
         margin-bottom: 100px;
@@ -14,14 +11,8 @@
     .javascript_link:active {text-decoration:underline;}
     .no_edge {border:none; margin:0px; padding:0px;}
     </style>
-    <script type="text/javascript" rel="js" src="/feedstrap/static/js/sp.js"></script>
-{% endblock %}
-{% block title %}{{ title }}{% endblock %}
-{% if site == 'sharepoint' %}{% block content_box %}{% else &}{% block content_view %}{% endif %}
 
-  
   <div>
-
     <div style="text-align:center">
       <h3>Emerging Strategic Issues List</h3>
       <table class="table table-hover">
@@ -50,7 +41,4 @@
       
     </div>
   </div>
-
-  
-{% endblock %}
   
