@@ -6,7 +6,7 @@ import render
 import pytz
 import json
 from datetime import datetime
-from ssg_site import pysolr  # , markdown
+# from ssg_site import pysolr  # , markdown
 
 
 def apply_filter(query_filters):
@@ -20,19 +20,19 @@ def apply_filter(query_filters):
         if filter[-3:] == 'tag':
             mm_rec = models.Tag.objects.filter(name__in=filter_value)
             q = q.filter(tags__in=mm_rec)
-        elif filter[-4:] == "term":
-            solr = pysolr.Solr('http://localhost:8983/solr/', timeout=10)
-            results = solr.search(" ".join(filter_value), **{'hl': 'true',
-                                                'hl.fl': '*',
-                                                'hl.fragsize': 200,
-                                                'hl.snippets': 3})
-            v['search_snippets'] = {}
-            hl = results.highlighting
-            pk_list = []
-            for r in results:
-                v['search_snippets'][int(r['id'])] = hl[r['id']]
-                pk_list.append(r['id'])
-            q = q.filter(pk__in=pk_list)
+        # elif filter[-4:] == "term":
+        #     solr = pysolr.Solr('http://localhost:8983/solr/', timeout=10)
+        #     results = solr.search(" ".join(filter_value), **{'hl': 'true',
+        #                                         'hl.fl': '*',
+        #                                         'hl.fragsize': 200,
+        #                                         'hl.snippets': 3})
+        #     v['search_snippets'] = {}
+        #     hl = results.highlighting
+        #     pk_list = []
+        #     for r in results:
+        #         v['search_snippets'][int(r['id'])] = hl[r['id']]
+        #         pk_list.append(r['id'])
+        #     q = q.filter(pk__in=pk_list)
         elif filter[-6:] == 'report':
             mm_rec = models.Report.objects.filter(name__in=filter_value)
             q = q.filter(reports__in=mm_rec)
@@ -87,6 +87,8 @@ def dbedit(request):
             else:
                 rec.reports.remove(wrr)
             for i in data_lists:
+                if data_lists[i] == [""]:
+                    continue
                 if i in ['pk', 'csrf_token', 'weekly_reads']:
                     continue
                 elif i in ['reports', 'topics']:

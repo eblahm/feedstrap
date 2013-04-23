@@ -40,7 +40,7 @@ $(document).ready(function () {
 
 //    $("#content_view").on("click", ".read", function (event) {
 //        var db_key = $(this).data('dbk');
-//        load_modal(db_key, url_string="/db/read");
+//        load_modal(db_key, url_string="/read");
 //    });
     
     $("#content_view").on("click", ".show_more", function (event) {
@@ -63,7 +63,7 @@ $(document).ready(function () {
     $("#modal_content").on("click", "#save_btn", function () {  
         $.ajax({
                type: "POST",
-               url: "/db/edit/resource/",
+               url: "/edit/resource/",
                data: $("#popup_form").serialize(), // serializes the form's elements.
                error: function () {$("#save_status").html("error! :(")},
                success: function(data){

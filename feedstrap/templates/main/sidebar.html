@@ -1,4 +1,4 @@
-<div class="well" style="max-width: 340px; padding: 8px 0;">
+<div class="well hidden-phone" style="max-width: 340px; padding: 8px 0;">
 <ul class="nav nav-list">
     <li class="nav-header">Feeds</li>
     <li {% if nav == 'home' %}class="active"{% endif %}>
@@ -7,12 +7,12 @@
         </a>
     </li>
     <li {% if nav == 'SSG' %}class="active"{% endif %}>
-        <a href="/db/q?office=SSG">
+        <a href="/q?office=SSG">
            SSG
         </a>
     </li>
     <li {% if nav == 'weekly_reads' %}class="active"{% endif %}>
-        <a href="/db/q?report=Weekly Reads">
+        <a href="/q?report=Weekly Reads">
            Weekly Reads
         </a>
     </li> 
@@ -23,7 +23,7 @@
         </a>
     </li>
     <li>
-        <a class="modal_view" data-target="#modal_content" data-toggle="modal" href="#" data-url="/db/filter/" data-dbk="">
+        <a class="modal_view" data-target="#modal_content" data-toggle="modal" href="#" data-url="/filter/" data-dbk="">
             Advanced Filter
         </a>    
     </li>    

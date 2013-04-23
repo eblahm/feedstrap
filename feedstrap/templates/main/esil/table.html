@@ -1,4 +1,4 @@
-{% extends "/main/home.html" %}
+{% if site == 'sharepoint' %}{% extends "/main/base.html" %}{% else &}{% extends "/main/home.html" %}{% endif %}
 {% block head %}
     {{ super() }}
     <style>
@@ -17,7 +17,7 @@
     <script type="text/javascript" rel="js" src="/feedstrap/static/js/sp.js"></script>
 {% endblock %}
 {% block title %}{{ title }}{% endblock %}
-{% block content_view %}
+{% if site == 'sharepoint' %}{% block content_box %}{% else &}{% block content_view %}{% endif %}
 
   
   <div>
