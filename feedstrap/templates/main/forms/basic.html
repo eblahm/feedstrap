@@ -62,21 +62,24 @@ return false;
       
       <label for="title">Title:</label> <input id="title" name="title" type="text" class="input-xxlarge" value="{{ rec.title|e }}"></input><br>
 
-      <label for="description">Description:</label><textarea id="description" name="description">{% if rec.description %}{{ rec.description|e }}{%  endif  %}</textarea>
+      <label for="description">Description:</label><textarea style="height: 50px" id="description" name="description">{% if rec.description %}{{ rec.description|e }}{%  endif  %}</textarea>
 
-      <label for="relevance">Relevance:</label><textarea id="relevance" name="relevance">{% if rec.relevance %}{{ rec.relevance|e  }}{%  endif  %}</textarea>
+      <label for="relevance">Relevance:</label><textarea style="height: 50px" id="relevance" name="relevance">{% if rec.relevance %}{{ rec.relevance|e  }}{%  endif  %}</textarea>
 
-      <label for="tags">Tags:</label><input id="tags" name="tags" type="text" class="input-xlarge"  class="ui-autocomplete2 tag_selector"{% if rec.tags.all() %}value="{% for t in rec.tags.all() %}{% if loop.index > 1 %}, {% endif %}{{ t.name|e }}{% endfor %}"{% endif %}></input>
-      <br>
-      <label for="topics">ESIL:</label>
-        <select multiple="multiple" id="topics" name="topics">
-            <option value=""></option>
-            {% for t in topics %}<option value="{{ t.pk }}"{% if t in rec.topics.all() %} selected="selected"{% endif %}>{{ t.name|e }}</option>{% endfor %}
-        </select>
-
-        <div style="text-align:right">
+      <div>
+          <div style="float: right; text-align: left; margin-right: 10%;">
+          <label for="tags">Tags:</label><input id="tags" name="tags" type="text" class="input-xlarge"  class="ui-autocomplete2 tag_selector"{% if rec.tags.all() %}value="{% for t in rec.tags.all() %}{% if loop.index > 1 %}, {% endif %}{{ t.name|e }}{% endfor %}"{% endif %}></input>
+          </div>
+          <label for="topics">ESIL:</label>
+            <select multiple="multiple" id="topics" name="topics">
+                <option value=""></option>
+                {% for t in topics %}<option value="{{ t.pk }}"{% if t in rec.topics.all() %} selected="selected"{% endif %}>{{ t.name|e }}</option>{% endfor %}
+            </select>
+      </div>
+        <div style="text-align:right; margin-right: 10%;">
         <span style="vertical-align: bottom; margin-right:5px">Include in Weekly Reads Report?  </span><input id="wrcheck" style="vertical-align: middle; position: relative; bottom: 1px;" name="weekly_reads" type='checkbox' {% if 1 in rec.all_reports %} checked{% endif %}>
         </div>
+
     </form>
 </div>
 

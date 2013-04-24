@@ -1,10 +1,10 @@
-import config
+import render
+from models import Topic, Resource, Report
+from filter import apply_filter
+
 from django.http import HttpResponse
 from datetime import datetime
-import render
-import home
-import urllib
-from models import Topic, Resource, Report
+
 
 def get_rating(val, factor):
     rate_dic = {'intensity': (4, 10), 
@@ -36,26 +36,31 @@ def esil(request,  site="vacloud.us"):
 
 def weeklyreads(request, site="sharepoint"):
     v = {}
-    v['headline'] = 'Weekly Reads Database'
-    v['subheadline'] = 'Prepared by Strategic Studies Group, Office of Policy'
-    v['date'] = datetime.now().strftime('%x')
     v.update(request.GET.dict())
-    
-    if site == 'ajax':
+
+    if len(request.GET.dict()) > 0:
+        v.update(apply_filter(request))
+
+    if site == 'export_to_word':
+        template_file = '/main/weekly_reads/export_view.html'
+        v['headline'] = 'Weekly Reads Report'
+        v['subheadline'] = 'Prepared by Strategic Studies Group, Office of Policy'
+        v['date'] = datetime.now().strftime('%x')
+        response = HttpResponse(content_type='application/msword')
+        response['Content-Disposition'] = 'attachment; filename="%s SSG Weekly Reads.doc"' % (datetime.now().strftime('%y%m%d'))
+        ms_doc = render.load(template_file, v)
+        response.write(ms_doc)
+        return response
+    elif site == 'ajax':
         template_file = '/main/weekly_reads/table_body.html'
-        v.update(home.apply_filter(request))
-    elif len(request.GET.dict()) > 0:
-        v.update(home.apply_filter(request))
-        template_file = '/main/weekly_reads/sharepoint_view.html'
+        return HttpResponse(render.load(template_file, v))
     else:
+        v['headline'] = 'Weekly Reads Database'
         template_file = '/main/weekly_reads/sharepoint_view.html'
-        
-    return HttpResponse(render.load(template_file, v))
+        return HttpResponse(render.load(template_file, v))
+
     
-    # response = HttpResponse(content_type='application/msword')
-    # response['Content-Disposition'] = 'attachment; filename="Weekly Read Export.html"'
-    # ms_doc = render.load(template_file, v)
-    # response.write(ms_doc)
+
     
     
     

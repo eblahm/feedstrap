@@ -30,14 +30,20 @@
 #results_table_body .ui-selecting { background: #FECA40; }
 #results_table_body .ui-selected { background: #F39814; color: white; }
 
-
 .xbox_area { 
     margin-right: 5px;
     margin-left: 5px;
 }
+
+.xtag:hover {text-decoration:none; color:white; cursor:pointer;}
+.xtag:active {text-decoration:none;}
+.xtag {
+    color: white;
+    margin-right: 0px;
+    margin-left: 10px;
+    font-size: 1em;
+}
 .field_drag:hover {cursor:move;}
-
-
 
 .ar {
     margin-bottom: 20px;
@@ -52,24 +58,16 @@
 .ar_clip {
     padding: 10px 10px 0px 20px;
 }
-
 .ar_tools {
     display:none;
 }
-
 .ar_details {
     padding: 0px 10px 10px 20px;
     margin-bottom:5px;
 }
-
-
 .spacer {
     margin-left:15px;
     margin-right:15px;
-}
-
-#db_field_select {
-    width:100px;
 }
 
 
