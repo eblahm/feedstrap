@@ -354,13 +354,18 @@
   <o:idmap v:ext="edit" data="1"/>
  </o:shapelayout></xml><![endif]-->
  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+ <script type="text/javascript" rel="js" src="/feedstrap/static/js/main.js"></script>
  <script type="javascript/text">
      $(document).ready(function(){
          $('#search').click(function(){
                  var search_form = $("#search_form").serialize();
                  var url = "/weeklyreads?" + search_form;
                  window.open(url)
-         });    
+         });
+         $(body).on('click', '.show_more', function (){
+             
+             
+         })
      });
      
  </script>
@@ -411,8 +416,8 @@
 
  
    {% if term %}{% include "/main/weekly_reads/table_results_header.html" %}{% endif %} 
-   <div id="content_box" style="width:100%;mso-ascii-font-family:Calibri;mso-ascii-theme-font:minor-latin;mso-hansi-font-family:Calibri;mso-hansi-theme-font:minor-latin"> 
-    {% include "/main/weekly_reads/table.html" %}
+   <div id="content_view" style="width:100%;mso-ascii-font-family:Calibri;mso-ascii-theme-font:minor-latin;mso-hansi-font-family:Calibri;mso-hansi-theme-font:minor-latin"> 
+    {% if results %}{% include "/main/weekly_reads/table.html" %}{% endif %}
    </div>
 
     

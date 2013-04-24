@@ -6,7 +6,7 @@
 
         <div style="text-align:center;">
             {% if next_offset %}
-            <span class="eb"><button class="btn btn-primary show_more" data-query="{{ show_more_url }}"> Show More </button></span>
+            <span class="eb"><button class="btn btn-primary show_more" data-parent="content_view" data-query="/q/ajax/?{{ show_more_perams }}"> Show More </button></span>
             {% else %}
             <strong>------ END -----</strong> {% endif %}
         </div>

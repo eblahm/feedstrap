@@ -37,6 +37,7 @@
 {% endfor %}
 <tr>
   <td colspan=5 align=center>  
-    {% if next_offset %}<button data-url="{{ show_more_url }}&s={{ next_offset }}">Show 10 More</button>
+    {% if next_offset %}
+    <span class="eb"><button class="show_more" data-parent="wrt" data-query="/weeklyreads/ajax/?{{ show_more_perams }}">Show 10 More </button></span>
     {% else %} <em>------ END ------</em>{% endif %}
  </tr>

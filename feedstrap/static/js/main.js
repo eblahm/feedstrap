@@ -45,7 +45,7 @@ $(document).ready(function () {
     
     $("#content_view").on("click", ".show_more", function (event) {
         var url_request = $(this).data('query');
-        var content_body = $("#content_view");
+        var content_body = $("#" + $(this).data('parent'));
         $(this).hide();
             $(".eb").html(loader_gif)
         $.ajax({

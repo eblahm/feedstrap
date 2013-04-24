@@ -22,8 +22,9 @@ def text_search(term, query=Resource.objects.all()):
     results = query.filter(pk__in=pk_list)
     return {'results':results, 'search_snippets': search_snippets}
 
-def apply_filter(query_filters, q=Resource.objects.all(), per_page_limit=config.per_page_limit):
+def apply_filter(request, q=Resource.objects.all(), per_page_limit=config.per_page_limit):
     v = {}
+    query_filters = dict(request.GET.lists())
     for filter in query_filters:
         filter_value = query_filters[filter]
         if filter[-3:] == 'tag':
@@ -57,17 +58,18 @@ def apply_filter(query_filters, q=Resource.objects.all(), per_page_limit=config.
     if q.count() == per_page_limit:
         v['next_offset'] = start_offset + per_page_limit
     v['results'] = q
+    
+    next_perams = request.GET.urlencode()
+    next_perams = re.sub('[&s|s]=[0-9]{,5}', "", next_perams)
+    next_perams += "&s=" + str(v.get('next_offset', '0'))
+    v['show_more_perams'] = next_perams
+    
     return v
 
 def MainPage(request, template=""):
     v = {}
     v['nav'] = 'home'
-    filters = dict(request.GET.lists())
-    v.update(apply_filter(filters))
-    next_perams = request.GET.urlencode()
-    next_perams = re.sub('[&s,s]=[0-9]{,5}', "", next_perams)
-    next_perams += "&s=" + str(v.get('next_offset', '0'))
-    v['show_more_url'] = '/q/ajax/?' + next_perams
+    v.update(apply_filter(request))
     
     if template == "ajax":
         template_file = '/main/list_view.html'

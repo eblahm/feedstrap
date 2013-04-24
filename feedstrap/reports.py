@@ -36,23 +36,20 @@ def esil(request,  site="vacloud.us"):
 
 def weeklyreads(request, site="sharepoint"):
     v = {}
-    filters = dict(request.GET.lists())
-    v.update(home.apply_filter(filters))
-    v.update(request.GET.dict())
     v['headline'] = 'Weekly Reads Database'
     v['subheadline'] = 'Prepared by Strategic Studies Group, Office of Policy'
     v['date'] = datetime.now().strftime('%x')
+    v.update(request.GET.dict())
     
-    conditions = []
-    # for f in filters:
-    #     if f != 's':
-    #         condition = "%s=%s" % (f, urllib.quote(",".join(filters[f])))
-    #         conditions.append(condition)
-    v['show_more_url'] = "/weeklyreads/ajax/?" + "&".join(conditions)
     if site == 'ajax':
         template_file = '/main/weekly_reads/table_body.html'
+        v.update(home.apply_filter(request))
+    elif len(request.GET.dict()) > 0:
+        v.update(home.apply_filter(request))
+        template_file = '/main/weekly_reads/sharepoint_view.html'
     else:
         template_file = '/main/weekly_reads/sharepoint_view.html'
+        
     return HttpResponse(render.load(template_file, v))
     
     # response = HttpResponse(content_type='application/msword')
