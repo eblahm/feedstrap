@@ -10,20 +10,7 @@ from django import forms
 from ssg_site import pysolr
 import re
 
-def text_search(term, query=Resource.objects.all()):
-    solr = pysolr.Solr('http://localhost:8983/solr/', timeout=10)
-    results = solr.search(term, **{'hl': 'true',
-                                        'hl.fl': '*',
-                                        'hl.fragsize': 200,
-                                        'hl.snippets': 3})
-    search_snippets = {}
-    hl = results.highlighting
-    pk_list = []
-    for r in results:
-        search_snippets[int(r['id'])] = hl[r['id']]
-        pk_list.append(r['id'])
-    results = query.filter(pk__in=pk_list)
-    return {'results':results, 'search_snippets': search_snippets}
+
 
 def apply_filter(request, q=Resource.objects.all(), per_page_limit=config.per_page_limit):
     v = {}
@@ -33,24 +20,30 @@ def apply_filter(request, q=Resource.objects.all(), per_page_limit=config.per_pa
         if filter[-3:] == 'tag':
             mm_rec = models.Tag.objects.filter(name__in=filter_value)
             q = q.filter(tags__in=mm_rec)
-        elif filter[-4:] == "term":
-            text_search_results = text_search(" ".join(filter_value), q)
-            v.update({'search_snippets': text_search_results['search_snippets']})
-            q = text_search_results['results']
-
         elif filter[-6:] == 'report':
             mm_rec = models.Report.objects.filter(name__in=filter_value)
             q = q.filter(reports__in=mm_rec)
-            if filter_value == ['Weekly Reads']:
-                v['nav'] = 'weekly_reads'
-
         elif filter[-6:] == 'office':
             mm_rec = models.Office.objects.filter(name__in=filter_value)
             mm_rec = models.Feed.objects.filter(offices__in=mm_rec)
             q = q.filter(feeds__in=mm_rec)
-            if filter_value == ['SSG']:
-                v['nav'] = 'SSG'
-
+    text_search = " ".join(query_filters.get('term', ""))
+    if text_search.strip() != "":
+        solr = pysolr.Solr('http://localhost:8983/solr/', timeout=10)
+        results = solr.search(text_search, **{'hl': 'true',
+                                            'hl.fl': '*',
+                                            'hl.fragsize': 200,
+                                            'hl.snippets': 3})
+        search_snippets = {}
+        hl = results.highlighting
+        pk_list = []
+        for r in results:
+            search_snippets[int(r['id'])] = hl[r['id']]
+            pk_list.append(r['id'])
+        v.update({'search_snippets': search_snippets})
+        q = q.filter(pk__in=pk_list)
+    else:
+        q = q.order_by('-date')
     start_offset = query_filters.get('s', ['0'])
     start_offset = int(start_offset[0])
     if start_offset == 0:

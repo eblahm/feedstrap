@@ -2,17 +2,23 @@ from django.http import HttpResponse
 from filter import apply_filter, generate_filter_tags
 import render
 
+feed_navs = {
+    '': 'home',
+    'office=SSG': 'SSG',
+    'report=Weekly+Reads': "weekly_reads",
+}
 
 def MainPage(request, template=""):
     v = {}
-    v['nav'] = 'home'
     v.update(apply_filter(request))
     v.update(request.GET.dict())
     if template == "ajax":
         template_file = '/main/list_view.html'
     else:
         template_file = '/main/home.html'
-        v['get_query'] = request.GET.urlencode()
+        perams = request.GET.urlencode()
+        v['get_query'] = perams
+        v['nav'] = feed_navs.get(perams, "")
         v['filter_tags'] = generate_filter_tags(request)
 
     return HttpResponse(render.load(template_file, v))
