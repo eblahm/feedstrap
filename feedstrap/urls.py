@@ -6,6 +6,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^$', 'feedstrap.home.MainPage'),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'rss', 'feedstrap.rss.main'),
     url(r'weeklyreads/(?P<site>.+)/', 'feedstrap.reports.weeklyreads'),
     url(r'weeklyreads', 'feedstrap.reports.weeklyreads'),
     url(r'esil/(?P<site>.+)/', 'feedstrap.reports.esil'),

@@ -40,7 +40,7 @@
         <div class="span10" >
                 <div style="float: left; margin-top: .6em">
                 {% for t in filter_tags %}
-                    <span style="line-height:1.5em;" class="label {{ t.label }}">{{ t.name }}<a class="xtag" href="{{ t.link }}">×</a></span>
+                    <span class="filter_tag" style="{{ t.css }}">{{ t.name }}<a class="xtag" href="{{ t.link }}">×</a></span>
                 {% endfor %}
                 </div>
                 <div style="float: right;">
@@ -48,7 +48,7 @@
                       <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-share"></i> Export this Feed </a>
                       <ul class="dropdown-menu pull-right" style="text-align:left">
                         <li><a href="/weeklyreads/export_to_word/?{{ get_query }}"><i class="icon-file"></i> Weekly Reads Format</a></li>
-                        <li><a href="/rss"><img width="10px" src="/feedstrap/static/img/icons/glyphicons_417_rss.png"></i>  Subscribe to RSS</a></li>
+                        <li><a href="/rss?{{ get_query }}"><img width="10px" src="/feedstrap/static/img/icons/glyphicons_417_rss.png"></i>  Subscribe to RSS</a></li>
                       </ul>
                     </div>
                 </div>

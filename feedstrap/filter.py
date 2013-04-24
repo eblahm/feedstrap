@@ -4,6 +4,7 @@ from models import Resource, ResourceForm, Topic
 
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.http import QueryDict
 from django import forms
 
 from ssg_site import pysolr
@@ -81,19 +82,29 @@ class FilterForm(forms.Form):
     report = forms.MultipleChoiceField(choices=models.generate_choices(models.Report))
 
 def generate_filter_tags(request):
+    labels = {
+        'report': 'background-color: #2D6987;',
+        'tag': 'background-color: #0088CC',
+        'office': 'background-color: green',
+        'term': 'background-color: #ffd62f;',
+        'feed': 'background-color: orange',
+        'esil': 'background-color: red',
+    }
     filter_tags = []
     data = dict(request.GET.lists())
-    perams = request.GET.urlencode()
     for tag in data:
+        new_perameters = request.GET.copy()
+        new_perameters.pop(tag)
+        new_perameters = new_perameters.urlencode()
         filter_value = ", ".join(data[tag])
-        pattern = '%s=.*$|%s=.*&' % (tag, tag)
-        modified_perams = re.sub(pattern, "", perams)
-        modified_perams = "/q?" + modified_perams
-        modified_perams.replace("?&", "?").replace("&&", "&")
+        # pattern = '%s=.+&|%s=.+$' % (tag, tag)
+        # modified_perams = re.sub(pattern, "", perams)
+        # modified_perams = "/q?" + modified_perams
+        # modified_perams.replace("?&", "?").replace("&&", "&")
         class ft:
-            label = 'label-info'
+            css = labels[tag]
             name = "%s: %s" % (tag, filter_value)
-            link = modified_perams
+            link = "/q?" + new_perameters
         filter_tags.append(ft)
     return filter_tags
 
