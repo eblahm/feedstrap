@@ -20,19 +20,44 @@ def get_rating(val, factor):
 
 def esil(request,  site="vacloud.us"):    
     v = {'site':site}
-    topics = []
-    for t in Topic.objects.all():
-        t.intensity = get_rating(t.resourceorigins.all().count(), 'intensity') 
-        t.impact = get_rating(t.capabilities.all().count(), 'impact') 
-        t.relevance = get_rating(t.imperatives.all().count(), 'relevance') 
-        topics.append(t)
-    v['topics'] = topics
-    if site == 'sharepoint':
-        template_file = '/main/esil/sharepoint_view.html'
+    v['nav'] = 'esil'
+    selected = request.GET.dict().get('k', None)
+    if selected != None:
+        topic = Topic.objects.get(pk=int(selected))
+        mm_fields = ['imperatives', 'capabilities', 'resourceorigins']
+        for i in mm_fields:
+            mm_rec = getattr(topic, i)
+            mapping = {}
+            for mm_item in mm_rec.all().order_by('name'):
+                try:
+                    index = mapping[mm_item.category]
+                except:
+                    mapping[mm_item.category] = []
+                    index = mapping[mm_item.category]
+                if mm_item.name not in index:
+                    index.append(mm_item.name)
+            v[i] = mapping
+        topic.intensity = get_rating(topic.resourceorigins.all().count(), 'intensity') 
+        topic.impact = get_rating(topic.capabilities.all().count(), 'impact') 
+        topic.relevance = get_rating(topic.imperatives.all().count(), 'relevance') 
+        v['topic'] = topic
+        v['resources'] = Resource.objects.filter(topics=topic)
+        v['get_url'] = request.GET.urlencode()
+        return HttpResponse(render.load("/main/esil/topic_card.html", v))
     else:
-        template_file = '/main/esil/main_view.html'
-        v['nav'] = 'esil'  
-    return HttpResponse(render.load(template_file, v))
+        topics = []
+        for t in Topic.objects.all():
+            t.intensity = get_rating(t.resourceorigins.all().count(), 'intensity') 
+            t.impact = get_rating(t.capabilities.all().count(), 'impact') 
+            t.relevance = get_rating(t.imperatives.all().count(), 'relevance') 
+            topics.append(t)
+        v['topics'] = topics
+        if site == 'sharepoint':
+            template_file = '/main/esil/sharepoint_view.html'
+        else:
+            template_file = '/main/esil/main_view.html'
+             
+        return HttpResponse(render.load(template_file, v))
 
 def weeklyreads(request, site="sharepoint"):
     v = {}
