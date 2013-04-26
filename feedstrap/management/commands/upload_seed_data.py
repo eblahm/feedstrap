@@ -1,8 +1,11 @@
 from feedstrap.models import *
+from feedstrap import models
 from django.core.management.base import BaseCommand, CommandError
 import config
 import csv
 from datetime import datetime
+import pytz
+
 
 
 class Command(BaseCommand):
@@ -26,24 +29,22 @@ class Command(BaseCommand):
                         new.save()
                     self.stdout.write("%s was added to the Database!\n" % (file))
 
-        if Feed.objects.all().count() == 0:
-            reader = csv.reader(open(get_full_path('feeds.csv'), 'rb'))
-            for row in reader:
-                self.stdout.write(str(row))
-                if len(row) > 1:
-                    new = Feed(url = row[0],
-                        name = row[1],
-                        owner = row[2],
-                        description = row[3],
-                        last_updated = datetime.now(),)
-                    new.save()
-                    new.offices = Office.objects.get(name=row[4]),
-                    new.reports = Report.objects.get(name=row[5]),
-                        # topics = row[0],
-                        # tags = row[0],
-
-                    new.save()
-                    self.stdout.write("feeds.csv was added to the Database!\n")
+        # reader = csv.reader(open(get_full_path('feeds.csv'), 'rb'))
+        # for row in reader:
+        #     self.stdout.write(str(row))
+        #     if Feed.objects.filter(url=row[0]).count() == 0:
+        #         new = Feed(url = row[0],
+        #             name = row[1],
+        #             owner = row[2],
+        #             description = row[3],
+        #             last_updated = datetime.now(),)
+        #         new.save()
+        #         office = Office.objects.get(name=row[4])
+        #         new.offices.add(office)
+        #         # topics = row[0],
+        #         # tags = row[0],
+        #         new.save()
+        # self.stdout.write("feeds.csv was added to the Database!\n")
 
         if Topic.objects.all().count() == 0:
             reader = csv.reader(open(get_full_path('topics.csv'), 'rb'))
@@ -64,3 +65,110 @@ class Command(BaseCommand):
                 new.capabilities = capabilities
                 new.imperatives = imperatives
                 new.save()
+            self.stdout.write("topics.csv was added to the Database!\n")
+
+        topic_names = {'agtzfnZhdG9vbGJveHIOCxIGdG9waWNzGJucFgw': 'Millennial Impact',
+                       'agtzfnZhdG9vbGJveHIOCxIGdG9waWNzGO2rFgw': 'The Changing Nature of Veteran Entitlement',
+                       'agtzfnZhdG9vbGJveHIOCxIGdG9waWNzGNWzFgw': 'Dr. Siri',
+                       'agtzfnZhdG9vbGJveHIOCxIGdG9waWNzGMOJFww': 'The Challenge of a Mobile Enterprise',}
+
+        reader = csv.reader(open(get_full_path('resources.csv'), 'rb'))
+        write_count = 0
+        for row in reader:
+            try:
+                feed = Feed.objects.get(url=row[3])
+            except:
+                feed = Feed.objects.get(owner="Matt")
+            duplicate_test = Resource.objects.filter(link=row[5])
+            if duplicate_test.count() == 1:
+                rec = duplicate_test[0]
+                if feed in duplicate_test[0].feeds.all():
+                    continue
+            else:
+                x = 0
+                if row[1] == 'null':
+                    row[1] = '2012-02-17T00:00:00'
+                for r in row:
+                    if r == "null":
+                        row[x] = ""
+                    x += 1
+                x = 0
+                text = row[8]
+                if text == None:
+                    text = ""
+                if len(text) < 10:
+                    text = ""
+                rec = Resource(
+                    date = datetime.strptime(row[0], "%Y-%m-%dT%H:%M:%S").replace(tzinfo=pytz.utc),
+                    date_added = datetime.strptime(row[1], "%Y-%m-%dT%H:%M:%S").replace(tzinfo=pytz.utc),
+                    title = row[4],
+                    link = row[5],
+                    description = row[6],
+                    relevance = row[7],
+                    content = text,
+                )
+                rec.save()
+
+
+            if feed not in duplicate_test[0].feeds.all():
+                rec.feeds.add(feed)
+
+            topics = []
+            for topic_dbk in row[10].split(","):
+                if topic_dbk != "":
+                    topics.append(topic_names[topic_dbk.strip()])
+            tags = row[9].split(",")
+            offices = [row[2]]
+            reports = row[11].split(",")
+
+            for i in tags:
+                if i != "":
+                    pass
+                else:
+                    try:
+                        obj = Tag.objects.get(name=i)
+                    except:
+                        obj = Tag(name=i)
+                        obj.save()
+                    if obj not in rec.tags.all():
+                        rec.tags.add(obj)
+
+            for i in topics:
+                if i != "":
+                    pass
+                else:
+                    try:
+                        obj = Topic.objects.get(name=i)
+                    except:
+                        assert False
+                    if obj not in rec.topics.all():
+                        rec.topics.add(obj)
+
+            for i in offices:
+                if i != "":
+                    pass
+                else:
+                    try:
+                        obj = Office.objects.get(name=i)
+                    except:
+                        obj = Office(name=i)
+                        obj.save()
+                    if obj not in rec.offices.all():
+                        rec.offices.add(obj)
+
+            for i in reports:
+                if i != "":
+                    pass
+                else:
+                    try:
+                        obj = Report.objects.get(name=i)
+                    except:
+                        obj = Report(name=i)
+                        obj.save()
+                    if obj not in rec.reports.all():
+                        rec.reports.add(obj)
+
+            write_count += 1
+            self.stdout.write("%i Resource added!\n" % (write_count))
+
+
