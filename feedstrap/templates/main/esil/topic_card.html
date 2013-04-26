@@ -1,0 +1,112 @@
+{% extends "/main/home.html" %}
+
+{% block title %}{{ topic.name }}{% endblock %}
+{% block content_box %}
+<div class="container" style="margin-top:50px; margin-bottom:100px;">
+    <div class="row">
+        <div class="span6">
+            <a class="btn" href="/esil"><i class="icon-list"></i> Back to Emerging Strategic Issues List</a>
+        </div> 
+        <div class="span6" style="text-align:right">  
+            <a class="btn" href="/admin/feedstrap/topic/{{ topic.pk }}/"><i class="icon-edit"></i> Edit</a>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="span12" style="margin-top:20px"> 
+            <h1><em>{{ topic.name }}</em></h1>
+            <p><strong>Description:</strong><br>{{ topic.description }}</p>
+        </div>
+    </div>
+    
+    <div class="row" style="margin-bottom:20px">
+        <div class="span12"> 
+            <table class="table table-bordered">
+                <thead>
+                    <tr><th style="text-align:center">Intensity</th>
+                    <th style="text-align:center">Relevance</th>
+                    <th style="text-align:center">Impact</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td style="text-align:center">{{ topic.intensity }}</td>
+                    <td style="text-align:center">{{ topic.relevance }}</td>
+                    <td style="text-align:center">{{ topic.impact }}</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div> 
+    
+    
+    <div class="row">
+        <div class="span6" style="margin-top:20px"> 
+            <h4>Strategic Imperatives</h4>
+            <p>
+                <ul class="unstyled">
+                {% for category in imperatives %}
+                    <li><strong>{{ category }}</strong></li>
+                    {% for item in imperatives[category] %}
+                        <ul>
+                            <li>{{ item }}</li>
+                        </ul>
+                    {% endfor %}
+                {% endfor %}      
+                </ul>
+            </p>
+        </div>
+        <div class="span6" style="margin-top:20px"> 
+            <h4>VA Capabilities</h4>
+            <p>
+                <ul class="unstyled">
+                {% for category in capabilities %}
+                    <li><strong>{{ category }}</strong></li>
+                    {% for item in capabilities[category] %}
+                        <ul>
+                            <li>{{ item }}</li>
+                        </ul>
+                    {% endfor %}
+                {% endfor %}      
+                </ul>
+            </p>
+        </div>
+    </div>
+    
+    <div class="row">
+    
+    
+        <div class="span6" style="margin-top:20px"> 
+            <h4>Data Sources</h4>
+            <p>
+                <ul class="unstyled">
+                {% for category in resourceorigins %}
+                    <li><strong>{{ category }}</strong></li>
+                    {% for item in resourceorigins[category] %}
+                        <ul>
+                            <li>{{ item }}</li>
+                        </ul>
+                    {% endfor %}
+                {% endfor %}      
+                </ul>
+            </p>
+        </div>
+        
+        <div class="span6" style="margin-top:20px"> 
+    
+    
+        </div>
+    
+    </div>
+    
+    
+    <div class="row">
+        <div class="span12" style="margin-top:20px"> 
+            <h4>Links:</h4>  
+            {% for i in resources %}
+                <div id="ar_{{ i.pk }}" class="feed_item">
+                {% include '/main/list_view_article.html' %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

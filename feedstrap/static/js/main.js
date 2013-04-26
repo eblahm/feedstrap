@@ -75,7 +75,7 @@ $(document).ready(function () {
              });
     });
     
-    $("#content_view").on("mouseenter", ".feed_item", function (event) {
+    $("body").on("mouseenter", ".feed_item", function (event) {
         var ref = $(this).attr('id').replace("ar_", "");
         $("#article_tools_" +ref).show();
         }).on("mouseleave", ".feed_item", function (event) {

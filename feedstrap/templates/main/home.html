@@ -1,5 +1,17 @@
 {% extends "/main/base.html" %}
-
+{% block modal %}
+<div id="modal_content" class="modal hide fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false" style="display: none;">    
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Hello</h3>
+    </div>   
+    <div class="modal-body">    
+    </div>
+    <div class="modal-footer">
+        <input class="btn" value="something" aria-hidden="true" />
+    </div>
+</div> 
+{% endblock %}  
 {% block content_box %}
 
     <!-- navbar-->
@@ -17,27 +29,16 @@
         </div>
     </div>
 
-    {% block modal %}
-    <div id="modal_content" class="modal hide fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false" style="display: none;">    
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 id="myModalLabel">Hello</h3>
-        </div>   
-        <div class="modal-body">    
-        </div>
-        <div class="modal-footer">
-            <input class="btn" value="something" aria-hidden="true" />
-        </div>
-    </div> 
-    {% endblock %}  
+
     
-    {% block content_header %}
+    
     <div id="content_header" class="row-fluid">
         <div class="span2">
 
         </div>
         
         <div class="span10" >
+        {% block content_header %}
                 <div style="float: left; margin-top: .6em">
                 {% for t in filter_tags %}
                     <span class="filter_tag" style="{{ t.css }}">{{ t.name }}<a class="xtag" href="{{ t.link }}">×</a></span>
@@ -52,12 +53,13 @@
                       </ul>
                     </div>
                 </div>
+        {% endblock %}
         </div>
 
 
 
     </div>
-    {% endblock %}
+    
         
         
     <div class="row-fluid">
