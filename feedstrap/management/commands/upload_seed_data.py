@@ -29,22 +29,21 @@ class Command(BaseCommand):
                         new.save()
                     self.stdout.write("%s was added to the Database!\n" % (file))
 
-        # reader = csv.reader(open(get_full_path('feeds.csv'), 'rb'))
-        # for row in reader:
-        #     self.stdout.write(str(row))
-        #     if Feed.objects.filter(url=row[0]).count() == 0:
-        #         new = Feed(url = row[0],
-        #             name = row[1],
-        #             owner = row[2],
-        #             description = row[3],
-        #             last_updated = datetime.now(),)
-        #         new.save()
-        #         office = Office.objects.get(name=row[4])
-        #         new.offices.add(office)
-        #         # topics = row[0],
-        #         # tags = row[0],
-        #         new.save()
-        # self.stdout.write("feeds.csv was added to the Database!\n")
+        reader = csv.reader(open(get_full_path('feeds.csv'), 'rb'))
+        for row in reader:
+            if Feed.objects.filter(url=row[0]).count() == 0:
+                new = Feed(url = row[0],
+                    name = row[1],
+                    owner = row[2],
+                    description = row[3],
+                    last_updated = datetime.now(),)
+                new.save()
+                office = Office.objects.get(name=row[4])
+                new.offices.add(office)
+                # topics = row[0],
+                # tags = row[0],
+                new.save()
+        self.stdout.write("feeds.csv was added to the Database!\n")
 
         if Topic.objects.all().count() == 0:
             reader = csv.reader(open(get_full_path('topics.csv'), 'rb'))
@@ -76,13 +75,17 @@ class Command(BaseCommand):
         write_count = 0
         for row in reader:
             try:
-                feed = Feed.objects.get(url=row[3])
+                if row[3] == "null" or row[3] == "":
+                    feed = Feed.objects.get(owner='Matt')
+                else:
+                    feed = Feed.objects.get(url=row[3])
             except:
-                feed = Feed.objects.get(owner="Matt")
+                continue
+
             duplicate_test = Resource.objects.filter(link=row[5])
             if duplicate_test.count() == 1:
-                rec = duplicate_test[0]
-                if feed in duplicate_test[0].feeds.all():
+                rec = Resource.objects.get(link=row[5])
+                if feed in rec.feeds.all():
                     continue
             else:
                 x = 0
@@ -110,64 +113,64 @@ class Command(BaseCommand):
                 rec.save()
 
 
-            if feed not in duplicate_test[0].feeds.all():
+            if feed not in rec.feeds.all():
                 rec.feeds.add(feed)
 
             topics = []
             for topic_dbk in row[10].split(","):
-                if topic_dbk != "":
+                if topic_dbk not in ["", 'null']:
                     topics.append(topic_names[topic_dbk.strip()])
             tags = row[9].split(",")
             offices = [row[2]]
             reports = row[11].split(",")
 
             for i in tags:
-                if i != "":
+                if i == "" or len(i) >= 50:
                     pass
                 else:
                     try:
-                        obj = Tag.objects.get(name=i)
+                        obj = Tag.objects.get(name=i.strip())
                     except:
-                        obj = Tag(name=i)
+                        obj = Tag(name=i.strip())
                         obj.save()
                     if obj not in rec.tags.all():
                         rec.tags.add(obj)
 
             for i in topics:
-                if i != "":
+                if i == "":
                     pass
                 else:
                     try:
-                        obj = Topic.objects.get(name=i)
+                        obj = Topic.objects.get(name=i.strip())
                     except:
                         assert False
                     if obj not in rec.topics.all():
                         rec.topics.add(obj)
 
             for i in offices:
-                if i != "":
+                if i == "":
                     pass
                 else:
                     try:
-                        obj = Office.objects.get(name=i)
+                        obj = Office.objects.get(name=i.strip())
                     except:
-                        obj = Office(name=i)
+                        obj = Office(name=i.strip())
                         obj.save()
                     if obj not in rec.offices.all():
                         rec.offices.add(obj)
 
             for i in reports:
-                if i != "":
+                if i == "":
                     pass
                 else:
                     try:
-                        obj = Report.objects.get(name=i)
+                        obj = Report.objects.get(name=i.strip())
                     except:
-                        obj = Report(name=i)
+                        obj = Report(name=i.strip())
                         obj.save()
                     if obj not in rec.reports.all():
                         rec.reports.add(obj)
-
+            rec.save()
             write_count += 1
             self.stdout.write("%i Resource added!\n" % (write_count))
 

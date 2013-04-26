@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.http import QueryDict
 from django import forms
 
-# from ssg_site import pysolr
+from ssg_site import pysolr
 import re
 
 
@@ -29,20 +29,19 @@ def apply_filter(request, q=Resource.objects.all(), per_page_limit=config.per_pa
             q = q.filter(feeds__in=mm_rec)
     text_search = " ".join(query_filters.get('term', ""))
     if text_search.strip() != "":
-        # solr = pysolr.Solr('http://localhost:8983/solr/', timeout=10)
-        # results = solr.search(text_search, **{'hl': 'true',
-        #                                     'hl.fl': '*',
-        #                                     'hl.fragsize': 200,
-        #                                     'hl.snippets': 3})
-        # search_snippets = {}
-        # hl = results.highlighting
-        # pk_list = []
-        # for r in results:
-        #     search_snippets[int(r['id'])] = hl[r['id']]
-        #     pk_list.append(r['id'])
-        # v.update({'search_snippets': search_snippets})
-        # q = q.filter(pk__in=pk_list)
-        pass
+        solr = pysolr.Solr('http://localhost:8983/solr/', timeout=10)
+        results = solr.search(text_search, **{'hl': 'true',
+                                            'hl.fl': '*',
+                                            'hl.fragsize': 200,
+                                            'hl.snippets': 3})
+        search_snippets = {}
+        hl = results.highlighting
+        pk_list = []
+        for r in results:
+            search_snippets[int(r['id'])] = hl[r['id']]
+            pk_list.append(r['id'])
+        v.update({'search_snippets': search_snippets})
+        q = q.filter(pk__in=pk_list)
     else:
         q = q.order_by('-date')
     start_offset = query_filters.get('s', ['0'])
