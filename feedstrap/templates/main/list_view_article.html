@@ -20,9 +20,9 @@
             <section style="float: left">
 
                 <em>{{i.date.strftime('%d %b %y') }}</em>
-                <span class="spacer">|</span><em>posted by {% for feed in i.feeds.all() %}{% if loop.index > 1 %}, {% endif %}{{ feed.owner }} {% endfor %}</em>
+                <span class="spacer">|</span><em>posted by {% for feed in i.feeds.all() %}{% if loop.index > 1 %}, {% endif %}<a href="/q?person={{ feed.owner|e }}">{{ feed.owner }}</a>{% endfor %}</em>
                 {% if i.tags.all() %}
-                    {% for tag in i.tags.all() %}{% if loop.index > 1 %}, {% else %}<span class="spacer">|</span>{% endif %}<a href="/q?tag={{ tag.name|e }}">{{ tag.name }}</a>{% endfor %}
+                    {% for tag in i.tags.all() %}{% if loop.index > 1 %}, {% else %}<span class="spacer">|</span>{% endif %}<a href="/q?tags={{ tag.name|e }}">{{ tag.name }}</a>{% endfor %}
                 {% endif %}
                 {% if i.reports.all() %}
                     {% for report in i.reports.all() %}{% if loop.index == 1 %}<span class="spacer">|</span>{% endif %}{% if report.name == 'Weekly Reads' %}<a href="/q?report={{ report.name|e }}" class="label label-info">WR</a>{% endif %}{% endfor %}

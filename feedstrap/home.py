@@ -4,8 +4,8 @@ import render
 
 feed_navs = {
     '': 'home',
-    'office=SSG': 'SSG',
-    'report=Weekly+Reads': "weekly_reads",
+    'offices=1': 'SSG',
+    'reports=1': "weekly_reads",
 }
 
 def MainPage(request, template=""):

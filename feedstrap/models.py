@@ -1,10 +1,10 @@
 from django.db import models
 from django.forms import ModelForm
 
-def generate_choices(model, field='name'):
+def generate_choices(model, displayed_value='name', real_value="pk"):
     options = (("", ""),)
     for r in model.objects.all():
-        options += ((str(r.pk), getattr(r, field)),)
+        options += ((str(getattr(r, real_value)), getattr(r, displayed_value)),)
     return options
 
 office_choices = (

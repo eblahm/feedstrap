@@ -7,12 +7,12 @@
         </a>
     </li>
     <li {% if nav == 'SSG' %}class="active"{% endif %}>
-        <a href="/q?office=SSG">
+        <a href="/q?offices=1">
            SSG
         </a>
     </li>
     <li {% if nav == 'weekly_reads' %}class="active"{% endif %}>
-        <a href="/q?report=Weekly Reads">
+        <a href="/q?reports=1">
            Weekly Reads
         </a>
     </li> 
@@ -23,10 +23,10 @@
         </a>
     </li>
     <li>
-        <a href="/filter">
+        <a class="modal_view" data-target="#modal_content" data-toggle="modal" href="#" data-url="/filter" data-dbk="">
             Advanced Filter
-        </a>    
-    </li>    
+        </a>
+    </li>
 
     <li {% if nav == 'admin' %}class="active"{% endif %}>
         <a href="/admin">

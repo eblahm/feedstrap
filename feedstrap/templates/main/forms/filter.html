@@ -1,32 +1,83 @@
-{% extends "/main/home.html" %}
-{% block head %}{{ super() }}
 <script type="text/javascript">
-all_tags = [{% for t in all_tags %}{% if loop.index > 1 %},{% endif %}"{{ t.name }}"{% endfor %}];
+var all_tags = [{% for t in all_tags %}{% if loop.index > 1 %},{% endif %}"{{ t.name }}"{% endfor %}];
+document.getElementById("advanced_search_form").reset();
+$(function() {$( "#fe1" ).autocomplete({source: all_tags});});
+
+$("#add_new_filter").click(function (event){
+    var filter_count =  String($('.af_row').length + 1);
+    var url = "/filter?a=new&filter_count=" + filter_count;
+    $.ajax({
+           type: "GET",
+           url: url,
+           success: function(data){
+               $("#advanced_search").append(data);
+               $(function() {$("#fe"+filter_count).autocomplete({source: all_tags});});
+           }
+    });
+
+});
+
+$("#advanced_search").on("change", ".field_selector", function (event) {
+    var filter_count = $(this).data('filter_count');
+    var selected = $(this).val();
+    var url = "/filter?a=field&filter_count=" + filter_count + "&selected=" + selected;
+    $.ajax({
+           type: "GET",
+           url: url,
+           success: function(data){
+               var new_form_element = $(data).attr({'id':"fe"+filter_count});
+               var new_name = filter_count + "_" + new_form_element.attr("name");
+               new_form_element.attr({'name': new_name}).addClass("primary_filter");
+               $("#"+filter_count+"_value").html(new_form_element);
+               if (selected == 'dateto'| selected == 'datefrom') {
+                   $("#fe"+filter_count).datepicker();
+                   $("#fe"+filter_count).datepicker( "option", "dateFormat", 'yy-mm-dd' );
+               };
+               if (selected == 'tags') {
+                   $(function() {$("#fe"+filter_count).autocomplete({source: all_tags});});
+               };
+           }
+    });
+
+})
+
+$("#submit_advanced_filter").click(function (event){
+    var q = $(".primary_filter").serialize();
+    var url = "/q?"+ q;
+    window.open(url, "_self");
+});
 </script>
-{% endblock %}
-{% block content_header %}{% endblock %}
-{% block content_view %}
-<div class="span10">
 
-<form id="advanced_search_form" action="/q" method="GET">
-    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
-    <table id="advanced_search" align="center">
 
-        <tr>
-            <th style="width:50%">Field</th>
-            <th style="width:50%">Value</th>
-        </tr>
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Advanced Filter</h3>
+    </div>
+    <div class="modal-body">
 
-        {% include "/main/forms/filter_row.html" %}
+        <form id="advanced_search_form" action="/q" method="GET">
 
-    </table>
-</form>
-<button id="submit_advanced_filter">Submit</button>
-<div style="text-align: right">
-    <button id="add_new_filter"><i class="icon-plus"></i></button>
-</div>
-</div>
-{% endblock %}
+                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+                <table id="advanced_search" align="center">
+
+                    <tr>
+                        <th style="width:50%">Field</th>
+                        <th style="width:50%">Value</th>
+                    </tr>
+
+                    {% include "/main/forms/filter_row.html" %}
+
+                </table>
+
+        </form>
+
+
+    </div>
+    <div class="modal-footer">
+        <button id="add_new_filter"><i class="icon-plus"></i></button>
+        <button id="submit_advanced_filter">Submit</button>
+    </div>
+
 
          
 

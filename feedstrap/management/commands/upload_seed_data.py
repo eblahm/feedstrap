@@ -10,6 +10,8 @@ import pytz
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
+        ignored_values = ["", "null", "None", None, "Top 10 Report"]
+
         def get_full_path(short_name):
             return config.app_root + '/feedstrap/seed_data/' + short_name
         file_to_model = [('capabilities.csv', Capability),
@@ -73,6 +75,11 @@ class Command(BaseCommand):
 
         reader = csv.reader(open(get_full_path('resources.csv'), 'rb'))
         write_count = 0
+        def normalize(s):
+            if s in ignored_values:
+                return ""
+            else:
+                return s
         for row in reader:
             try:
                 if row[3] == "null" or row[3] == "":
@@ -97,8 +104,6 @@ class Command(BaseCommand):
                     x += 1
                 x = 0
                 text = row[8]
-                if text == None:
-                    text = ""
                 if len(text) < 10:
                     text = ""
                 rec = Resource(
@@ -106,9 +111,9 @@ class Command(BaseCommand):
                     date_added = datetime.strptime(row[1], "%Y-%m-%dT%H:%M:%S").replace(tzinfo=pytz.utc),
                     title = row[4],
                     link = row[5],
-                    description = row[6],
-                    relevance = row[7],
-                    content = text,
+                    description = normalize(row[6]),
+                    relevance = normalize(row[7]),
+                    content = normalize(text),
                 )
                 rec.save()
 
@@ -125,7 +130,7 @@ class Command(BaseCommand):
             reports = row[11].split(",")
 
             for i in tags:
-                if i in ["", "null"] or len(i) >= 50:
+                if i.strip() in ignored_values or len(i) >= 50:
                     pass
                 else:
                     try:
@@ -137,7 +142,7 @@ class Command(BaseCommand):
                         rec.tags.add(obj)
 
             for i in topics:
-                if i in ["", "null"]:
+                if i.strip() in ignored_values:
                     pass
                 else:
                     try:
@@ -148,7 +153,7 @@ class Command(BaseCommand):
                         rec.topics.add(obj)
 
             for i in offices:
-                if i in ["", "null"]:
+                if i.strip() in ignored_values:
                     pass
                 else:
                     try:
@@ -160,7 +165,7 @@ class Command(BaseCommand):
                         rec.offices.add(obj)
 
             for i in reports:
-                if i in ["", "null"]:
+                if i.strip() in ignored_values:
                     pass
                 else:
                     try:
