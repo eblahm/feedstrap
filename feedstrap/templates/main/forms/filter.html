@@ -1,20 +1,32 @@
+{% extends "/main/home.html" %}
+{% block head %}{{ super() }}
+<script type="text/javascript">
+all_tags = [{% for t in all_tags %}{% if loop.index > 1 %},{% endif %}"{{ t.name }}"{% endfor %}];
+</script>
+{% endblock %}
+{% block content_header %}{% endblock %}
+{% block content_view %}
+<div class="span10">
 
-    
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel">Advanced Filter</h3>
-    </div>   
-    <div class="modal-body">   
-    <form action="/">
-        {% csrf_token %}
-        {{ form.as_p }}
-        {{ foo }}
-        <input type="submit" value="Submit" /
-    </form>
-    </div>
-    <div class="modal-footer">
-        <input class="btn" value="submit" aria-hidden="true" />
-    </div>
+<form id="advanced_search_form" action="/q" method="GET">
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+    <table id="advanced_search" align="center">
+
+        <tr>
+            <th style="width:50%">Field</th>
+            <th style="width:50%">Value</th>
+        </tr>
+
+        {% include "/main/forms/filter_row.html" %}
+
+    </table>
+</form>
+<button id="submit_advanced_filter">Submit</button>
+<div style="text-align: right">
+    <button id="add_new_filter"><i class="icon-plus"></i></button>
+</div>
+</div>
+{% endblock %}
 
          
 

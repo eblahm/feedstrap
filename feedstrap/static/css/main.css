@@ -14,21 +14,10 @@
     margin-bottom: 50px;
 }
 
-.footer {
-    margin-top:50px;
-    margin-bottom:5px;
-    text-align:center;
-}
-
 .view_btn { margin:2px; }
 .show_more{
     padding:5px;
 }
-
-
-.row_selected { background:lightyellow}
-#results_table_body .ui-selecting { background: #FECA40; }
-#results_table_body .ui-selected { background: #F39814; color: white; }
 
 .xbox_area { 
     margin-right: 5px;
@@ -58,10 +47,6 @@
     border-radius: 3px 3px 3px 3px;
 }
 
-
-
-.field_drag:hover {cursor:move;}
-
 .ar {
     margin-bottom: 20px;
     /*margin-top: 15px;*/
@@ -87,17 +72,33 @@
     margin-right:15px;
 }
 
-
 .xwide {
     width:440px;
 }
 .wide {
     width:200px;
 }
-.bulk_inline {
-    margin-left: 5px;
+
+.footer {
+    margin-top:50px;
+    margin-bottom:5px;
+    text-align:center;
 }
 
-    
+.af_row{
+    line-height: 20px;
+}
+.af_row th{
+    text-align: center;
+    text-decoration: underline;
+}
+
+.af_row td{
+    line-height: 50px;
+    vertical-align: middle;
+    text-align: center;
+}
+
+
     
     

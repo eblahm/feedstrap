@@ -125,7 +125,7 @@ class Command(BaseCommand):
             reports = row[11].split(",")
 
             for i in tags:
-                if i == "" or len(i) >= 50:
+                if i in ["", "null"] or len(i) >= 50:
                     pass
                 else:
                     try:
@@ -137,7 +137,7 @@ class Command(BaseCommand):
                         rec.tags.add(obj)
 
             for i in topics:
-                if i == "":
+                if i in ["", "null"]:
                     pass
                 else:
                     try:
@@ -148,7 +148,7 @@ class Command(BaseCommand):
                         rec.topics.add(obj)
 
             for i in offices:
-                if i == "":
+                if i in ["", "null"]:
                     pass
                 else:
                     try:
@@ -160,7 +160,7 @@ class Command(BaseCommand):
                         rec.offices.add(obj)
 
             for i in reports:
-                if i == "":
+                if i in ["", "null"]:
                     pass
                 else:
                     try:

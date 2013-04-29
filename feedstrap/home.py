@@ -20,7 +20,6 @@ def MainPage(request, template=""):
         v['get_query'] = perams
         v['nav'] = feed_navs.get(perams, "")
         v['filter_tags'] = generate_filter_tags(request)
-
     return HttpResponse(render.load(template_file, v))
 
 # def read(request):

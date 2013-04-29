@@ -1,0 +1,26 @@
+{% if filter_count > 1 %}
+<tr style="text-align: center">
+    <td colspan="2">
+        <input style="margin: 10px 10px 10px 0" class="primary_filter" name="{{ filter_count }}_andor" type="radio" value="AND" checked="checked">AND</input>
+        <input style="margin: 10px 10px 10px 30px;" class="primary_filter" name="{{ filter_count }}_andor" type="radio" value="OR">OR</input>
+    </td>
+</tr>
+{% endif %}
+<tr id="f{{ filter_count }}" class="af_row">
+    <td>
+        <select class="field_selector" name="field" data-filter_count="{{ filter_count }}">
+            <option value="tags" selected="selected">Tag</option>
+            <option value="person">Person</option>
+            <option value="feeds">Feed</option>
+            <option value="date_to">Date to</option>
+            <option value="date_from">Date from</option>
+            <option value="reports">Report</option>
+            <option value="offices">Office</option>
+            <option value="esil">Emerging Issue</option>
+        </select>
+    </td>
+    <td id="{{ filter_count }}_value">
+        <input class="primary_filter" id="fe{{ filter_count }}" name="{{ filter_count }}_tags" type="text">
+    </td>
+</tr>
+
