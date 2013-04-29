@@ -30,7 +30,7 @@ class Filter():
 filters = {
     'tags': Filter('tags', 'tags__name', models.Tag),
     'person': Filter('person', 'feeds__owner', models.Feed),
-    'feeds': Filter('feeds', 'feeds__pk', models.Feed),
+    'feeds': Filter('feeds', 'feeds__in', models.Feed),
     'esil': Filter('esil', 'topics__pk', models.Topic),
     'dateto': Filter('dateto', 'date__lte'),
     'datefrom': Filter('datefrom', 'date__gte'),
@@ -59,7 +59,6 @@ class FilterForm(forms.Form):
     person = forms.ChoiceField(choices=models.generate_choices(models.Feed, 'owner', 'owner'))
     feeds = forms.ChoiceField(choices=models.generate_choices(models.Feed))
     reports = forms.ChoiceField(choices=models.generate_choices(models.Report))
-
 
 def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_limit=config.per_page_limit):
     v = {}
@@ -93,9 +92,8 @@ def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_l
     else:
         q = Resource.objects.all()
         sorted_filters = sorted(applied_filters.iteritems(), key=operator.itemgetter(0))
-        q_filters = []
-        qset = ()
-        pops = []
+        and_queries = None
+        all_qs = []
         for i in sorted_filters:
             if i[0] == 's':
                 continue
@@ -105,19 +103,27 @@ def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_l
                 filter = filters[str(field)]
                 if field in ['dateto', 'datefrom']:
                     value = datetime.strptime(value, '%Y-%m-%d')
-                x = (filter.qstring, value)
-                qset += Q(x),
+                x = Q((filter.qstring, value))
+                if and_queries == None:
+                    and_queries = q.filter(x)
+                else:
+                    and_queries &= q.filter(x)
             if field == 'andor':
-                if value == "OR" and len(qset) != 0:
-                    q_filters.append(reduce(operator.and_, qset))
-                    qset = ()
-        if len(qset) != 0:
-            q_filters.append(reduce(operator.and_, qset))
-        if len(q_filters) > 1:
-            q = Resource.objects.filter(reduce(operator.or_, q_filters))
-        elif len(q_filters) == 1:
-            q = q.filter(reduce(operator.and_, q_filters))
-
+                if value == "OR":
+                    all_qs.append(and_queries)
+                    and_queries = None
+        if and_queries != None:
+            all_qs.append(and_queries)
+        if len(all_qs) == 1:
+            q = all_qs[0]
+        elif len(all_qs) > 1:
+            loop = 1
+            for oq in all_qs:
+                if loop == 1:
+                    q = oq
+                else:
+                    q |= oq
+                loop += 1
         q = q.order_by('-date')
 
     start_offset = applied_filters.get('s', '0')
