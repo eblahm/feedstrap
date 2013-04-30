@@ -2,10 +2,11 @@ from django.http import HttpResponse
 from filter import apply_filter, generate_filter_tags
 import render
 
+
 feed_navs = {
     '': 'home',
-    'offices=1': 'SSG',
-    'reports=1': "weekly_reads",
+    'office=SSG': 'SSG',
+    'report=Weekly+Reads': "weekly_reads",
 }
 
 def MainPage(request, template=""):
@@ -18,7 +19,12 @@ def MainPage(request, template=""):
         template_file = '/main/home.html'
         perams = request.GET.urlencode()
         v['get_query'] = perams
-        v['nav'] = feed_navs.get(perams, "")
+        nav_peram = perams.split("_")
+        if len(nav_peram) > 2:
+            nav_peram = None
+        else:
+            nav_peram = nav_peram[-1]
+        v['nav'] = feed_navs.get(nav_peram, "advanced")
         v['filter_tags'] = generate_filter_tags(request)
     return HttpResponse(render.load(template_file, v))
 

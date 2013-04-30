@@ -158,10 +158,14 @@ class Command(BaseCommand):
                 if i.strip() in ignored_values:
                     pass
                 else:
+                    if i.strip() == "Front Office":
+                        O = "AS"
+                    else:
+                        O = i
                     try:
-                        obj = Office.objects.get(name=i.strip())
+                        obj = Office.objects.get(name=O.strip())
                     except:
-                        obj = Office(name=i.strip())
+                        obj = Office(name=O.strip())
                         obj.save()
                     if obj not in rec.offices.all():
                         rec.offices.add(obj)

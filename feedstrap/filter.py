@@ -32,17 +32,16 @@ filters = {
     'esil': Filter('esil', 'topics__pk', models.Topic),
     'dateto': Filter('dateto', 'date__lte'),
     'datefrom': Filter('datefrom', 'date__gte'),
-    'reports': Filter('reports', 'reports__pk', models.Report),
     'report': Filter('report', 'reports__name', models.Report),
-    'offices': Filter('offices', 'offices__pk', models.Office),
+    'office': Filter('office', 'offices__name', models.Office),
 }
 
 labels = {
-    'reports': 'background-color: #2D6987;',
+    'report': 'background-color: #2D6987;',
     'person': 'background-color: orange;',
     'report': 'background-color: #2D6987;',
     'tags': 'background-color: #0088CC',
-    'offices': 'background-color: green',
+    'office': 'background-color: green',
     'term': 'background-color: #ffd62f;',
     'feeds': 'background-color: orange',
     'esil': 'background-color: red',
@@ -53,10 +52,10 @@ class FilterForm(forms.Form):
     datefrom = forms.DateField('%Y-%m-%d')
     dateto = forms.DateField('%Y-%m-%d')
     esil = forms.ChoiceField(choices=models.generate_choices(models.Topic))
-    offices = forms.ChoiceField(choices=models.generate_choices(models.Office))
+    office = forms.ChoiceField(choices=models.generate_choices(models.Office,'name', 'name'))
     person = forms.ChoiceField(choices=models.generate_choices(models.Feed, 'owner', 'owner'))
     feeds = forms.ChoiceField(choices=models.generate_choices(models.Feed))
-    reports = forms.ChoiceField(choices=models.generate_choices(models.Report))
+    report = forms.ChoiceField(choices=models.generate_choices(models.Report, 'name', 'name'))
 
 def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_limit=config.per_page_limit):
     v = {}

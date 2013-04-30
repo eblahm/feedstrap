@@ -7,7 +7,6 @@
 </style>
  <script>
 $(function() {
-var availableTags = [{% for t in all_tags %}{% if loop.index > 1 %}, {% endif %}"{{ t.name }}"{% endfor %}];
  function split( val ) {
 return val.split( /,\s*/ );
 }
@@ -27,7 +26,7 @@ minLength: 0,
 source: function( request, response ) {
 // delegate back to autocomplete, but extract the last term
 response( $.ui.autocomplete.filter(
-availableTags, extractLast( request.term ) ) );
+all_tags, extractLast( request.term ) ) );
 },
 focus: function() {
 // prevent value inserted on focus

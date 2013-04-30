@@ -26,6 +26,9 @@
     <script src="/feedstrap/static/js/bootstrap.min.js"></script>
     <!-- my code -->
     <script type="text/javascript" rel="js" src="/feedstrap/static/js/main.js"></script>
+    <script type="text/javascript">
+        var all_tags = [{% for t in all_tags %}{% if loop.index > 1 %},{% endif %}"{{ t.name }}"{% endfor %}];
+    </script>
     {% endblock %}
     
 
