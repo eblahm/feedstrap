@@ -106,6 +106,7 @@ class ResourceForm(ModelForm):
         model = Resource
 
 
-class DeletedLink(models.Model):
+class LinkLog(models.Model):
     link = models.CharField(max_length=500)
+    feeds = models.ManyToManyField(Feed, null=True, blank=True)
     date = models.DateTimeField(auto_now=True)

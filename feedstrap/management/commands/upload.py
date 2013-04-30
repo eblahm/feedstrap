@@ -182,6 +182,15 @@ class Command(BaseCommand):
                     if obj not in rec.reports.all():
                         rec.reports.add(obj)
             rec.save()
+            logq = models.LinkLog.objects.filter(link=rec.link)
+            if logq.count() > 0:
+                log = logq.get()
+            else:
+                log = models.LinkLog(link=rec.link)
+                log.save()
+            for f in rec.feeds.all():
+                log.feeds.add(f)
+            log.save()
             write_count += 1
             self.stdout.write("%i Resource added!\n" % (write_count))
 

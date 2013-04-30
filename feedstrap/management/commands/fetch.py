@@ -30,57 +30,55 @@ class Command(BaseCommand):
             if most_recent_from_db < most_recent_from_feed:
                 ## new items should now be present
                 for item in parsed_feed.entries:
-                    found = 0
-                    ## if a user has deleted the item it goes on the "Deleted" list.  These should be ignored.
-                    if models.DeletedLink.objects.filter(link=item.link).count() > 0:
+                    ## ignore previously added links.
+                    logq = models.LinkLog.objects.filter(feeds=feed)
+                    logq = logq.filter(link=item.link)
+                    if logq.count() > 0:
                         continue
-                        ## check membership in Resource Table
+                    ## check membership in Resource Table
                     membership_query = models.Resource.objects.all().filter(link=item.link)
-                    feed_limited_query = membership_query.filter(feeds__pk=feed.pk)
-                    if feed_limited_query.count() > 0:
-                        found += 1
-                        if found > 4:
-                            # minimize db queries
-                            break
-                    else:
-                        if membership_query.count() == 0:
-                            dt = datetime.fromtimestamp(mktime(item.published_parsed))
-                            dt = dt.replace(tzinfo=pytz.utc)
-                            r = models.Resource(title=item.title,
-                                                link=item.link,
-                                                date=dt,
-                                                description=item.description)
-                            r.save()
-                            r.feeds.add(feed)
-                            try:
-                                page = urllib2.urlopen(item.link)
-                                page_content = page.read()
-                                alchemyObj = AlchemyAPI.AlchemyAPI()
-                                alchemyObj.loadAPIKey("/Users/Matt/Dropbox/dev/ssg_site/ssg_site/alcAPI.txt")
-                                article_xml = alchemyObj.HTMLGetText(page_content, item.link)
-                                text = etree.fromstring(article_xml).find("text").text.encode('utf-8','ignore')
-                                r.content = text
-                            except:
-                                pass
-                            r.save()
-                        else:
-                            r = membership_query.get()
-                        if feed not in r.feeds.all():
-                            r.feeds.add(feed)
-                        for tag in feed.tags.all():
-                            if tag not in r.tags.all():
-                                r.tags.add(tag)
-                        for office in feed.offices.all():
-                            if office not in r.offices.all():
-                                r.offices.add(office)
-                        for report in feed.reports.all():
-                            if report not in r.reports.all():
-                                r.reports.add(report)
-                        for topic in feed.topics.all():
-                            if topic not in r.topics.all():
-                                r.topics.add(topic)
+                    if membership_query.count() == 0:
+                        dt = datetime.fromtimestamp(mktime(item.published_parsed))
+                        dt = dt.replace(tzinfo=pytz.utc)
+                        r = models.Resource(title=item.title,
+                                            link=item.link,
+                                            date=dt,
+                                            description=item.description)
                         r.save()
-                        self.stdout.write('New Resource Added! -- "%s"' % r.title)
+                        r.feeds.add(feed)
+                        try:
+                            page = urllib2.urlopen(item.link)
+                            page_content = page.read()
+                            alchemyObj = AlchemyAPI.AlchemyAPI()
+                            alchemyObj.loadAPIKey("/Users/Matt/Dropbox/dev/ssg_site/ssg_site/alcAPI.txt")
+                            article_xml = alchemyObj.HTMLGetText(page_content, item.link)
+                            text = etree.fromstring(article_xml).find("text").text.encode('utf-8','ignore')
+                            r.content = text
+                        except:
+                            pass
+                        r.save()
+                    else:
+                        r = membership_query.get()
+                    if feed not in r.feeds.all():
+                        r.feeds.add(feed)
+                    for tag in feed.tags.all():
+                        if tag not in r.tags.all():
+                            r.tags.add(tag)
+                    for office in feed.offices.all():
+                        if office not in r.offices.all():
+                            r.offices.add(office)
+                    for report in feed.reports.all():
+                        if report not in r.reports.all():
+                            r.reports.add(report)
+                    for topic in feed.topics.all():
+                        if topic not in r.topics.all():
+                            r.topics.add(topic)
+                    r.save()
+                    log = models.LinkLog(link=item.link)
+                    log.save()
+                    log.feeds.add(feed)
+                    log.save()
+                    self.stdout.write('New Resource Added! -- "%s"' % r.title)
                 #CommandError('Poll "%s" does not exist' % poll_id)
 
 
