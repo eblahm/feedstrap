@@ -42,8 +42,15 @@ $("#advanced_search").on("change", ".field_selector", function (event) {
 })
 
 $("#submit_advanced_filter").click(function (event){
-    var q = $(".primary_filter").serialize();
-    var url = "/q?"+ q;
+    var q = $(".primary_filter");
+    for (var i=0;i<q.length;i++) {
+        var e = $(q[i]);
+        if (e.val() == 'AND') {
+            q[i] = "";
+        };
+    }
+    var perams = q.serialize();
+    var url = "/q?"+ perams;
     window.open(url, "_self");
 });
 </script>

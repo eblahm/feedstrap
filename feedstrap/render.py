@@ -1,5 +1,5 @@
 from jinja2 import Environment, PackageLoader
-from feedstrap.models import Topic, Report, Tag
+from feedstrap.models import Report, Tag
 
 env = Environment(loader=PackageLoader('feedstrap', 'templates'))
 
