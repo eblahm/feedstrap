@@ -10,7 +10,7 @@ import pytz
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
-        ignored_values = ["", "null", "None", None, "Top 10 Report"]
+        ignored_values = ["", "null", "None", None, "Top 10 Report", "alchemy call fail", "error", "error1","error2","error3","error4", "-"]
 
         def get_full_path(short_name):
             return config.app_root + '/feedstrap/seed_data/' + short_name
@@ -77,7 +77,7 @@ class Command(BaseCommand):
         write_count = 0
         def normalize(s):
             if s in ignored_values:
-                return ""
+                return None
             else:
                 return s
         for row in reader:
@@ -120,6 +120,8 @@ class Command(BaseCommand):
 
             if feed not in rec.feeds.all():
                 rec.feeds.add(feed)
+            else:
+                continue
 
             topics = []
             for topic_dbk in row[10].split(","):

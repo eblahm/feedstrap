@@ -88,18 +88,18 @@ class Resource(models.Model):
     link = models.CharField(max_length=500)
     description = models.TextField(null=True, blank=True)
     relevance = models.TextField(null=True, blank=True)
-    content = models.TextField(blank=True)
+    content = models.TextField(null=True, blank=True)
     offices = models.ManyToManyField(Office, null=True, blank=True)
     feeds = models.ManyToManyField(Feed, null=True, blank=True)
     topics = models.ManyToManyField(Topic, null=True, blank=True)
     tags = models.ManyToManyField(Tag, null=True, blank=True)
     reports = models.ManyToManyField(Report, null=True, blank=True)
-    def save(self):
-        import full_text_search
-        solr = full_text_search.solr_server()
-        super(Resource, self).save()
-        solr.add_resource(self)
-        return self
+    # def save(self):
+    #     import full_text_search
+    #     solr = full_text_search.solr_server()
+    #     super(Resource, self).save()
+    #     solr.add_resource(self)
+    #     return self
 
 class ResourceForm(ModelForm):
     class Meta:

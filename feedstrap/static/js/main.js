@@ -15,7 +15,26 @@ function load_modal(page) {
     });
 }
 
+
+
+
 $(document).ready(function () {
+var sbar_loadstate = $("#sidebar").width();
+
+$(window).scroll(function() {
+    var scrollposition = $(window).scrollTop();
+    var sidebar_parent_offset = $("#content_view").offset().top;
+    var sidebar = $("#sidebar");
+    if (scrollposition > sidebar_parent_offset - 50) {  
+    var top_offset = scrollposition + 50;
+    sidebar.css({position: "fixed", width: sbar_loadstate}).offset({top: top_offset});
+    }
+    else {
+    sidebar.css({position: ""}); 
+    }
+    
+});
+
 
     $(".expander").click(function (event){
         if ($(this).hasClass("icon-plus")){

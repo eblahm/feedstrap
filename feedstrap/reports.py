@@ -3,7 +3,9 @@ from models import Topic, Resource, Report
 from filter import apply_filter
 
 from django.http import HttpResponse
+
 from datetime import datetime
+import csv
 
 
 def get_rating(val, factor):
@@ -63,10 +65,9 @@ def weeklyreads(request, site="sharepoint"):
     v = {}
     v.update(request.GET.dict())
 
-    if len(request.GET.dict()) > 0:
-        v.update(apply_filter(request))
-
     if site == 'export_to_word':
+        v.update(apply_filter(request, per_page_limit=100))
+        v['next_offset'] = False
         template_file = '/main/weekly_reads/export_view.html'
         v['headline'] = 'Weekly Reads Report'
         v['subheadline'] = 'Prepared by Strategic Studies Group, Office of Policy'
@@ -77,12 +78,34 @@ def weeklyreads(request, site="sharepoint"):
         response.write(ms_doc)
         return response
     elif site == 'ajax':
+        v.update(apply_filter(request))
         template_file = '/main/weekly_reads/table_body.html'
         return HttpResponse(render.load(template_file, v))
     else:
+        v.update(apply_filter(request))
         v['headline'] = 'Weekly Reads Database'
         template_file = '/main/weekly_reads/sharepoint_view.html'
         return HttpResponse(render.load(template_file, v))
+        
+def export_csv(request):
+    v = {}
+    v.update(apply_filter(request, per_page_limit=500))
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="search resulsts.csv"'
+
+    writer = csv.writer(response)
+    header_row = [f.name for f in Resource._meta.fields]
+    header_row.remove('content')
+    writer.writerow(header_row)
+    results = v['results'].values()
+    for rec in results:
+        row = []
+        for field in header_row:
+            row.append(rec[field])
+        writer.writerow(row)
+    return response
+    
 
     
 

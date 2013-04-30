@@ -3,13 +3,7 @@ from django.contrib.admin import widgets
 from django import forms
 from feedstrap.models import *
 
-tag_type = [Tag, Report, Office]
-
-#Imperative, Capability, ResourceOrigin,
-
-# Topic, Feed,
-# Resource, DeletedLink, Comment
-
+## Resource ##
 class ResourceForm(forms.ModelForm):
     tags = forms.MultipleChoiceField(choices=generate_choices(Tag))
     feeds = forms.MultipleChoiceField(choices=generate_choices(Feed))
@@ -24,20 +18,81 @@ class ResourceAdmin(admin.ModelAdmin):
     date_hierarchy = 'date'
     list_display = ('title','date')
 
-
 admin.site.register(Resource, ResourceAdmin)
 
-
+## Feed ##
+class FeedForm(forms.ModelForm):
+    tags = forms.MultipleChoiceField(choices=generate_choices(Tag))
+    feeds = forms.MultipleChoiceField(choices=generate_choices(Feed))
+    topics = forms.MultipleChoiceField(choices=generate_choices(Topic))
+    offices = forms.MultipleChoiceField(choices=generate_choices(Office))
+    reports = forms.MultipleChoiceField(choices=generate_choices(Report))
+    class Meta:
+        model = Feed
+        
 class FeedAdmin(admin.ModelAdmin):
-    list_display = ('owner', 'name', 'url')
+    form = FeedForm
+    list_display = ('name', 'owner', 'url')
 
 admin.site.register(Feed, FeedAdmin)
 
-for i in tag_type:
-    class AdminFormat(admin.ModelAdmin):
+## Topic ##
+class TopicForm(forms.ModelForm):
+    resourceorigins = forms.MultipleChoiceField(choices=generate_choices(ResourceOrigin))
+    imperatives = forms.MultipleChoiceField(choices=generate_choices(Imperative))
+    capabilities = forms.MultipleChoiceField(choices=generate_choices(Capability))
+
+    class Meta:
+        model = Topic
+        
+class TopicAdmin(admin.ModelAdmin):
+    form = TopicForm
+    ordering = ('name',)
+    list_display = ('name',)
+
+admin.site.register(Topic, TopicAdmin)
+
+
+
+
+## Tag, Report, Office ##
+for simple_model in [Tag, Office, Report]:
+    class simple_admin(admin.ModelAdmin):
+        ordering = ('name',)
         list_display = ('name',)
-    admin.site.register(i, AdminFormat)
-    
-    
-for data_field in [Topic, ResourceOrigin, Imperative, Capability]:
-    admin.site.register(data_field)
+    admin.site.register(simple_model, simple_admin)
+
+## Capabilities, Imperatives, Resource Origins ##
+for simple_model in [Capability, ResourceOrigin, Imperative]:
+    class simple_admin(admin.ModelAdmin):
+        ordering = ('category', 'name')
+        list_display = ('name', 'category')
+    admin.site.register(simple_model, simple_admin)
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
