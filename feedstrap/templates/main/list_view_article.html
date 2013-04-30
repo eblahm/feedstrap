@@ -25,7 +25,7 @@
                     {% for tag in i.tags.all() %}{% if loop.index > 1 %}, {% else %}<span class="spacer">|</span>{% endif %}<a href="/q?tags={{ tag.name|e }}">{{ tag.name }}</a>{% endfor %}
                 {% endif %}
                 {% if i.reports.all() %}
-                    {% for report in i.reports.all() %}{% if loop.index == 1 %}<span class="spacer">|</span>{% endif %}{% if report.name == 'Weekly Reads' %}<a href="/q?report={{ report.name|e }}" class="label label-info">WR</a>{% endif %}{% endfor %}
+                    {% for report in i.reports.all() %}{% if report.name == 'Weekly Reads' %}<span class="spacer">|</span><a href="/q?report={{ report.name|e }}" class="label label-info">WR</a>{% endif %}{% endfor %}
                 {% endif %}
 
             </section>

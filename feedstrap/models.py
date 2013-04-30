@@ -1,5 +1,6 @@
 from django.db import models
 from django.forms import ModelForm
+import full_text_search
 
 def generate_choices(model, displayed_value='name', real_value="pk"):
     options = (("", ""),)
@@ -93,7 +94,11 @@ class Resource(models.Model):
     topics = models.ManyToManyField(Topic, null=True, blank=True)
     tags = models.ManyToManyField(Tag, null=True, blank=True)
     reports = models.ManyToManyField(Report, null=True, blank=True)
-
+    def save(self):
+        solr = full_text_search.solr_server()
+        super(Resource, self).save()
+        solr.add_resource(self)
+        return self
 
 class ResourceForm(ModelForm):
     class Meta:

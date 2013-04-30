@@ -5,13 +5,11 @@ from datetime import datetime
 
 import render
 from django.http import HttpResponse
-from django.http import QueryDict
 from django.core.context_processors import csrf
 from django import forms
 from django.db.models import Q
 
 from ssg_site import pysolr
-import re
 import operator
 
 class Filter():
@@ -30,7 +28,7 @@ class Filter():
 filters = {
     'tags': Filter('tags', 'tags__name', models.Tag),
     'person': Filter('person', 'feeds__owner', models.Feed),
-    'feeds': Filter('feeds', 'feeds__in', models.Feed),
+    'feeds': Filter('feeds', 'feeds__pk', models.Feed),
     'esil': Filter('esil', 'topics__pk', models.Topic),
     'dateto': Filter('dateto', 'date__lte'),
     'datefrom': Filter('datefrom', 'date__gte'),
@@ -117,13 +115,9 @@ def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_l
         if len(all_qs) == 1:
             q = all_qs[0]
         elif len(all_qs) > 1:
-            loop = 1
-            for oq in all_qs:
-                if loop == 1:
-                    q = oq
-                else:
-                    q |= oq
-                loop += 1
+            q = all_qs[0]
+            for oq in all_qs[1:]:
+                q = oq
         q = q.order_by('-date')
 
     start_offset = applied_filters.get('s', '0')
