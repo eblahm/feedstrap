@@ -82,7 +82,10 @@ def weeklyreads(request, site="sharepoint"):
         template_file = '/main/weekly_reads/table_body.html'
         return HttpResponse(render.load(template_file, v))
     else:
-        v.update(apply_filter(request))
+        if len(request.GET.dict()) == 0:
+            v['hide_table'] = True
+        else:
+            v.update(apply_filter(request))
         v['headline'] = 'Weekly Reads Database'
         template_file = '/main/weekly_reads/sharepoint_view.html'
         return HttpResponse(render.load(template_file, v))

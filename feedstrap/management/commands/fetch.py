@@ -7,7 +7,15 @@ import xml.etree.ElementTree as etree
 from ssg_site import feedparser, AlchemyAPI
 from feedstrap import models
 from django.core.management.base import BaseCommand, CommandError
-
+def normalize(s):
+    try:
+        s = str(s)
+    except:
+        try:
+            s = s.decode('utf-8', 'ignore')
+        except:
+            s = s.encode('utf-8', 'ignore')
+    return s
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         ## Query fetches in ascending order according to when feeds were last updated
@@ -40,10 +48,10 @@ class Command(BaseCommand):
                     if membership_query.count() == 0:
                         dt = datetime.fromtimestamp(mktime(item.published_parsed))
                         dt = dt.replace(tzinfo=pytz.utc)
-                        r = models.Resource(title=item.title,
+                        r = models.Resource(title=normalize(item.title),
                                             link=item.link,
                                             date=dt,
-                                            description=item.description)
+                                            description=normalize(item.description))
                         r.save()
                         r.feeds.add(feed)
                         try:
@@ -78,7 +86,7 @@ class Command(BaseCommand):
                     log.save()
                     log.feeds.add(feed)
                     log.save()
-                    self.stdout.write('New Resource Added! -- "%s"' % r.title)
+                    self.stdout.write('New Resource Added! -- "%s"' % normalize(r.title))
                 #CommandError('Poll "%s" does not exist' % poll_id)
 
 

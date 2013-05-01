@@ -94,12 +94,12 @@ class Resource(models.Model):
     topics = models.ManyToManyField(Topic, null=True, blank=True)
     tags = models.ManyToManyField(Tag, null=True, blank=True)
     reports = models.ManyToManyField(Report, null=True, blank=True)
-    # def save(self):
-    #     import full_text_search
-    #     solr = full_text_search.solr_server()
-    #     super(Resource, self).save()
-    #     solr.add_resource(self)
-    #     return self
+    def save(self):
+        import full_text_search
+        solr = full_text_search.solr_server()
+        super(Resource, self).save()
+        solr.add_resource(self)
+        return self
 
 class ResourceForm(ModelForm):
     class Meta:

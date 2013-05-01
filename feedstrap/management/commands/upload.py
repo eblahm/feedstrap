@@ -1,7 +1,7 @@
 from feedstrap.models import *
 from feedstrap import models
 from django.core.management.base import BaseCommand, CommandError
-import config
+from ssg_site import config
 import csv
 from datetime import datetime
 import pytz

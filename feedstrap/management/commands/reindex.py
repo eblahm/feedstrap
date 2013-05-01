@@ -1,8 +1,4 @@
-from ssg_site import pysolr
-from feedstrap import render
 from feedstrap import full_text_search
-from jinja2 import Environment, PackageLoader
-from feedstrap.models import Resource, Tag
 from django.core.management.base import BaseCommand, CommandError
 
 class Command(BaseCommand):

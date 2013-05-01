@@ -16,7 +16,7 @@ class ResourceForm(forms.ModelForm):
 class ResourceAdmin(admin.ModelAdmin):
     form = ResourceForm
     date_hierarchy = 'date'
-    list_display = ('title','date')
+    list_display = ('title','date_added')
 
 admin.site.register(Resource, ResourceAdmin)
 
@@ -71,7 +71,11 @@ for simple_model in [Capability, ResourceOrigin, Imperative]:
         
 
 
+class LinkLogAdmin(admin.ModelAdmin):
+    ordering = ('date',)
+    list_display = ('link', 'date')
 
+admin.site.register(LinkLog, LinkLogAdmin)
 
 
 
