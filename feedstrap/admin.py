@@ -23,7 +23,6 @@ admin.site.register(Resource, ResourceAdmin)
 ## Feed ##
 class FeedForm(forms.ModelForm):
     tags = forms.MultipleChoiceField(choices=generate_choices(Tag))
-    feeds = forms.MultipleChoiceField(choices=generate_choices(Feed))
     topics = forms.MultipleChoiceField(choices=generate_choices(Topic))
     offices = forms.MultipleChoiceField(choices=generate_choices(Office))
     reports = forms.MultipleChoiceField(choices=generate_choices(Report))

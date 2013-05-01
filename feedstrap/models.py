@@ -3,10 +3,10 @@ from django.forms import ModelForm
 
 
 def generate_choices(model, displayed_value='name', real_value="pk"):
-    options = (("", ""),)
+    options = ()
     for r in model.objects.all():
         options += ((str(getattr(r, real_value)), getattr(r, displayed_value)),)
-    return options
+    return sorted(options, key=lambda opt: opt[1])
 
 office_choices = (
     ('SSG', 'Strategic Stuides Group'),

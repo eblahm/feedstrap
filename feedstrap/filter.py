@@ -64,10 +64,6 @@ def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_l
         applied_filters.pop('csrfmiddlewaretoken')
     except:
         pass
-    try:
-        applied_filters.pop('field')
-    except:
-        pass
     text_search = applied_filters.get('term', None)
     if len(applied_filters) == 0:
         pass
@@ -109,8 +105,9 @@ def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_l
                     and_queries &= q.filter(x)
             if field == 'andor':
                 if value == "OR":
-                    all_qs.append(and_queries)
-                    and_queries = None
+                    if and_queries != None:
+                        all_qs.append(and_queries)
+                        and_queries = None
         if and_queries != None:
             all_qs.append(and_queries)
         if len(all_qs) == 1:
@@ -118,7 +115,7 @@ def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_l
         elif len(all_qs) > 1:
             q = all_qs[0]
             for oq in all_qs[1:]:
-                q = oq
+                q |= oq
         q = q.order_by('-date')
 
     start_offset = applied_filters.get('s', '0')

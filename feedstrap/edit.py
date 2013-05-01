@@ -35,11 +35,12 @@ def main(request):
             else:
                 rec.reports.remove(wrr)
             for i in data_lists:
-                if data_lists[i] == [""]:
-                    continue
+
                 if i in ['pk', 'csrf_token', 'weekly_reads']:
                     continue
                 elif i in ['reports', 'topics']:
+                    if data_lists[i] == [""]:
+                        data_lists[i] = []
                     mmField = getattr(rec, i)
                     for mm in mmField.all():
                         mmField.remove(mm)
