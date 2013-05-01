@@ -7,15 +7,13 @@ import xml.etree.ElementTree as etree
 from ssg_site import feedparser, AlchemyAPI
 from feedstrap import models
 from django.core.management.base import BaseCommand, CommandError
+
 def normalize(s):
-    try:
-        s = str(s)
-    except:
-        try:
-            s = s.decode('utf-8', 'ignore')
-        except:
-            s = s.encode('utf-8', 'ignore')
+    s = s.encode('utf-8', 'ignore')
+    s = s.decode('ascii', 'ignore')
     return s
+
+
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         ## Query fetches in ascending order according to when feeds were last updated
@@ -60,7 +58,7 @@ class Command(BaseCommand):
                             alchemyObj = AlchemyAPI.AlchemyAPI()
                             alchemyObj.loadAPIKey("/Users/Matt/Dropbox/dev/ssg_site/ssg_site/alcAPI.txt")
                             article_xml = alchemyObj.HTMLGetText(page_content, item.link)
-                            text = etree.fromstring(article_xml).find("text").text.encode('utf-8','ignore')
+                            text = normalize(etree.fromstring(article_xml).find("text").text)
                             r.content = text
                         except:
                             pass
