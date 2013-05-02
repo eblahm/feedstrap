@@ -7,11 +7,10 @@ import xml.etree.ElementTree as etree
 from ssg_site import feedparser, AlchemyAPI
 from feedstrap import models
 from django.core.management.base import BaseCommand, CommandError
+from ssg_site import config
 
-def normalize(s):
-    s = s.encode('utf-8', 'ignore')
-    s = s.decode('ascii', 'ignore')
-    return s
+
+    
 
 
 class Command(BaseCommand):
@@ -46,23 +45,24 @@ class Command(BaseCommand):
                     if membership_query.count() == 0:
                         dt = datetime.fromtimestamp(mktime(item.published_parsed))
                         dt = dt.replace(tzinfo=pytz.utc)
-                        r = models.Resource(title=normalize(item.title),
+                        self.stdout.write('Trying -- "%s"\n' % (item.title))
+                        r = models.Resource(title=item.title,
                                             link=item.link,
                                             date=dt,
-                                            description=normalize(item.description))
+                                            description=item.description)
                         r.save()
                         r.feeds.add(feed)
                         try:
                             page = urllib2.urlopen(item.link)
                             page_content = page.read()
                             alchemyObj = AlchemyAPI.AlchemyAPI()
-                            alchemyObj.loadAPIKey("/Users/Matt/Dropbox/dev/ssg_site/ssg_site/alcAPI.txt")
+                            alchemyObj.loadAPIKey(config.app_root + "/ssg_site/alcAPI.txt")
                             article_xml = alchemyObj.HTMLGetText(page_content, item.link)
-                            text = normalize(etree.fromstring(article_xml).find("text").text)
+                            text = etree.fromstring(article_xml).find("text").text
                             r.content = text
+                            r.save()
                         except:
-                            pass
-                        r.save()
+                            pass             
                     else:
                         r = membership_query.get()
                     if feed not in r.feeds.all():
@@ -84,7 +84,7 @@ class Command(BaseCommand):
                     log.save()
                     log.feeds.add(feed)
                     log.save()
-                    self.stdout.write('New Resource Added! -- "%s"' % normalize(r.title))
+                    self.stdout.write('New Resource Added! -- "%s"' % (r.title))
                 #CommandError('Poll "%s" does not exist' % poll_id)
 
 
