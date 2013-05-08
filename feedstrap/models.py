@@ -95,10 +95,14 @@ class Resource(models.Model):
     tags = models.ManyToManyField(Tag, null=True, blank=True)
     reports = models.ManyToManyField(Report, null=True, blank=True)
     def save(self):
-        import full_text_search
-        solr = full_text_search.solr_server()
-        super(Resource, self).save()
-        solr.add_resource(self)
+        if self.tags != super(Resource, self).objects.get(pk = self.pk).tags:
+            cache.clear()
+            all_tags = sorted([t for t in Tag.objects.all()])
+            cache.set('all_tags', all_tags)
+#       import full_text_search
+#       solr = full_text_search.solr_server()
+#       super(Resource, self).save()
+#       solr.add_resource(self)
         return self
 
 class ResourceForm(ModelForm):
