@@ -1,6 +1,6 @@
 from django.db import models
 from django.forms import ModelForm
-
+from django.core.cache import cache
 
 def generate_choices(model, displayed_value='name', real_value="pk"):
     options = ()
@@ -95,13 +95,10 @@ class Resource(models.Model):
     tags = models.ManyToManyField(Tag, null=True, blank=True)
     reports = models.ManyToManyField(Report, null=True, blank=True)
     def save(self):
-        if self.tags != super(Resource, self).objects.get(pk = self.pk).tags:
-            cache.clear()
-            all_tags = sorted([t for t in Tag.objects.all()])
-            cache.set('all_tags', all_tags)
+        cache.clear()
 #       import full_text_search
 #       solr = full_text_search.solr_server()
-#       super(Resource, self).save()
+        super(Resource, self).save()
 #       solr.add_resource(self)
         return self
 

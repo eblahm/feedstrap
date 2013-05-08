@@ -54,12 +54,15 @@ def main(request):
                     for tag in rec.tags.all():
                         if tag.name not in tag_inputs:
                             rec.tags.remove(tag)
+                        if tag.name == "":
+                            rec.tags.remove(tag)
                     for tag in tag_inputs:
-                        try:
-                            tag_rec = models.Tag.objects.get(name=tag)
-                        except:
-                            tag_rec = models.Tag.objects.create(name=tag)
-                        rec.tags.add(tag_rec)
+                        if tag != "":
+                            try:
+                                tag_rec = models.Tag.objects.get(name=tag)
+                            except:
+                                tag_rec = models.Tag.objects.create(name=tag)
+                            rec.tags.add(tag_rec)
 
             rec.save()
             now_est = datetime.now().replace(tzinfo=pytz.timezone('America/New_York'))
@@ -70,4 +73,4 @@ def main(request):
             response_data['save_status'] = message
             json_response = json.dumps(response_data)
             return HttpResponse(json_response)
-            
+

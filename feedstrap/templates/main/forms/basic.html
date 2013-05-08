@@ -6,6 +6,7 @@
   
 </style>
  <script>
+var all_tags = [{% for t in all_tags %}{% if loop.index > 1 %},{% endif %}"{{ t.name }}"{% endfor %}];
 $(function() {
  function split( val ) {
 return val.split( /,\s*/ );
