@@ -62,6 +62,7 @@ class Topic(models.Model):
     resourceorigins = models.ManyToManyField(ResourceOrigin, null=True, blank=True)
     imperatives = models.ManyToManyField(Imperative, null=True, blank=True)
     capabilities = models.ManyToManyField(Capability, null=True, blank=True)
+    attachment = models.FileField(upload_to="final_papers")
 
 
 class Office(models.Model):
@@ -78,6 +79,7 @@ class Feed(models.Model):
     tags = models.ManyToManyField(Tag, null=True, blank=True)
     reports = models.ManyToManyField(Report, null=True, blank=True)
     last_updated = models.DateTimeField()
+    
 
 
 class Resource(models.Model):
@@ -94,13 +96,13 @@ class Resource(models.Model):
     topics = models.ManyToManyField(Topic, null=True, blank=True)
     tags = models.ManyToManyField(Tag, null=True, blank=True)
     reports = models.ManyToManyField(Report, null=True, blank=True)
-    def save(self):
-        cache.clear()
-        import full_text_search
-        solr = full_text_search.solr_server()
-        super(Resource, self).save()
-        solr.add_resource(self)
-        return self
+#    def save(self):
+#        cache.clear()
+#        import full_text_search
+#        solr = full_text_search.solr_server()
+#        super(Resource, self).save()
+#        solr.add_resource(self)
+#        return self
 
 class ResourceForm(ModelForm):
     class Meta:
@@ -111,3 +113,9 @@ class LinkLog(models.Model):
     link = models.CharField(max_length=500)
     feeds = models.ManyToManyField(Feed, null=True, blank=True)
     date = models.DateTimeField(auto_now=True)
+    
+class SidebarLink(models.Model):
+    name = models.CharField(max_length=100)
+    parameters = models.CharField(max_length=500, blank=True)
+    position = models.IntegerField()
+

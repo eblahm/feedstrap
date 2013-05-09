@@ -7,6 +7,20 @@ from django.http import HttpResponse
 from datetime import datetime
 import csv
 
+def ascii_safe(s):
+    try:
+        s = str(s)
+        return s
+    except:
+        try:
+            s = s.decode('utf-8', 'ignore')
+            s = str(s)
+            return s
+        except:
+            s = s.encode('utf-8', 'ignore')
+            s = s.decode('ascii', 'ignore')
+            s = str(s)
+            return s
 
 def get_rating(val, factor):
     rate_dic = {'intensity': (15, 30),
@@ -94,7 +108,7 @@ def weeklyreads(request, site="sharepoint"):
 
 def export_csv(request):
     v = {}
-    v.update(apply_filter(request, per_page_limit=500))
+    v.update(apply_filter(request, per_page_limit=5000))
 
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="search resulsts.csv"'
@@ -107,7 +121,7 @@ def export_csv(request):
     for rec in results:
         row = []
         for field in header_row:
-            row.append(rec[field])
+            row.append(ascii_safe(rec[field]))
         writer.writerow(row)
     return response
 
