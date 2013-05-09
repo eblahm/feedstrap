@@ -9,7 +9,7 @@ from django.core.context_processors import csrf
 from django import forms
 from django.db.models import Q
 
-# from ssg_site import pysolr
+from ssg_site import pysolr
 import operator
 
 class Filter():
@@ -68,23 +68,22 @@ def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_l
     if len(applied_filters) == 0:
         pass
     elif text_search != None:
-        # solr = pysolr.Solr('http://localhost:8983/solr/', timeout=10)
-        # results = solr.search(text_search, **{'hl': 'true',
-        #                                     'hl.fl': '*',
-        #                                     'rows':50,
-        #                                     'sort':'score desc',
-        #                                     'hl.fragsize': 200,
-        #                                     'hl.snippets': 3})
-        # search_snippets = {}
-        # hl = results.highlighting
-        # pk_list = []
-        # for r in results:
-        #     search_snippets[int(r['id'])] = hl[r['id']]
-        #     pk_list.append(r['id'])
-        # v.update({'search_snippets': search_snippets})
-        # q = Resource.objects.all()
-        # q = q.filter(pk__in=pk_list)
-        pass
+        solr = pysolr.Solr('http://localhost:8983/solr/', timeout=10)
+        results = solr.search(text_search, **{'hl': 'true',
+                                            'hl.fl': '*',
+                                            'rows':50,
+                                            'sort':'score desc',
+                                            'hl.fragsize': 200,
+                                            'hl.snippets': 3})
+        search_snippets = {}
+        hl = results.highlighting
+        pk_list = []
+        for r in results:
+            search_snippets[int(r['id'])] = hl[r['id']]
+            pk_list.append(r['id'])
+        v.update({'search_snippets': search_snippets})
+        q = Resource.objects.all()
+        q = q.filter(pk__in=pk_list)
     else:
         q = Resource.objects.all()
         sorted_filters = sorted(applied_filters.iteritems(), key=operator.itemgetter(0))

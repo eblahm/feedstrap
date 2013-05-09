@@ -96,10 +96,10 @@ class Resource(models.Model):
     reports = models.ManyToManyField(Report, null=True, blank=True)
     def save(self):
         cache.clear()
-#       import full_text_search
-#       solr = full_text_search.solr_server()
+        import full_text_search
+        solr = full_text_search.solr_server()
         super(Resource, self).save()
-#       solr.add_resource(self)
+        solr.add_resource(self)
         return self
 
 class ResourceForm(ModelForm):
