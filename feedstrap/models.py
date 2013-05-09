@@ -3,7 +3,7 @@ from django.forms import ModelForm
 from django.core.cache import cache
 
 def generate_choices(model, displayed_value='name', real_value="pk"):
-    options = ()
+    options = ((0, "null"), )
     for r in model.objects.all():
         options += ((str(getattr(r, real_value)), getattr(r, displayed_value)),)
     return sorted(options, key=lambda opt: opt[1])
@@ -62,7 +62,7 @@ class Topic(models.Model):
     resourceorigins = models.ManyToManyField(ResourceOrigin, null=True, blank=True)
     imperatives = models.ManyToManyField(Imperative, null=True, blank=True)
     capabilities = models.ManyToManyField(Capability, null=True, blank=True)
-    attachment = models.FileField(upload_to="final_papers")
+    attachment = models.FileField(upload_to="final")
 
 
 class Office(models.Model):
