@@ -10,9 +10,6 @@ from django.core.management.base import BaseCommand, CommandError
 from ssg_site import config
 
 
-    
-
-
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         ## Query fetches in ascending order according to when feeds were last updated
@@ -29,9 +26,11 @@ class Command(BaseCommand):
                 most_recent_from_db = datetime(1901, 12, 25)
             most_recent_from_db = most_recent_from_db.replace(tzinfo=pytz.utc)
 
-            most_recent_from_feed = datetime.fromtimestamp(mktime(parsed_feed.entries[0].published_parsed))
-            most_recent_from_feed = most_recent_from_feed.replace(tzinfo=pytz.utc)
-
+            if len(parsed_feed.entries) > 0:
+                most_recent_from_feed = datetime.fromtimestamp(mktime(parsed_feed.entries[0].published_parsed))
+                most_recent_from_feed = most_recent_from_feed.replace(tzinfo=pytz.utc)
+            else:
+                continue
             if most_recent_from_db < most_recent_from_feed:
                 ## new items should now be present
                 for item in parsed_feed.entries:
@@ -62,7 +61,7 @@ class Command(BaseCommand):
                             r.content = text
                             r.save()
                         except:
-                            pass             
+                            pass
                     else:
                         r = membership_query.get()
                     if feed not in r.feeds.all():
