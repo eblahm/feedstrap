@@ -40,7 +40,6 @@ class TopicForm(forms.ModelForm):
     resourceorigins = forms.MultipleChoiceField(choices=generate_choices(ResourceOrigin))
     imperatives = forms.MultipleChoiceField(choices=generate_choices(Imperative))
     capabilities = forms.MultipleChoiceField(choices=generate_choices(Capability))
-
     class Meta:
         model = Topic
         
@@ -76,6 +75,11 @@ class LinkLogAdmin(admin.ModelAdmin):
 
 admin.site.register(LinkLog, LinkLogAdmin)
 
+class SidebarLinkAdmin(admin.ModelAdmin):
+    ordering = ('position',)
+    list_display = ('name', 'parameters', 'position')
+
+admin.site.register(SidebarLink, SidebarLinkAdmin)
 
 
 

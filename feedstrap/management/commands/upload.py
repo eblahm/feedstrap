@@ -45,8 +45,17 @@ class Command(BaseCommand):
                 # topics = row[0],
                 # tags = row[0],
                 new.save()
-        self.stdout.write("feeds.csv was added to the Database!\n")
+                self.stdout.write("feeds.csv was added to the Database!\n")
 
+        reader = csv.reader(open(get_full_path('sidebar.csv'), 'rb'))
+        for row in reader:
+            if SidebarLink.objects.filter(name=row[0]).count() == 0:
+                new = SidebarLink(name = row[0],
+                    parameter = row[1],
+                    position = row[2],)
+                new.save()
+                self.stdout.write("sidebar.csv was added to the Database!\n")
+                
         if Topic.objects.all().count() == 0:
             reader = csv.reader(open(get_full_path('topics.csv'), 'rb'))
             for row in reader:

@@ -54,6 +54,9 @@ def main(request):
                     for tag in rec.tags.all():
                         if tag.name not in tag_inputs:
                             rec.tags.remove(tag)
+                            rec.save()
+                            if Resource.objects.filter(tags=tag).count() == 0:
+                                tag.delete()
                         if tag.name == "":
                             rec.tags.remove(tag)
                     for tag in tag_inputs:

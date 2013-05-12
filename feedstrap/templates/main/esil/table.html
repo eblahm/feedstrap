@@ -1,4 +1,4 @@
-    <style>
+     <style>
     body {
         margin-bottom: 100px;
       }
@@ -23,6 +23,7 @@
              <th style="text-align:center"><abbr title="Intensity represents the frequency an issue." class="initialism">Intensity</abbr></th>
             <th style="text-align:center"><abbr title="Relevance represents the topics resonance with current VA strategic ideas.  If the topic can help illustrate Strategic Imperatives, the Relevance will be high." class="initialism">Relevance</abbr></th>
             <th style="text-align:center"><abbr title="Impact represents the topics potential to effect VA capabilities.  Each topic is cross walked against the VA capabilities, then given a score.  Topics that involve many different VA capabilities will have a high score." class="initialism">Impact</abbr></th>
+            <th style="width:40px">Attachement</th>
         </tr>
         </thead>
         <tbody>
@@ -34,6 +35,7 @@
           <td class="rpoint" style="text-align:center">{{ topic.intensity }}</td>
           <td class="rpoint" style="text-align:center">{{ topic.relevance }}</td>
           <td class="rpoint" style="text-align:center; vertical-align:top; height:100%">{{ topic.impact }}</td>
+          <td class="rpoint" style="text-align:center; vertical-align:top; height:100%"> {% if topic.attachment %}<br><a href="/feedstrap/static/files/{{ topic.attachment.url }}"><img src="/feedstrap/static/img/icons/glyphicons_062_paperclip.png"></img></a>{% endif %}</td>
         </tr>
           {% endfor %}        
         </tbody>

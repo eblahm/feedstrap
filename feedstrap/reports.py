@@ -7,9 +7,23 @@ from django.http import HttpResponse
 from datetime import datetime
 import csv
 
+def ascii_safe(s):
+    try:
+        s = str(s)
+        return s
+    except:
+        try:
+            s = s.decode('utf-8', 'ignore')
+            s = str(s)
+            return s
+        except:
+            s = s.encode('utf-8', 'ignore')
+            s = s.decode('ascii', 'ignore')
+            s = str(s)
+            return s
 
 def get_rating(val, factor):
-    rate_dic = {'intensity': (4, 10), 
+    rate_dic = {'intensity': (15, 30),
                 'relevance': (4, 10),
                 'impact':(3, 8),}
     if val >= 0:
@@ -20,7 +34,7 @@ def get_rating(val, factor):
         button = '<span class="label label-important">HIGH</span>'
     return button
 
-def esil(request,  site="vacloud.us"):    
+def esil(request,  site="vacloud.us"):
     v = {'site':site}
     v['nav'] = 'esil'
     selected = request.GET.dict().get('k', None)
@@ -39,26 +53,28 @@ def esil(request,  site="vacloud.us"):
                 if mm_item.name not in index:
                     index.append(mm_item.name)
             v[i] = mapping
-        topic.intensity = get_rating(topic.resourceorigins.all().count(), 'intensity') 
-        topic.impact = get_rating(topic.capabilities.all().count(), 'impact') 
-        topic.relevance = get_rating(topic.imperatives.all().count(), 'relevance') 
+        rsearch = Resource.objects.filter(topics=topic)
+        topic.intensity = get_rating(rsearch.count(), 'intensity')
+        topic.impact = get_rating(topic.capabilities.all().count(), 'impact')
+        topic.relevance = get_rating(topic.imperatives.all().count(), 'relevance')
         v['topic'] = topic
-        v['resources'] = Resource.objects.filter(topics=topic)
+        v['resources'] = rsearch
         v['get_url'] = request.GET.urlencode()
         return HttpResponse(render.load("/main/esil/topic_card.html", v))
     else:
         topics = []
         for t in Topic.objects.all():
-            t.intensity = get_rating(t.resourceorigins.all().count(), 'intensity') 
-            t.impact = get_rating(t.capabilities.all().count(), 'impact') 
-            t.relevance = get_rating(t.imperatives.all().count(), 'relevance') 
+            rsearch = Resource.objects.filter(topics=t)
+            t.intensity = get_rating(rsearch.count(), 'intensity')
+            t.impact = get_rating(t.capabilities.all().count(), 'impact')
+            t.relevance = get_rating(t.imperatives.all().count(), 'relevance')
             topics.append(t)
         v['topics'] = topics
         if site == 'sharepoint':
             template_file = '/main/esil/sharepoint_view.html'
         else:
             template_file = '/main/esil/main_view.html'
-             
+
         return HttpResponse(render.load(template_file, v))
 
 def weeklyreads(request, site="sharepoint"):
@@ -89,10 +105,10 @@ def weeklyreads(request, site="sharepoint"):
         v['headline'] = 'Weekly Reads Database'
         template_file = '/main/weekly_reads/sharepoint_view.html'
         return HttpResponse(render.load(template_file, v))
-        
+
 def export_csv(request):
     v = {}
-    v.update(apply_filter(request, per_page_limit=500))
+    v.update(apply_filter(request, per_page_limit=5000))
 
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="search resulsts.csv"'
@@ -105,14 +121,14 @@ def export_csv(request):
     for rec in results:
         row = []
         for field in header_row:
-            row.append(rec[field])
+            row.append(ascii_safe(rec[field]))
         writer.writerow(row)
     return response
-    
 
-    
 
-    
-    
-    
-    
+
+
+
+
+
+

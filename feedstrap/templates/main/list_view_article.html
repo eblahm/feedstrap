@@ -18,7 +18,7 @@
         <section class="ar_details">
 
             <em>{{i.date.strftime('%d %b %y') }}</em>
-            <span class="spacer">|</span><em>posted by {% for feed in i.feeds.all() %}{% if loop.index > 1 %}, {% endif %}<a href="/q?person={{ feed.owner|e }}">{{ feed.owner }}</a>{% endfor %}</em>
+            {% for feed in i.feeds.all() %}{% if loop.index > 1 %}, {% endif %}{% if feed.owner %}<span class="spacer">|</span><em>posted by <a href="/q?person={{ feed.owner|e }}">{{ feed.owner }}</a>{% endif %}{% endfor %}</em>
             {% if i.tags.all() %}
                 {% for tag in i.tags.all() %}{% if loop.index > 1 %}, {% else %}<span class="spacer">|</span>{% endif %}<a href="/q?tags={{ tag.name|e }}">{{ tag.name }}</a>{% endfor %}
             {% endif %}

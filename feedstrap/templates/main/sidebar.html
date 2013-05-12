@@ -1,30 +1,22 @@
 <div id="sidebar" class="well hidden-phone" style="max-width: 340px; padding: 8px 0;" >
 <ul class="nav nav-list">
     <li class="nav-header">Feeds</li>
-    <li {% if nav == 'home' %}class="active"{% endif %}>
-        <a href="/">
-           Recent
+    {% for fn in feed_navs %}
+    <li {% if get_query == fn[0] %}class="active"{% endif %}>
+        <a href="/?{{ fn[0] }}">
+           {{ fn[1] }}
         </a>
     </li>
-    <li {% if nav == 'SSG' %}class="active"{% endif %}>
-        <a href="/q?office=SSG">
-           SSG
-        </a>
-    </li>
-    <li {% if nav == 'weekly_reads' %}class="active"{% endif %}>
-        <a href="/q?report=Weekly+Reads">
-           Weekly Reads
-        </a>
-    </li> 
+    {% endfor %}
     <li class="nav-header">Tools</li>
     <li {% if nav == 'esil' %}class="active"{% endif %}>
         <a href="/esil">  
            ESIL
         </a>
     </li>
-    <li {% if nav == 'advanced' %}class="active"{% endif %}>
+    <li {% if advanced_search == True %}class="active"{% endif %}>
         <a class="modal_view" data-target="#modal_content" data-toggle="modal" href="#" data-url="/filter" data-dbk="">
-            Advanced Filter
+            Advanced Search
         </a>
     </li>
 

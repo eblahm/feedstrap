@@ -9,7 +9,7 @@ from django.core.context_processors import csrf
 from django import forms
 from django.db.models import Q
 
-# from ssg_site import pysolr
+#from ssg_site import pysolr
 import operator
 
 class Filter():
