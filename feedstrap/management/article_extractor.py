@@ -7,7 +7,6 @@ from cStringIO import StringIO
 import urllib2
 
 def convert_pdf(path):
-
     rsrcmgr = PDFResourceManager()
     retstr = StringIO()
     codec = 'utf-8'
@@ -32,19 +31,17 @@ def ps(x):
             x.decode('utf-8').encode('ascii', 'xmlcharrefreplace')
         except:
             return x.encode('ascii', 'xmlcharrefreplace')
-#g = Goose()
+g = Goose()
 
-new_csv = file('/Users/Matt/Dropbox/dev/ssg_site/feedstrap/seed_data/resources2.csv', 'wb')
+new_csv = file('/Users/Matt/Dropbox/dev/ssg_site/feedstrap/seed_data/resources.csv', 'wb')
 csv_writer = csv.writer(new_csv)
 article_extract_retry = 0
 new_extracted_article = 0
 error = 0
-with open('/Users/Matt/Dropbox/dev/ssg_site/feedstrap/seed_data/resources.csv', 'rb') as csvfile:
+with open('/Users/Matt/Dropbox/dev/ssg_site/feedstrap/seed_data/resources4.csv', 'rb') as csvfile:
     csv_reader = csv.reader(csvfile)
     for row in csv_reader:
         if row[5].strip()[-3:] == 'pdf':
-            print "Trying... " + row[4]
-            print row[5]
             try:
                 article_extract_retry += 1
                 article_page = urllib2.urlopen(row[5])
@@ -54,6 +51,8 @@ with open('/Users/Matt/Dropbox/dev/ssg_site/feedstrap/seed_data/resources.csv', 
                 new_file.write(pdf_data)
                 new_file.close()
                 row[8] = convert_pdf(fn)
+                if len(row[8]) > 20:
+                    new_extracted_article += 1
             except:
                 error += 1
         if len(row[8]) < 20:

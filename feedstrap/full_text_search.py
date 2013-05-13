@@ -3,7 +3,9 @@ from feedstrap import render
 from feedstrap.models import Resource
 from jinja2 import Environment, PackageLoader
 
+mpa = dict.fromkeys(range(32))
 def doc_maker(db_obj):
+    db_obj.content = db.obj.content.translate(mpa)
     tags_list = sorted([t.name for t in db_obj.tags.all()])
     db_obj.tags_cont = ", ".join(tags_list)
     template_values = {'r':db_obj}
