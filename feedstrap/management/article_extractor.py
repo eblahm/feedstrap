@@ -50,7 +50,7 @@ with open('/Users/Matt/Dropbox/dev/ssg_site/feedstrap/seed_data/resources4.csv',
                 new_file = open(fn, 'wb')
                 new_file.write(pdf_data)
                 new_file.close()
-                row[8] = convert_pdf(fn)
+                row[8] = convert_pdf(fn)[:131000]
                 if len(row[8]) > 20:
                     new_extracted_article += 1
             except:
@@ -59,7 +59,7 @@ with open('/Users/Matt/Dropbox/dev/ssg_site/feedstrap/seed_data/resources4.csv',
             article_extract_retry += 1
             try:
                 article = g.extract(url=row[5])
-                row[8] = ps(article.cleaned_text)
+                row[8] = ps(article.cleaned_text)[:131000]
             except:
                 print ps(row[4])[:20]
                 error += 1
