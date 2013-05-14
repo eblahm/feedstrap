@@ -51,7 +51,7 @@ class Command(BaseCommand):
         for row in reader:
             if SidebarLink.objects.filter(name=row[0]).count() == 0:
                 new = SidebarLink(name = row[0],
-                    parameter = row[1],
+                    parameters = row[1],
                     position = row[2],)
                 new.save()
                 self.stdout.write("sidebar.csv was added to the Database!\n")
@@ -105,7 +105,7 @@ class Command(BaseCommand):
                     continue
             else:
                 x = 0
-                if row[1] == 'null':
+                if row[1] == '':
                     row[1] = '2012-02-17T00:00:00'
                 for r in row:
                     if r == "null":
