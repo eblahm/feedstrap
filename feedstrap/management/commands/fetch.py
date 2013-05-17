@@ -15,7 +15,6 @@ class Command(BaseCommand):
         ## Query fetches in ascending order according to when feeds were last updated
         feeds_query = models.Feed.objects.all().order_by('last_updated')
         for feed in feeds_query:
-            self.stdout.write('fetching "%s"' % feed.name)
             parsed_feed = feedparser.parse(feed.url)
             # query for latest database item according to this particular feed
             ## The latest item in the RSS feed is compared with latest item in the database to determine
@@ -44,7 +43,6 @@ class Command(BaseCommand):
                     if membership_query.count() == 0:
                         dt = datetime.fromtimestamp(mktime(item.published_parsed))
                         dt = dt.replace(tzinfo=pytz.utc)
-                        self.stdout.write('Trying -- "%s"\n' % (item.title))
                         r = models.Resource(title=item.title,
                                             link=item.link,
                                             date=dt,
@@ -83,7 +81,7 @@ class Command(BaseCommand):
                     log.save()
                     log.feeds.add(feed)
                     log.save()
-                    self.stdout.write('New Resource Added! -- "%s"' % (r.title))
+                    self.stdout.write('%s -- "%s"' % (feed.name, r.title[:20]))
                 #CommandError('Poll "%s" does not exist' % poll_id)
 
 

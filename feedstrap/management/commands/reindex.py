@@ -5,5 +5,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         solr = full_text_search.solr_server()
         counts = solr.reindex_all()
-        self.stdout.write('You reindexed %i' % (counts['added']))
+        print 'good'
+        #self.stdout.write('You reindexed %s') % (str(counts['added']))
+
 

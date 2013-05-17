@@ -3,7 +3,7 @@ from django.forms import ModelForm
 from django.core.cache import cache
 
 def generate_choices(model, displayed_value='name', real_value="pk"):
-    options = ((0, "null"), )
+    options = (("", ""), )
     for r in model.objects.all():
         options += ((str(getattr(r, real_value)), getattr(r, displayed_value)),)
     return sorted(options, key=lambda opt: opt[1])
@@ -51,18 +51,12 @@ origin_choices = (
     ('Other', 'Other'),
 )
 
-class ResourceOrigin(models.Model):
-    name = models.CharField(max_length=100)
-    category = models.CharField(max_length=100, choices=origin_choices)
-
-
 class Topic(models.Model):
     name = models.CharField(max_length=500)
     description = models.TextField()
-    resourceorigins = models.ManyToManyField(ResourceOrigin, null=True, blank=True)
     imperatives = models.ManyToManyField(Imperative, null=True, blank=True)
     capabilities = models.ManyToManyField(Capability, null=True, blank=True)
-    attachment = models.FileField(upload_to="final")
+    attachment = models.FileField(upload_to="final", null=True, blank=True)
 
 
 class Office(models.Model):
@@ -74,10 +68,10 @@ class Feed(models.Model):
     name = models.CharField(max_length=100)
     owner = models.CharField(max_length=100)
     description = models.CharField(max_length=500)
-    offices = models.ManyToManyField(Office, null=True, blank=True)
-    topics = models.ManyToManyField(Topic, null=True, blank=True)
-    tags = models.ManyToManyField(Tag, null=True, blank=True)
-    reports = models.ManyToManyField(Report, null=True, blank=True)
+    offices = models.ManyToManyField(Office, blank=True)
+    topics = models.ManyToManyField(Topic, blank=True, null=True)
+    tags = models.ManyToManyField(Tag, blank=True, null=True)
+    reports = models.ManyToManyField(Report, blank=True, null=True)
     last_updated = models.DateTimeField()
     
 
@@ -96,13 +90,10 @@ class Resource(models.Model):
     topics = models.ManyToManyField(Topic, null=True, blank=True)
     tags = models.ManyToManyField(Tag, null=True, blank=True)
     reports = models.ManyToManyField(Report, null=True, blank=True)
-#    def save(self):
-#        cache.clear()
-#        import full_text_search
-#        solr = full_text_search.solr_server()
-#        super(Resource, self).save()
-#        solr.add_resource(self)
-#        return self
+    def save(self):
+        cache.clear()
+        super(Resource, self).save()
+        return self
 
 class ResourceForm(ModelForm):
     class Meta:
@@ -118,4 +109,3 @@ class SidebarLink(models.Model):
     name = models.CharField(max_length=100)
     parameters = models.CharField(max_length=500, blank=True)
     position = models.IntegerField()
-

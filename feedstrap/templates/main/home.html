@@ -19,7 +19,7 @@
     <div id="my_nav" class="navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container-fluid">
-                <a class="brand" href="/">SSG Database</a>
+                <a class="brand" href="/">FeedStrap</a>
 
                 <form action="/q" class="navbar-form pull-right">
                     <input type="text" class="span2" name="term"{% if term %}value="{{ term }}"{% endif %}>
@@ -44,7 +44,7 @@
                     <span class="filter_tag" style="{{ t.css }}">{{ t.name }}<a class="xtag" href="{{ t.link }}">×</a></span>
                 {% endfor %}
                 </div>
-                <div style="float: right;">
+                <div class="hidden-phone" style="float: right;">
                     <div class="btn-group">
                       <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-share"></i> Export this Feed </a>
                       <ul class="dropdown-menu pull-right" style="text-align:left">
@@ -64,18 +64,17 @@
         
         
     <div class="row-fluid">
-        <div id="sidebar_parent" class="span2">
-            <div>
+        <div class="span2">
             {% block sidebar %}
                 {% include '/main/sidebar.html' %}
             {% endblock %}
-            </div>
         </div>
-        
-        <div id="content_view" class="span10">
-            {% block content_view %}
-                {% include '/main/list_view.html' %}
-            {% endblock %}
+        <div class="span10">
+            <div id="content_view">
+                {% block content_view %}
+                    {% include '/main/list_view.html' %}
+                {% endblock %}
+            </div>
         </div>
     </div>
 

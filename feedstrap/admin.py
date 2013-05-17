@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.contrib.admin import widgets
 from django import forms
 from feedstrap.models import *
+from django.core.cache import cache
+
 
 ## Resource ##
 class ResourceForm(forms.ModelForm):
@@ -37,7 +39,6 @@ admin.site.register(Feed, FeedAdmin)
 
 ## Topic ##
 class TopicForm(forms.ModelForm):
-    resourceorigins = forms.MultipleChoiceField(choices=generate_choices(ResourceOrigin))
     imperatives = forms.MultipleChoiceField(choices=generate_choices(Imperative))
     capabilities = forms.MultipleChoiceField(choices=generate_choices(Capability))
     class Meta:
@@ -61,7 +62,7 @@ for simple_model in [Tag, Office, Report]:
     admin.site.register(simple_model, simple_admin)
 
 ## Capabilities, Imperatives, Resource Origins ##
-for simple_model in [Capability, ResourceOrigin, Imperative]:
+for simple_model in [Capability, Imperative]:
     class simple_admin(admin.ModelAdmin):
         ordering = ('category', 'name')
         list_display = ('name', 'category')
@@ -78,7 +79,9 @@ admin.site.register(LinkLog, LinkLogAdmin)
 class SidebarLinkAdmin(admin.ModelAdmin):
     ordering = ('position',)
     list_display = ('name', 'parameters', 'position')
-
+    def save_model(self, request, obj, form, change):
+        cache.clear()
+        obj.save() 
 admin.site.register(SidebarLink, SidebarLinkAdmin)
 
 
