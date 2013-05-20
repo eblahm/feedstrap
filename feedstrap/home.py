@@ -17,6 +17,7 @@ def MainPage(request, template=""):
         v['filter_tags'] = generate_filter_tags(request)
     return HttpResponse(render.load(template_file, v))
 
+
 # def read(request):
 #     if request.method == "GET":
 #         rec_key = request.GET.dict()['k']

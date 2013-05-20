@@ -43,13 +43,6 @@ class Capability(models.Model):
     category = models.CharField(max_length=100, choices=capability_choices)
 
 
-origin_choices = (
-    ('Office', 'Office'),
-    ('Departmental', 'Departmental'),
-    ('Governmental', 'Governmental'),
-    ('Non-Governmental', 'Non-Governmental'),
-    ('Other', 'Other'),
-)
 
 class Topic(models.Model):
     name = models.CharField(max_length=500)
@@ -73,7 +66,7 @@ class Feed(models.Model):
     tags = models.ManyToManyField(Tag, blank=True, null=True)
     reports = models.ManyToManyField(Report, blank=True, null=True)
     last_updated = models.DateTimeField()
-    
+
 
 
 class Resource(models.Model):
@@ -93,7 +86,11 @@ class Resource(models.Model):
     def save(self):
         cache.clear()
         super(Resource, self).save()
+        import full_text_search
+        solr = full_text_search.solr_server()
+        x = solr.add_resource(self)
         return self
+
 
 class ResourceForm(ModelForm):
     class Meta:
@@ -104,7 +101,7 @@ class LinkLog(models.Model):
     link = models.CharField(max_length=500)
     feeds = models.ManyToManyField(Feed, null=True, blank=True)
     date = models.DateTimeField(auto_now=True)
-    
+
 class SidebarLink(models.Model):
     name = models.CharField(max_length=100)
     parameters = models.CharField(max_length=500, blank=True)

@@ -15,7 +15,21 @@ framework.
 """
 import os, sys
 import site
+
 site.addsitedir('/usr/local/django/project/lib/python2.7/site-packages')
+
+path27 =['/usr/local/django/project/lib/python2.7/site-packages',
+    '/usr/local/django/project/lib/python2.7',
+    '/usr/local/django/project/lib/python2.7/plat-linux2',
+    '/usr/local/django/project/lib/python2.7/lib-tk',
+    '/usr/local/django/project/lib/python2.7/lib-old',
+    '/usr/local/lib/python2.7',
+    '/usr/local/lib/python2.7/plat-linux2',
+    '/usr/local/lib/python2.7/lib-tk',
+    '/usr/local/django/project/lib/python2.7/site-packages']
+
+for p in path27:
+    sys.path.append(p)
 
 # We defer to a DJANGO_SETTINGS_MODULE already in the environment. This breaks
 # if running multiple sites in the same mod_wsgi process. To fix this, use

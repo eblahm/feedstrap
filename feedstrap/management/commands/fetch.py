@@ -49,6 +49,7 @@ class Command(BaseCommand):
                                             description=item.description)
                         r.save()
                         r.feeds.add(feed)
+                        r.save()
                         try:
                             page = urllib2.urlopen(item.link)
                             page_content = page.read()
@@ -81,7 +82,7 @@ class Command(BaseCommand):
                     log.save()
                     log.feeds.add(feed)
                     log.save()
-                    self.stdout.write('%s -- "%s"' % (feed.name, r.title[:20]))
+                    self.stdout.write('%s -- %s -- "%s"' % (datetime.now().strftime('%m %b %y'), feed.name, r.title[:20]))
                 #CommandError('Poll "%s" does not exist' % poll_id)
 
 

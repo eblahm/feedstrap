@@ -10,13 +10,12 @@ import pytz
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
-        ignored_values = ["", "null", "None", None, "Top 10 Report", "alchemy call fail", "error", "error1","error2","error3","error4", "-"]
+        ignored_values = ["", "null", "page load fail", "None", None, "Top 10 Report", "alchemy call fail", "error", "error1","error2","error3","error4", "-"]
 
         def get_full_path(short_name):
             return config.app_root + '/feedstrap/seed_data/' + short_name
         file_to_model = [('capabilities.csv', Capability),
                          ('imperatives.csv', Imperative),
-                         ('resource origins.csv', ResourceOrigin),
                          ('offices.csv', Office),
                          ('reports.csv', Report)]
         for file, model in file_to_model:
@@ -55,7 +54,7 @@ class Command(BaseCommand):
                     position = row[2],)
                 new.save()
                 self.stdout.write("sidebar.csv was added to the Database!\n")
-                
+
         if Topic.objects.all().count() == 0:
             reader = csv.reader(open(get_full_path('topics.csv'), 'rb'))
             for row in reader:

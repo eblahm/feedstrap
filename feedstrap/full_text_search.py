@@ -11,8 +11,9 @@ def normalize(x):
             return x.decode('utf-8').encode('ascii', 'xmlcharrefreplace')
         except:
             return x.encode('ascii', 'xmlcharrefreplace')
-    
 mpa = dict.fromkeys(range(32))
+
+
 def doc_maker(db_obj):
     if db_obj.content is not None:
        db_obj.content = db_obj.content.translate(mpa)
@@ -40,21 +41,19 @@ class solr_server():
         added = 0
         q = Resource.objects.all()
         for r in q:
-            print added 
+            print added
             docs.append(doc_maker(r))
             added += 1
         self.solr.add(docs)
         return {'deleted': deleted, 'added': added}
-
-
+    def add_resource(self, r):
+        solr = self.solr
+        doc = doc_maker(r)
+        solr.add([doc])
+        return doc
 
     def delete_resource(self, resource_item):
         self.solr.delete(id=resource_item.pk)
         return 'deleted'
 
-def solr_add_resource(r):
-    solr = pysolr.Solr('http://localhost:8983/solr/', timeout=10)
-    doc = doc_maker(r)
-    solr.add([doc])
-    return doc
 
