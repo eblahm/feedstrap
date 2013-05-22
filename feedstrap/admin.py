@@ -7,6 +7,10 @@ from django.core.cache import cache
 
 ## Resource ##
 class ResourceForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ResourceForm, self).__init__(*args, **kwargs)
+        for k in ['tags', 'topics', 'offices', 'reports']:
+            self.fields[k].required = False
     tags = forms.MultipleChoiceField(choices=generate_choices(Tag))
     feeds = forms.MultipleChoiceField(choices=generate_choices(Feed))
     topics = forms.MultipleChoiceField(choices=generate_choices(Topic))
@@ -24,13 +28,17 @@ admin.site.register(Resource, ResourceAdmin)
 
 ## Feed ##
 class FeedForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(FeedForm, self).__init__(*args, **kwargs)
+        for k in ['tags', 'topics', 'offices', 'reports']:
+            self.fields[k].required = False
     tags = forms.MultipleChoiceField(choices=generate_choices(Tag))
     topics = forms.MultipleChoiceField(choices=generate_choices(Topic))
     offices = forms.MultipleChoiceField(choices=generate_choices(Office))
     reports = forms.MultipleChoiceField(choices=generate_choices(Report))
     class Meta:
         model = Feed
-        
+
 class FeedAdmin(admin.ModelAdmin):
     form = FeedForm
     list_display = ('name', 'owner', 'url')
@@ -43,7 +51,7 @@ class TopicForm(forms.ModelForm):
     capabilities = forms.MultipleChoiceField(choices=generate_choices(Capability))
     class Meta:
         model = Topic
-        
+
 class TopicAdmin(admin.ModelAdmin):
     form = TopicForm
     ordering = ('name',)
@@ -67,7 +75,7 @@ for simple_model in [Capability, Imperative]:
         ordering = ('category', 'name')
         list_display = ('name', 'category')
     admin.site.register(simple_model, simple_admin)
-        
+
 
 
 class LinkLogAdmin(admin.ModelAdmin):
@@ -81,7 +89,7 @@ class SidebarLinkAdmin(admin.ModelAdmin):
     list_display = ('name', 'parameters', 'position')
     def save_model(self, request, obj, form, change):
         cache.clear()
-        obj.save() 
+        obj.save()
 admin.site.register(SidebarLink, SidebarLinkAdmin)
 
 

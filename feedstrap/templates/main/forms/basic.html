@@ -62,9 +62,9 @@ return false;
       
       <label for="title">Title:</label> <input id="title" name="title" type="text" class="input-xxlarge" value="{{ rec.title|e }}"></input><br>
 
-      <label for="description">Description:</label><textarea style="height: 50px" id="description" name="description">{% if rec.description %}{{ rec.description|e }}{%  endif  %}</textarea>
+      <label for="description">Description:</label><textarea style="min-height: 50px" id="description" name="description">{% if rec.description %}{{ rec.description|e }}{%  endif  %}</textarea>
 
-      <label for="relevance">Relevance:</label><textarea style="height: 50px" id="relevance" name="relevance">{% if rec.relevance %}{{ rec.relevance|e  }}{%  endif  %}</textarea>
+      <label for="relevance">Relevance:</label><textarea style="min-height: 50px" id="relevance" name="relevance">{% if rec.relevance %}{{ rec.relevance|e  }}{%  endif  %}</textarea>
 
       <div>
           <div style="float: right; text-align: left; margin-right: 10%;">

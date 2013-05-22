@@ -2,8 +2,9 @@ from django.db import models
 from django.forms import ModelForm
 from django.core.cache import cache
 
+
 def generate_choices(model, displayed_value='name', real_value="pk"):
-    options = (("", ""), )
+    options = ()
     for r in model.objects.all():
         options += ((str(getattr(r, real_value)), getattr(r, displayed_value)),)
     return sorted(options, key=lambda opt: opt[1])
@@ -14,6 +15,7 @@ office_choices = (
     ('SPS', 'Strategic Planning Service'),
     ('AS', 'Front Office'),
 )
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=50)

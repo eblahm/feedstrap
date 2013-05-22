@@ -17,4 +17,5 @@ urlpatterns = patterns('',
     url(r'^q', 'feedstrap.home.MainPage'),
     # url(r'^read', 'feedstrap.home.read'),
     url(r'^filter', 'feedstrap.filter.main'),
+    url(r'(?P<static_page>.+)', 'feedstrap.home.StaticPage'),
 )

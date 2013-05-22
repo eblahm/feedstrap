@@ -18,6 +18,12 @@ def MainPage(request, template=""):
     return HttpResponse(render.load(template_file, v))
 
 
+def StaticPage(request, static_page=""):
+    v = {}
+    template_file = '/main/home.html'
+    return HttpResponse(render.load(template_file, v))
+
+
 # def read(request):
 #     if request.method == "GET":
 #         rec_key = request.GET.dict()['k']

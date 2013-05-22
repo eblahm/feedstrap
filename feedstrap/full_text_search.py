@@ -15,8 +15,11 @@ mpa = dict.fromkeys(range(32))
 
 
 def doc_maker(db_obj):
-    if db_obj.content is not None:
-       db_obj.content = db_obj.content.translate(mpa)
+    if db_obj.content is not None and db_obj.content != "":
+        try:
+            db_obj.content = db_obj.content.translate(mpa)
+        except:
+            pass
     tags_list = sorted([t.name for t in db_obj.tags.all()])
     db_obj.tags_cont = ", ".join(tags_list)
     template_values = {'r':db_obj}
