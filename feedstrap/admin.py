@@ -3,7 +3,19 @@ from django.contrib.admin import widgets
 from django import forms
 from feedstrap.models import *
 from django.core.cache import cache
+from django.contrib.flatpages.models import FlatPage
+from tinymce.widgets import TinyMCE
 
+## Static Page ##
+class StaticPageForm(forms.ModelForm):
+    content = forms.CharField(widget=TinyMCE(attrs={'theme': 'advanced', 'cols': 80, 'rows': 30}))
+    class Meta:
+        model = StaticPage
+
+class StaticPageAdmin(admin.ModelAdmin):
+    form = StaticPageForm
+
+admin.site.register(StaticPage, StaticPageAdmin)
 
 ## Resource ##
 class ResourceForm(forms.ModelForm):

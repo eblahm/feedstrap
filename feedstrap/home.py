@@ -7,6 +7,10 @@ def MainPage(request, template=""):
     v = {}
     v.update(apply_filter(request))
     v.update(request.GET.dict())
+    if not request.user.is_authenticated():
+        v['admin'] = False
+    else:
+        v['admin'] = True
     if template == "ajax":
         template_file = '/main/list_view.html'
     else:

@@ -1,7 +1,7 @@
 from django.db import models
 from django.forms import ModelForm
 from django.core.cache import cache
-
+from tinymce.models import HTMLField
 
 def generate_choices(model, displayed_value='name', real_value="pk"):
     options = ()
@@ -104,7 +104,15 @@ class LinkLog(models.Model):
     feeds = models.ManyToManyField(Feed, null=True, blank=True)
     date = models.DateTimeField(auto_now=True)
 
+
 class SidebarLink(models.Model):
     name = models.CharField(max_length=100)
     parameters = models.CharField(max_length=500, blank=True)
     position = models.IntegerField()
+
+
+class StaticPage(models.Model):
+    slug = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
+    content = HTMLField()
+    published = models.BooleanField()
