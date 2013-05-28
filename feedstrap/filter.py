@@ -67,7 +67,7 @@ def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_l
     text_search = applied_filters.get('term', None)
     if len(applied_filters) == 0:
         pass
-    elif text_search != None:
+    elif text_search != None and config.solr_enabled:
         solr = pysolr.Solr('http://localhost:8983/solr/', timeout=10)
         srt = 'score desc'
         if '/rss' in request.path:

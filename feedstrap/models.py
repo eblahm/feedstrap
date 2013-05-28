@@ -2,6 +2,8 @@ from django.db import models
 from django.forms import ModelForm
 from django.core.cache import cache
 from tinymce.models import HTMLField
+from ssg_site import config
+
 
 def generate_choices(model, displayed_value='name', real_value="pk"):
     options = ()
@@ -85,12 +87,14 @@ class Resource(models.Model):
     topics = models.ManyToManyField(Topic, null=True, blank=True)
     tags = models.ManyToManyField(Tag, null=True, blank=True)
     reports = models.ManyToManyField(Report, null=True, blank=True)
+
     def save(self):
         cache.clear()
         super(Resource, self).save()
-        import full_text_search
-        solr = full_text_search.solr_server()
-        x = solr.add_resource(self)
+        if config.solr_enabled:
+            import full_text_search
+            solr = full_text_search.solr_server()
+            x = solr.add_resource(self)
         return self
 
 
