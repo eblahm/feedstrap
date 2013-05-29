@@ -5,6 +5,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^$', 'feedstrap.home.MainPage'),
+    url(r'^admin', include(admin.site.urls)),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^tinymce/', include('tinymce.urls')),
     url(r'rss', 'feedstrap.rss.main'),

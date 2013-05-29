@@ -1,5 +1,5 @@
 from jinja2 import Environment, PackageLoader
-from feedstrap.models import Report, Tag, SidebarLink
+from feedstrap.models import Report, Tag, SidebarLink, StaticPage
 from django.core.cache import cache
 from ssg_site.config import solr_enabled
 
@@ -23,10 +23,15 @@ def load(template_file, template_values={}):
         cache.set('feed_navs', feed_navs)
     feed_nav_lookup = dict(feed_navs)
 
+    static_pages = cache.get('static_pages')
+    if static_pages == None:
+        static_pages = [sp for sp in StaticPage.objects.all()]
+
     perams = template_values.get('get_query', None)
     v['advanced_search'] = feed_nav_lookup.get(perams, True)
     v['feed_navs'] = feed_navs
     v['solr_enabled'] = solr_enabled
+    v['static_pages'] = static_pages
     template_values.update(v)
 
     if template_values.get('nav', "") != '':

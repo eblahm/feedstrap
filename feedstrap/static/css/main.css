@@ -1,12 +1,16 @@
 .javascript_link:hover {text-decoration:underline; color:3399FF; cursor:pointer;}
 .javascript_link:active {text-decoration:underline;}
+body {
+    margin-top:50px;
+}
 #my_nav {
       padding-left:2px;
       padding-right:2px;
       max-height: 50px;
   }
+
 #content_header {
-    margin-top:50px;
+    /*margin-top:50px;*/
     margin-bottom:10px;
   }
 #content_view {

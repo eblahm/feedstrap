@@ -31,11 +31,13 @@
                 {% for report in i.reports.all() %}{% if report.name == 'Weekly Reads' %}<span class="spacer">|</span><a href="/q?report={{ report.name|e }}" class="label label-info">WR</a>{% endif %}{% endfor %}
             {% endif %}
 
+        {% if admin %}
         <section class="ar_tools" id="article_tools_{{ i.pk }}">
             <a class="modal_view" data-target="#modal_content" data-toggle="modal" href="#" data-dbk="{{ i.pk }}" data-url="/edit/resource/">
                 <i class="icon-edit"></i>
             </a>
         </section>
+        {% endif %}
 
         </section>
 

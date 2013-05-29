@@ -37,6 +37,7 @@ def get_rating(val, factor):
 def esil(request,  site="vacloud.us"):
     v = {'site':site}
     v['nav'] = 'esil'
+    v['admin'] = request.user.is_authenticated()
     selected = request.GET.dict().get('k', None)
     if selected != None:
         topic = Topic.objects.get(pk=int(selected))
@@ -80,7 +81,7 @@ def esil(request,  site="vacloud.us"):
 def weeklyreads(request, site="sharepoint"):
     v = {}
     v.update(request.GET.dict())
-
+    v['admin'] = request.user.is_authenticated()
     if site == 'export_to_word':
         v.update(apply_filter(request, per_page_limit=100))
         v['next_offset'] = False
@@ -111,7 +112,7 @@ def export_csv(request):
     v.update(apply_filter(request, per_page_limit=5000))
 
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="search resulsts.csv"'
+    response['Content-Disposition'] = 'attachment; filename="search results.csv"'
 
     writer = csv.writer(response)
     header_row = [f.name for f in Resource._meta.fields]
@@ -124,11 +125,3 @@ def export_csv(request):
             row.append(ascii_safe(rec[field]))
         writer.writerow(row)
     return response
-
-
-
-
-
-
-
-

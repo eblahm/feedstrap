@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from filter import apply_filter, generate_filter_tags
 import render
-
+from models import StaticPage as StaticPageModel
 
 def MainPage(request, template=""):
     v = {}
@@ -20,7 +20,8 @@ def MainPage(request, template=""):
 
 def StaticPage(request, static_page=""):
     v = {}
-    template_file = '/main/home.html'
+    v['static_page'] = StaticPageModel.objects.filter(slug=static_page).get()
+    template_file = '/main/static.html'
     return HttpResponse(render.load(template_file, v))
 
 

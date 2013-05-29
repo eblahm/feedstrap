@@ -50,7 +50,7 @@ return false;
 
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h4 id="myModalLabel" style="margin-bottom: 0px"><a href="{{ rec.link }}">{{ rec.title|e }}</a></h4>
+    <h4 id="myModalLabel" style="margin-bottom: 0px"><a href="{{ rec.link }}" target="_blank">{{ rec.title|e }}</a></h4>
     <div style="text-align: right">added {{ rec.date.strftime('%d %b %y') }} by {% for feed in rec.feeds.all() %}{% if loop.index > 1 %}, {% endif %}{{ feed.owner|e }}{% endfor %}</div>
 </div>
 
@@ -75,7 +75,7 @@ return false;
                 <option value=""></option>
                 {% for t in topics %}<option value="{{ t.pk }}"{% if t in rec.topics.all() %} selected="selected"{% endif %}>{{ t.name|e }}</option>{% endfor %}
             </select>
-      </div>
+        </div>
         <div style="text-align:right; margin-right: 10%;">
         <span style="vertical-align: bottom; margin-right:5px">Include in Weekly Reads Report?  </span><input id="wrcheck" style="vertical-align: middle; position: relative; bottom: 1px;" name="weekly_reads" type='checkbox' {% if 1 in rec.all_reports %} checked{% endif %}>
         </div>
@@ -84,6 +84,7 @@ return false;
 </div>
 
 <div class="modal-footer">
+    <a style="float:left"  href="/admin/feedstrap/resource/{{ rec.pk }}/">more...</a>
     <button id="save_btn" class="btn">Save</button>
     <div id="save_status" style="text-align:right"></div>
 </div>
