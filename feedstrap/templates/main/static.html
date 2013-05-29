@@ -1,0 +1,17 @@
+{% extends "/main/home.html" %}
+{% block title %}{{ static_page.name }}{% endblock %}
+{% block full_content %}
+
+<div class="row-fluid">
+    <div class="span2">
+    </div>
+    <div class="span8">
+        {{ static_page.content }}
+    </div>
+    <div class="span2">
+    </div>
+</div>
+
+
+
+{% endblock %}

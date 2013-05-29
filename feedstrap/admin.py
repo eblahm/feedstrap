@@ -8,7 +8,7 @@ from tinymce.widgets import TinyMCE
 
 ## Static Page ##
 class StaticPageForm(forms.ModelForm):
-    #content = forms.CharField(widget=TinyMCE(attrs={'cols': 80, 'rows': 30}))
+    content = forms.CharField(widget=TinyMCE(attrs={'cols': 80, 'rows': 30}))
     class Meta:
         model = StaticPage
 

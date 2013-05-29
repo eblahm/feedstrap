@@ -118,5 +118,5 @@ class SidebarLink(models.Model):
 class StaticPage(models.Model):
     slug = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
-    content = models.TextField()
+    content = HTMLField()
     published = models.BooleanField()
