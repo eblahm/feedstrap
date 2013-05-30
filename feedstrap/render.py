@@ -33,6 +33,7 @@ def load(template_file, template_values={}):
     v['feed_navs'] = feed_navs
     v['solr_enabled'] = solr_enabled
     v['static_pages'] = static_pages
+    
     template_values.update(v)
 
     if template_values.get('nav', "") != '':

@@ -40,11 +40,13 @@
 
 
 {% block full_content %}
+
     <div id="content_header" class="row-fluid">
         <div class="span2">
         </div>
         
         <div class="span10" >
+        {% if peram_count != 0 %}
         {% block content_header %}
                 <div style="float: left; margin-top: .6em">
                 {% for t in filter_tags %}
@@ -64,6 +66,7 @@
                     </div>
                 </div>
         {% endblock %}
+        {% endif %}
         </div>
 
 
