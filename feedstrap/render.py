@@ -25,7 +25,8 @@ def load(template_file, template_values={}):
 
     static_pages = cache.get('static_pages')
     if static_pages == None:
-        static_pages = [sp for sp in StaticPage.objects.all()]
+        static_pages = [sp for sp in StaticPage.objects.filter(published=True)]
+        cache.set('static_pages', static_pages)
 
     perams = template_values.get('get_query', None)
     v['advanced_search'] = feed_nav_lookup.get(perams, True)

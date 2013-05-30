@@ -13,6 +13,7 @@ class StaticPageForm(forms.ModelForm):
         model = StaticPage
 
 class StaticPageAdmin(admin.ModelAdmin):
+    list_display = ('name',)
     form = StaticPageForm
 
 admin.site.register(StaticPage, StaticPageAdmin)

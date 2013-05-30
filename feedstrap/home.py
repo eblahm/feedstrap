@@ -20,8 +20,12 @@ def MainPage(request, template=""):
 
 def StaticPage(request, static_page=""):
     v = {}
-    v['static_page'] = StaticPageModel.objects.filter(slug=static_page).get()
-    template_file = '/main/static.html'
+    q = StaticPageModel.objects.filter(slug=static_page)
+    if q.count() == 1:
+        v['static_page'] = q.get()
+        template_file = '/main/static.html'
+    else:
+        template_file = '/main/404.html'
     return HttpResponse(render.load(template_file, v))
 
 
