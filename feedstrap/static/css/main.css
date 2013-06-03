@@ -147,7 +147,12 @@ body {
     .ar_details {
         padding: 0 5px 0 10px;
     }
-    .spacer {
+    .alrt {
+        line-height: 30px;
+        margin-bottom: 10px;
+        padding: 10px;
+    }
+.spacer {
         margin-left:5px;
         margin-right:5px;
     }
