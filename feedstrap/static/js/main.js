@@ -15,6 +15,9 @@ function load_modal(page) {
     });
 }
 
+if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+      $("#sidebar").removeClass('nav nav-list well').addClass('dropdown-menu')
+}
 
 $(document).ready(function () {
 var sbar_loadstate = $("#sidebar").width();
@@ -96,22 +99,25 @@ var sbar_loadstate = $("#sidebar").width();
      
      });
      if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
-         var phone_or_ipad = true;
+         var pt = true
+          // $("#sidebar").removeClass('well')
     }
     else {
-        $(window).scroll(function() {
-            var scrollposition = $(window).scrollTop();
-            var sidebar_parent_offset = $("#content_view").offset().top;
-            var sidebar = $("#sidebar");
-            if (scrollposition > sidebar_parent_offset - 50) {  
-            var top_offset = scrollposition + 50;
-            sidebar.css({position: "absolute", width: sbar_loadstate}).offset({top: top_offset});
-            }
-            else {
-            sidebar.css({position: ""}); 
-            }
-            
-        });
+        if ($(window).width() > 760){
+                $(window).scroll(function() {
+                    var scrollposition = $(window).scrollTop();
+                    var sidebar_parent_offset = $("#content_view").offset().top;
+                    var sidebar = $("#sidebar");
+                    if (scrollposition > sidebar_parent_offset - 50) {  
+                    var top_offset = scrollposition + 50;
+                    sidebar.css({position: "absolute", width: sbar_loadstate}).offset({top: top_offset});
+                    }
+                    else {
+                    sidebar.css({position: ""}); 
+                    }
+                    
+                });
+        };
         
             $("body").on("mouseenter", ".feed_item", function (event) {
                 var ref = $(this).attr('id').replace("ar_", "");
@@ -123,5 +129,15 @@ var sbar_loadstate = $("#sidebar").width();
         
         
     }
+    
+    $(window).resize(function() {
+        if ($(window).width() < 760) {
+            $("#sidebar").css({position: "static", width: "auto"});
+            }
+        else {
+            var max_width = $("#sidebar_zone").width()
+            $("#sidebar").css({width: max_width - 20});
+        }
+    });
 
 });

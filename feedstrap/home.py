@@ -27,6 +27,7 @@ def StaticPage(request, static_page=""):
     q = StaticPageModel.objects.filter(slug=static_page)
     if q.count() == 1:
         v['static_page'] = q.get()
+        v['nav'] = v['static_page'].slug
         template_file = '/main/static.html'
     else:
         template_file = '/main/404.html'

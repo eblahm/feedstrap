@@ -1,35 +1,35 @@
-<div id="sidebar" class="well" style="max-width: 340px; padding: 8px 0;" >
-<ul class="nav nav-list">
-    <li class="nav-header">Feeds</li>
-    {% for fn in feed_navs %}
-    <li {% if get_query == fn[0] %}class="active"{% endif %}>
-        <a href="/?{{ fn[0] }}">
-           {{ fn[1] }}
-        </a>
-    </li>
-    {% endfor %}
-    <li class="nav-header">Tools</li>
-    <li {% if nav == 'esil' %}class="active"{% endif %}>
-        <a href="/esil">  
-           ESIL
-        </a>
-    </li>
-    <li {% if advanced_search == True %}class="active"{% endif %}>
-        <a class="modal_view" data-target="#modal_content" data-toggle="modal" href="#" data-url="/filter" data-dbk="">
-            Advanced Search
-        </a>
-    </li>
-<!--{% if admin %}-->
-<!--    <li>-->
-<!--        <a href="/admin/">-->
-<!--           Admin Console-->
-<!--        </a>-->
-<!--    </li>-->
-<!--{% endif %}-->
-</ul>
-<div class="span2">
-</div>
-</div>
+
+
+    <ul id="sidebar" class="nav nav-list well">
+        <li class="nav-header">Feeds</li>
+        {% for fn in feed_navs %}
+        <li {% if get_query == fn[0] %}class="active"{% endif %}>
+            <a href="/?{{ fn[0] }}">
+               {{ fn[1] }}
+            </a>
+        </li>
+        {% endfor %}
+        <li class="nav-header">Tools</li>
+        <li {% if nav == 'esil' %}class="active"{% endif %}>
+            <a href="/esil">  
+               ESIL
+            </a>
+        </li>
+        <li {% if advanced_search == True %}class="active"{% endif %}>
+            <a class="modal_view" data-target="#modal_content" data-toggle="modal" href="#" data-url="/filter" data-dbk="">
+                Advanced Search
+            </a>
+        </li>
+        <li class="visible-phone" ><a href="/admin/">Admin</a></li>
+        <li class="nav-header visible-phone">Info</li>
+        {% for sp in static_pages %}
+        <li class="visible-phone {% if nav == sp.slug %}active{% endif %}"><a href="/{{ sp.slug }}">{{ sp.name }}</a></li>
+        {% endfor %}
+        
+
+    </ul>
+
+
 
 
 

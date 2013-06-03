@@ -18,8 +18,6 @@ body {
     margin-bottom: 50px;
 }
 
-#sidebar {
-}
 
 .view_btn { margin:2px; }
 .show_more{
@@ -132,6 +130,10 @@ body {
 @media (max-width:480px) {
     body {
         padding-top:0;
+    }
+    #sidebar {
+    width:auto;
+    margin-bottom:10px;
     }
     .ar {
         margin-bottom: 10px;
