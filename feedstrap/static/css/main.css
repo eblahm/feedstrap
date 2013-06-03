@@ -1,7 +1,7 @@
 .javascript_link:hover {text-decoration:underline; color:3399FF; cursor:pointer;}
 .javascript_link:active {text-decoration:underline;}
 body {
-    margin-top:50px;
+    padding-top:50px;
 }
 #my_nav {
       padding-left:2px;
@@ -61,15 +61,10 @@ body {
 .alrt {
     /*background-color: #D9EDF7;*/
     border: 1px solid #BCE8F1;    
-
-
     /*padding: 8px 35px 8px 14px;*/
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
-    
-
     border-radius: 6px 6px 6px 6px;
-
     font-size: 18px;
     font-weight: 200;
     line-height: 30px;
@@ -91,7 +86,7 @@ body {
     background-color: lightyellow;
 }
 .ar_clip {
-    padding: 10px 10px 0px 20px;
+    padding: 10px 10px 0 20px;
 }
 .ar_tools {
     display:none;
@@ -100,7 +95,7 @@ body {
     
 }
 .ar_details {
-    padding: 0px 10px 0 20px;
+    padding: 0 10px 0 20px;
 }
 .spacer {
     margin-left:15px;
@@ -136,30 +131,22 @@ body {
 
 @media (max-width:480px) {
     body {
-        margin-top:0px;
+        padding-top:0;
     }
     .ar {
         margin-bottom: 10px;
-        /*margin-top: 15px;*/
+        margin-top: 15px;
     }
     .ar_clip {
-        padding: 0px;
-        padding: 5px 5px 0px 10px;
+        padding: 0;
+        padding: 5px 5px 0 10px;
     }
     .ar_tools {
-        display:none;
-        float: right;
+        display:block;
     }
     .ar_details {
-        padding: 0px 5px 0 10px;
+        padding: 0 5px 0 10px;
     }
-    .row-fluid {
-        width:100% !important;
-        padding:0 !important;
-    } 
-    .container-fluid {
-        padding:0 !important;
-    }    
     .spacer {
         margin-left:5px;
         margin-right:5px;
