@@ -33,13 +33,18 @@
                     {% for sp in static_pages %}
                     <li><a href="/{{ sp.slug }}">{{ sp.name }}</a></li>
                     {% endfor %}
-                    <li><a href="/admin/">Admin</a></li>
                     <li class="visible-phone">
+                        <a href="/esil">  
+                        ESIL
+                        </a>
+                    </li>
+                   <li class="visible-phone">
                         <a class="modal_view" data-target="#modal_content" data-toggle="modal" href="#" data-url="/filter" data-dbk="">
                             Advanced Search
                         </a>  
                     </li>
-                </ul>
+                    <li><a href="/admin/">Admin</a></li>
+                 </ul>
                 </div>
 
                 {% if solr_enabled == True %}
@@ -81,11 +86,7 @@
         {% endblock %}
         {% endif %}
         </div>
-
-
-
     </div>
-        
     <div class="row-fluid">
         <div id="sidebar_zone" class="span2 hidden-phone">
             {% block sidebar %}
