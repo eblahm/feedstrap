@@ -15,12 +15,8 @@ function load_modal(page) {
     });
 }
 
-if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
-      $("#sidebar").removeClass('nav nav-list well').addClass('dropdown-menu')
-}
-
 $(document).ready(function () {
-var sbar_loadstate = $("#sidebar").width();
+
 
 
     $(".expander").click(function (event){
@@ -44,10 +40,6 @@ var sbar_loadstate = $("#sidebar").width();
         load_modal(page);
     });
 
-//    $("#content_view").on("click", ".read", function (event) {
-//        var db_key = $(this).data('dbk');
-//        load_modal(db_key, url_string="/read");
-//    });
     
     $("#content_view").on("click", ".show_more", function (event) {
         var url_request = $(this).data('query');
@@ -100,20 +92,22 @@ var sbar_loadstate = $("#sidebar").width();
      });
      if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
          var pt = true
-          // $("#sidebar").removeClass('well')
     }
     else {
         if ($(window).width() > 760){
                 $(window).scroll(function() {
-                    var scrollposition = $(window).scrollTop();
-                    var sidebar_parent_offset = $("#content_view").offset().top;
-                    var sidebar = $("#sidebar");
-                    if (scrollposition > sidebar_parent_offset - 50) {  
-                    var top_offset = scrollposition + 50;
-                    sidebar.css({position: "absolute", width: sbar_loadstate}).offset({top: top_offset});
-                    }
-                    else {
-                    sidebar.css({position: ""}); 
+                    if ($(window).width() > 760) {
+                        var scrollposition = $(window).scrollTop();
+                        var sidebar_parent_offset = $("#content_view").offset().top;
+                        var sidebar = $("#sidebar");
+                        if (scrollposition > sidebar_parent_offset - 50) {  
+                        var top_offset = scrollposition + 50;
+                        var sbar_width = $("#sidebar").width();
+                        sidebar.css({position: "absolute", width: sbar_width}).offset({top: top_offset});
+                        }
+                        else {
+                        sidebar.css({position: ""}); 
+                        }
                     }
                     
                 });

@@ -3,12 +3,7 @@
 body {
     padding-top:50px;
 }
-#my_nav {
-      padding-left:2px;
-      padding-right:2px;
-      max-height: 50px;
-  }
-
+  
 #content_header {
     /*margin-top:50px;*/
     margin-bottom:10px;
@@ -131,10 +126,10 @@ body {
     body {
         padding-top:0;
     }
-    #sidebar {
-    width:auto;
-    margin-bottom:10px;
-    }
+    #content_header {
+        margin-top:0px;
+        margin-bottom:2px;
+      }
     .ar {
         margin-bottom: 10px;
         margin-top: 15px;

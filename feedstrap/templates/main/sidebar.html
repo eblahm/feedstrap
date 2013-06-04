@@ -1,6 +1,6 @@
 
 
-    <ul id="sidebar" class="nav nav-list well">
+    <ul id="sidebar" class="nav nav-list well hidden-phone">
         <li class="nav-header">Feeds</li>
         {% for fn in feed_navs %}
         <li {% if get_query == fn[0] %}class="active"{% endif %}>
@@ -20,13 +20,6 @@
                 Advanced Search
             </a>
         </li>
-        <li class="visible-phone" ><a href="/admin/">Admin</a></li>
-        <li class="nav-header visible-phone">Info</li>
-        {% for sp in static_pages %}
-        <li class="visible-phone {% if nav == sp.slug %}active{% endif %}"><a href="/{{ sp.slug }}">{{ sp.name }}</a></li>
-        {% endfor %}
-        
-
     </ul>
 
 
