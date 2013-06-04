@@ -72,7 +72,7 @@ def main(request):
             message = '<em>updated %s</em>' % (now_est.strftime('%I:%M:%S%p'))
             message = message.lower() + " EST"
             response_data['id'] = 'ar_%s' % (rec.pk)
-            response_data['ajax_html'] = render.load('/main/list_view_article.html', {'i': rec})
+            response_data['ajax_html'] = render.load('/main/list_view_article.html', {'i': rec, 'admin': True})
             response_data['save_status'] = message
             json_response = json.dumps(response_data)
             return HttpResponse(json_response)
