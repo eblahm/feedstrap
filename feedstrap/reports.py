@@ -64,7 +64,11 @@ def esil(request,  site="vacloud.us"):
         return HttpResponse(render.load("/main/esil/topic_card.html", v))
     else:
         topics = []
-        for t in Topic.objects.all():
+        if v['admin'] == True:
+            q = Topic.objects.all()
+        else:
+            q = Topic.objects.filter(published=True)
+        for t in q.order_by('-attachment', 'name'):
             rsearch = Resource.objects.filter(topics=t)
             t.intensity = get_rating(rsearch.count(), 'intensity')
             t.impact = get_rating(t.capabilities.all().count(), 'impact')
