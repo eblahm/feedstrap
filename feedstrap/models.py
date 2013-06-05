@@ -54,7 +54,7 @@ class Topic(models.Model):
     imperatives = models.ManyToManyField(Imperative, null=True, blank=True)
     capabilities = models.ManyToManyField(Capability, null=True, blank=True)
     attachment = models.FileField(upload_to="final", null=True, blank=True)
-
+    published = models.BooleanField()
 
 class Office(models.Model):
     name = models.CharField(max_length=50, choices=office_choices)
