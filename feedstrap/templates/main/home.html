@@ -31,7 +31,7 @@
                 <div class="nav-collapse collapse">
                 <ul class="nav">
                     {% for sp in static_pages %}
-                    <li><a href="/{{ sp.slug }}">{{ sp.name }}</a></li>
+                    <li {% if static_page %}{% if sp.slug == static_page.slug %} class="active"{% endif %}{% endif %}><a href="/{{ sp.slug }}">{{ sp.name }}</a></li>
                     {% endfor %}
                     <li class="visible-phone">
                         <a href="/esil">  
