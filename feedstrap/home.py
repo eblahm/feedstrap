@@ -10,9 +10,9 @@ def MainPage(request, template=""):
     v['admin'] = request.user.is_authenticated()
     v['peram_count'] = len(filter_conditions)
     if v['peram_count'] == 0 and v['admin'] is False:
-        alert = StaticPageModel.objects.filter(slug='welcome').get()
-        if alert:
-            v['alert'] = alert.content
+        alert_query = StaticPageModel.objects.filter(slug='welcome')
+        if alert_query.count() > 0:
+            v['alert'] = alert_query.get().content
     v.update(apply_filter(request))
     v.update(filter_conditions)
     if template == "ajax":
