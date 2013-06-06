@@ -69,7 +69,8 @@ class Command(BaseCommand):
                     self.stdout.write(djobj.name + "\n")
                     imperatives.append(djobj)
                 new = Topic(name=row[0],
-                            description=row[1],)
+                            description=row[1],
+                            published=True)
                 new.save()
                 new.capabilities = capabilities
                 new.imperatives = imperatives

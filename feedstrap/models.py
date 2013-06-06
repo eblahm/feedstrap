@@ -119,4 +119,5 @@ class StaticPage(models.Model):
     slug = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
     content = HTMLField()
+    position = models.IntegerField()
     published = models.BooleanField()
