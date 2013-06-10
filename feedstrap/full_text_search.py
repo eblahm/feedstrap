@@ -4,21 +4,21 @@ from feedstrap.models import Resource
 from jinja2 import Environment, PackageLoader
 
 def normalize(x):
-    if x == str:
-        return x
-    elif x == unicode:
-        return x.decode('utf-8', 'ignore')
+    if type(x) == str:
+        return str(x)
+    elif type(x) == unicode:
+        return x.encode('ascii', 'ignore')
     else:
         return str(x)
-mpa = dict.fromkeys(range(32))
+
+def remove_control_characters(s):
+    return "".join(c for c in s if ord(c) >= 32)
 
 
 def doc_maker(db_obj):
     if db_obj.content is not None and db_obj.content != "":
-        try:
-            db_obj.content = db_obj.content.translate(mpa)
-        except:
-            pass
+        db_obj.content = normalize(db_obj.content)
+        db_obj.content = remove_control_characters(db_obj.content)
     tags_list = sorted([t.name for t in db_obj.tags.all()])
     db_obj.tags_cont = ", ".join(tags_list)
     template_values = {'r':db_obj}
