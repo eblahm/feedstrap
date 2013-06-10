@@ -4,13 +4,12 @@ from feedstrap.models import Resource
 from jinja2 import Environment, PackageLoader
 
 def normalize(x):
-    try:
+    if x == str:
+        return x
+    elif x == unicode:
+        return x.decode('utf-8', 'ignore')
+    else:
         return str(x)
-    except:
-        try:
-            return x.decode('utf-8').encode('ascii', 'xmlcharrefreplace')
-        except:
-            return x.encode('ascii', 'xmlcharrefreplace')
 mpa = dict.fromkeys(range(32))
 
 
