@@ -1,20 +1,51 @@
 import os
 import sys, traceback
 import urllib2
+import urllib
 import pytz
 from time import mktime
 from datetime import datetime
 import xml.etree.ElementTree as etree
+
+from goose import Goose
+from pdfminer.pdfinterp import PDFResourceManager, process_pdf
+from pdfminer.converter import TextConverter
+from pdfminer.layout import LAParams
+from cStringIO import StringIO
+
 from ssg_site import feedparser, AlchemyAPI
 from feedstrap import models
 from django.core.management.base import BaseCommand, CommandError
 from django.core.mail import send_mail
-from ssg_site import config
+from ssg_site import config, settings
 
+def convert_pdf(path):
+    rsrcmgr = PDFResourceManager()
+    retstr = StringIO()
+    codec = 'utf-8'
+    laparams = LAParams()
+    device = TextConverter(rsrcmgr, retstr, codec=codec, laparams=laparams)
+
+    fp = file(path, 'rb')
+    process_pdf(rsrcmgr, device, fp)
+    fp.close()
+    device.close()
+
+    str = retstr.getvalue()
+    retstr.close()
+    return str
+def utf8_it(s):
+    if type(s) == str:
+        return s
+    elif type(s) == unicode:
+        return s.encode('utf8', 'xmlcharrefreplace')
+    else:
+        return str(s)
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         try:
+            g = Goose()
             ## Query fetches in ascending order according to when feeds were last updated
             feeds_query = models.Feed.objects.all().order_by('last_updated')
             for feed in feeds_query:
@@ -53,17 +84,21 @@ class Command(BaseCommand):
                             r.save()
                             r.feeds.add(feed)
                             r.save()
-                            try:
-                                page = urllib2.urlopen(item.link)
-                                page_content = page.read()
-                                alchemyObj = AlchemyAPI.AlchemyAPI()
-                                alchemyObj.loadAPIKey(config.app_root + "/ssg_site/alcAPI.txt")
-                                article_xml = alchemyObj.HTMLGetText(page_content, item.link)
-                                text = etree.fromstring(article_xml).find("text").text
-                                r.content = text
-                                r.save()
-                            except:
-                                pass
+                            if r.link[-3:] == 'pdf':
+                                article_page = urllib2.urlopen(r.link)
+                                pdf_data = article_page.read()
+                                fn = settings.MEDIA_ROOT + '/pdfs/' + urllib.quote(r.title)
+                                if fn[-4:] != '.pdf':
+                                    fn += ".pdf"
+                                new_file = open(fn, 'wb')
+                                new_file.write(pdf_data)
+                                new_file.close()
+                                text = convert_pdf(fn)[:131000]
+                            else:
+                                article = g.extract(url=r.link)
+                                text = article.cleaned_text[:131000]
+                            r.content = utf8_it(text)
+                            r.save()
                         else:
                             r = membership_query.get()
                         if feed not in r.feeds.all():
