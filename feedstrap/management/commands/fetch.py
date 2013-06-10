@@ -19,6 +19,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.core.mail import send_mail
 from ssg_site import config, settings
 
+
 def convert_pdf(path):
     rsrcmgr = PDFResourceManager()
     retstr = StringIO()
@@ -34,6 +35,8 @@ def convert_pdf(path):
     str = retstr.getvalue()
     retstr.close()
     return str
+
+
 def utf8_it(s):
     if type(s) == str:
         return s
@@ -41,6 +44,7 @@ def utf8_it(s):
         return s.encode('utf8', 'xmlcharrefreplace')
     else:
         return str(s)
+
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
@@ -85,18 +89,28 @@ class Command(BaseCommand):
                             r.feeds.add(feed)
                             r.save()
                             if r.link[-3:] == 'pdf':
-                                article_page = urllib2.urlopen(r.link)
-                                pdf_data = article_page.read()
-                                fn = settings.MEDIA_ROOT + '/pdfs/' + urllib.quote(r.title)
-                                if fn[-4:] != '.pdf':
-                                    fn += ".pdf"
-                                new_file = open(fn, 'wb')
-                                new_file.write(pdf_data)
-                                new_file.close()
-                                text = convert_pdf(fn)[:131000]
+                                try:
+                                    article_page = urllib2.urlopen(r.link)
+                                    pdf_data = article_page.read()
+                                    fn = settings.MEDIA_ROOT + r.title
+                                    if fn[-4:] != '.pdf':
+                                        fn += ".pdf"
+                                    new_file = file(fn, 'wb')
+                                    new_file.write(pdf_data)
+                                    new_file.close()
+                                    text = convert_pdf(fn)
+                                except:
+                                    self.stdout.write('PDF PARSING ERROR -- %s -- "%s"' % (feed.name, r.title[:20]))
+                                    traceback.print_exc(file=sys.stdout)
+                                    text = ''
                             else:
-                                article = g.extract(url=r.link)
-                                text = article.cleaned_text[:131000]
+                                try:
+                                    article = g.extract(url=r.link)
+                                    text = article.cleaned_text
+                                except:
+                                    self.stdout.write('TEXT EXTRACTION ERROR -- %s -- "%s"' % (feed.name, r.title[:20]))
+                                    traceback.print_exc(file=sys.stdout)
+                                    text = ''
                             r.content = utf8_it(text)
                             r.save()
                         else:
