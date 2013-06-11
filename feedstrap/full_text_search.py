@@ -4,12 +4,13 @@ from feedstrap.models import Resource
 from jinja2 import Environment, PackageLoader
 
 def normalize(x):
-    if type(x) == str:
+    try:
         return str(x)
-    elif type(x) == unicode:
-        return x.encode('ascii', 'ignore')
-    else:
-        return str(x)
+    except:
+        try:
+            return x.decode('utf8').encode('ascii', 'xmlcharrefreplace')
+        except:
+            return x.encode('ascii', 'xmlcharrefreplace')
 
 def remove_control_characters(s):
     return "".join(c for c in s if ord(c) >= 32)
