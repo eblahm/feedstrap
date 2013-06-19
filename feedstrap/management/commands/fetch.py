@@ -23,7 +23,7 @@ from ssg_site import config, settings
 def convert_pdf(path):
     rsrcmgr = PDFResourceManager()
     retstr = StringIO()
-    codec = 'utf-8'
+    codec = 'ascii'
     laparams = LAParams()
     device = TextConverter(rsrcmgr, retstr, codec=codec, laparams=laparams)
 
@@ -36,14 +36,14 @@ def convert_pdf(path):
     retstr.close()
     return str
 
-
-def utf8_it(s):
-    if type(s) == str:
-        return s
-    elif type(s) == unicode:
-        return s.encode('utf8', 'xmlcharrefreplace')
-    else:
-        return str(s)
+def normalize(x):
+    try:
+        return str(x)
+    except:
+        try:
+            return x.decode('utf8').encode('ascii', 'xmlcharrefreplace')
+        except:
+            return x.encode('ascii', 'xmlcharrefreplace')
 
 
 class Command(BaseCommand):
@@ -111,7 +111,7 @@ class Command(BaseCommand):
                                     self.stdout.write('TEXT EXTRACTION ERROR -- %s -- "%s"' % (feed.name, r.title[:20]))
                                     traceback.print_exc(file=sys.stdout)
                                     text = ''
-                            r.content = utf8_it(text)
+                            r.content = normalize(text)
                             r.save()
                         else:
                             r = membership_query.get()
