@@ -78,8 +78,11 @@ $(document).ready(function () {
     $(".topic_row").on({
     
       click: function() {
-        var k = $(this).data('k'); 
-        window.location.href='/esil?k='+k;
+        var loc = '/esil?k=' + $(this).data('k');
+        if ($(this).data('site') == 'sharepoint') {
+            loc += "&site=sharepoint";
+        } 
+        window.location.href=loc;
       }
     });
     

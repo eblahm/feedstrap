@@ -41,6 +41,7 @@ def esil(request,  site="vacloud.us"):
     selected = request.GET.dict().get('k', None)
     if selected != None:
         topic = Topic.objects.get(pk=int(selected))
+        v['site'] = request.GET.dict().get('site', "vacloud.us")
         mm_fields = ['imperatives', 'capabilities']
         for i in mm_fields:
             mm_rec = getattr(topic, i)

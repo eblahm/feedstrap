@@ -28,7 +28,7 @@
         </thead>
         <tbody>
           {% for topic in topics %}
-        <tr data-k="{{ topic.pk }}" class="topic_row">
+        <tr data-k="{{ topic.pk }}" data-site="{{ site }}" class="topic_row">
           <td class="rpoint">{{ topic.name }}</td>
           <td id="des_{{ topic.pk }}" class="rpoint">{{ topic.description[:100] }}
           <span class="show_des javascript_link" data-parent="des_{{ topic.pk }}" data-full="{{ topic.description }}"><em> (expand...)</em></span></td>
