@@ -60,10 +60,9 @@ class FilterForm(forms.Form):
 def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_limit=config.per_page_limit):
     v = {}
     applied_filters = request.GET.dict()
-    try:
-        applied_filters.pop('csrfmiddlewaretoken')
-    except:
-        pass
+    applied_filters.pop('csrfmiddlewaretoken', None)
+    applied_filters.pop('field', None)
+
     text_search = applied_filters.get('term', None)
     if len(applied_filters) == 0:
         pass
@@ -142,6 +141,9 @@ def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_l
 
 def generate_filter_tags(request):
     data = request.GET.dict()
+    data.pop('csrfmiddlewaretoken', None)
+    data.pop('field', None)
+    
     filter_tags = []
     i = 1
     for tag in data:
