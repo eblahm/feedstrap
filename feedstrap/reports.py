@@ -84,7 +84,7 @@ def esil(request,  site="vacloud.us"):
         return HttpResponse(render.load(template_file, v))
 
 def weeklyreads(request, site="sharepoint"):
-    v = {}
+    v = {'site': site}
     v.update(request.GET.dict())
     v['admin'] = request.user.is_authenticated()
     if site == 'export_to_word':

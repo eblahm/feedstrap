@@ -66,27 +66,28 @@ def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_l
     text_search = applied_filters.get('term', None)
     if len(applied_filters) == 0:
         pass
-    elif text_search != None and config.solr_enabled:
-        solr = pysolr.Solr('http://localhost:8983/solr/', timeout=10)
-        srt = 'score desc'
-        if '/rss' in request.path:
-            srt = 'id desc'
-        results = solr.search(text_search,sort=srt, **{'hl': 'true',
-                                            'hl.fl': '*',
-                                            'fl': '*,score',
-                                            'rows': 50,
-                                            #'sort': srt,
-                                            'hl.fragsize': 200,
-                                            'hl.snippets': 3})
-        search_snippets = {}
-        hl = results.highlighting
-        pk_list = []
-        for r in results:
-            search_snippets[int(r['id'])] = hl[r['id']]
-            pk_list.append(r['id'])
-        v.update({'search_snippets': search_snippets})
+    elif text_search != None: # and config.solr_enabled:
         q = Resource.objects.all()
-        q = q.filter(pk__in=pk_list)
+        # solr = pysolr.Solr('http://localhost:8983/solr/', timeout=10)
+        # srt = 'score desc'
+        # if '/rss' in request.path:
+        #     srt = 'id desc'
+        # results = solr.search(text_search,sort=srt, **{'hl': 'true',
+        #                                     'hl.fl': '*',
+        #                                     'fl': '*,score',
+        #                                     'rows': 50,
+        #                                     #'sort': srt,
+        #                                     'hl.fragsize': 200,
+        #                                     'hl.snippets': 3})
+        # search_snippets = {}
+        # hl = results.highlighting
+        # pk_list = []
+        # for r in results:
+        #     search_snippets[int(r['id'])] = hl[r['id']]
+        #     pk_list.append(r['id'])
+        # v.update({'search_snippets': search_snippets})
+        # q = Resource.objects.all()
+        # q = q.filter(pk__in=pk_list)
     else:
         q = Resource.objects.all()
         sorted_filters = sorted(applied_filters.iteritems(), key=operator.itemgetter(0))

@@ -12,7 +12,7 @@
   mso-fareast-font-family:"Times New Roman";mso-hansi-font-family:Calibri;
   mso-hansi-theme-font:minor-latin;color:#366092'>
     {% for tag in rec.tags.all() %}
-      {{ tag.name }}
+      {{ tag.name }}{% if loop.index > 1 %}, {% endif %}
     {% endfor %}
     
    <o:p></o:p></span></p>

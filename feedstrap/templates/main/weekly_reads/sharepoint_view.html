@@ -363,7 +363,19 @@
                  window.open(url)
          });
          $(body).on('click', '.show_more', function (){
-             
+            var url_request = $(this).data('query');
+            var content_body = $("#" + $(this).data('parent'));
+            $(this).hide();
+            $(".eb").html(loader_gif);
+            $.ajax({
+                    url: url_request,
+                    dataType: "html",
+                    error: function() { content_body.append('request failed :(');},
+                    success: (function (data) {
+                    $(".eb").html("").removeClass("eb");
+                    content_body.append(data);
+                })
+            });            
              
          })
      });
