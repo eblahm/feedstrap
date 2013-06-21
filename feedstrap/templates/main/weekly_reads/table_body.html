@@ -10,12 +10,7 @@
   <p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:
   normal'><span style='mso-ascii-font-family:Calibri;mso-ascii-theme-font:minor-latin;
   mso-fareast-font-family:"Times New Roman";mso-hansi-font-family:Calibri;
-  mso-hansi-theme-font:minor-latin;color:#366092'>
-    {% for tag in rec.tags.all() %}
-      {{ tag.name }}{% if loop.index > 1 %}, {% endif %}
-    {% endfor %}
-    
-   <o:p></o:p></span></p>
+  mso-hansi-theme-font:minor-latin;color:#366092'>{% for tag in rec.tags.all() %}{% if loop.index != 1 %}, {% endif %}{{ tag.name }}{% endfor %}<o:p></o:p></span></p>
   </td>
   <td width="31%" style='width:31.78%;{{ loop.cycle('', 'background:#DCE6F1;') }}padding:0in 5.4pt 0in 5.4pt'>
   <p class=MsoNormal style='margin-bottom:0in;margin-bottom:.0001pt;line-height:

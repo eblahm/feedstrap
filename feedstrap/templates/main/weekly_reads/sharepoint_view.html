@@ -354,34 +354,8 @@
   <o:idmap v:ext="edit" data="1"/>
  </o:shapelayout></xml><![endif]-->
  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
- <script type="text/javascript" rel="js" src="/feedstrap/static/js/main.js"></script>
- <script type="javascript/text">
-     $(document).ready(function(){
-         $('#search').click(function(){
-                 var search_form = $("#search_form").serialize();
-                 var url = "/weeklyreads?" + search_form;
-                 window.open(url)
-         });
-         $(body).on('click', '.show_more', function (){
-            var url_request = $(this).data('query');
-            var content_body = $("#" + $(this).data('parent'));
-            $(this).hide();
-            $(".eb").html(loader_gif);
-            $.ajax({
-                    url: url_request,
-                    dataType: "html",
-                    error: function() { content_body.append('request failed :(');},
-                    success: (function (data) {
-                    $(".eb").html("").removeClass("eb");
-                    content_body.append(data);
-                })
-            });            
-             
-         })
-     });
-     
- </script>
- </head>
+<script type="text/javascript" rel="js" src="static/js/main.js"></script>
+
  <body lang="EN-US" link="blue" style="tab-interval:.5in" vlink="purple">
 
   <div class="WordSection1">
