@@ -1,6 +1,11 @@
 
 
     <ul id="sidebar" class="nav nav-list well hidden-phone">
+        <li class="nav-header">My Account</li>
+        <li {% if nav == 'profile' %}class="active"{% endif %}><a href="/profile">Profile</a></li>
+        <li><a href="/profile/post_it_button">Post It Button</a></li>
+
+
         <li class="nav-header">Feeds</li>
         {% for fn in feed_navs %}
         <li {% if get_query == fn[0] %}class="active"{% endif %}>
@@ -9,9 +14,11 @@
             </a>
         </li>
         {% endfor %}
+
+
         <li class="nav-header">Tools</li>
         <li {% if nav == 'esil' %}class="active"{% endif %}>
-            <a href="/esil">  
+            <a href="/esil">
                ESIL
             </a>
         </li>

@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from django.forms import ModelForm
 from django.core.cache import cache
@@ -121,3 +122,10 @@ class StaticPage(models.Model):
     content = HTMLField()
     position = models.IntegerField()
     published = models.BooleanField()
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
+    feeds = models.ManyToManyField(Feed, blank=True, null=True)
+    office = models.OneToOneField(Office, blank=True, null=True)
+    sidebar_links = models.ManyToManyField(SidebarLink, blank=True, null=True)

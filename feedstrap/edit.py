@@ -1,22 +1,34 @@
-from django.http import HttpResponse
-from models import Resource, ResourceForm, Topic
-import models
-from django.core.context_processors import csrf
-import render
 import pytz
 import json
 from datetime import datetime
 
+from django.http import HttpResponse
+from django.core.cache import cache
+from django.core.context_processors import csrf
+
+from models import Resource, ResourceForm, Topic, Tag
+import models
+import render
+
+
 def main(request):
     if request.method == "GET":
+        v = {}
+        tag_cache = cache.get('all_tags')
+        if tag_cache == None:
+            all_tags = sorted([t for t in Tag.objects.all()])
+            cache.set('all_tags', all_tags)
+        else:
+            all_tags = tag_cache
+        v['all_tags'] = all_tags
         rec_key = request.GET.dict()['k']
         rec = Resource.objects.get(pk=rec_key)
         rec.all_reports = [r.pk for r in rec.reports.all()]
-        template_file = '/main/forms/basic.html'
-        v = {'rec': rec}
+        v['rec'] = rec
         v.update(csrf(request))
         v['resource_form'] = ResourceForm(instance=rec)
         v['topics'] = Topic.objects.all()
+        template_file = '/main/forms/basic.html'
         return HttpResponse(render.load(template_file, v))
     elif request.method == "POST":
         response_data = {}

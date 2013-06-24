@@ -1,30 +1,34 @@
-from django.http import HttpResponse
 from filter import apply_filter, generate_filter_tags
 import render
 from models import StaticPage as StaticPageModel
 
 
 def MainPage(request, template=""):
-    filter_conditions = request.GET.dict()
     v = {}
 
-    v['admin'] = request.user.is_authenticated()
-    v['peram_count'] = len(filter_conditions)
-    if v['peram_count'] == 0 and v['admin'] is False:
+    # Identify newcomers and give them some welcome content
+    filter_conditions = request.GET.dict()
+    v['auth'] = request.user.is_authenticated()
+    if len(filter_conditions) == 0 and v['auth'] == False:
         alert_query = StaticPageModel.objects.filter(slug='welcome')
         if alert_query.count() > 0:
             v['alert'] = alert_query.get().content
 
+    # load all the data pertaining to database queries
     v.update(apply_filter(request))
+
+    # make sure the templates are aware of get perameters
     v.update(filter_conditions)
+
+    # has the user landed at the page or just clicked "Show More"?
     if template == "ajax":
         template_file = '/main/list_view.html'
     else:
         template_file = '/main/home.html'
-        perams = request.GET.urlencode()
-        v['get_query'] = perams
+        v['get_query'] = request.GET.urlencode()
         v['filter_tags'] = generate_filter_tags(request)
-    return HttpResponse(render.load(template_file, v))
+
+    return render.response(request, template_file, v)
 
 
 def StaticPage(request, static_page=""):
@@ -36,4 +40,4 @@ def StaticPage(request, static_page=""):
         template_file = '/main/static.html'
     else:
         template_file = '/main/404.html'
-    return HttpResponse(render.load(template_file, v))
+    return render.response(request, template_file, v)

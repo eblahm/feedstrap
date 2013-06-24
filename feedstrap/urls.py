@@ -16,7 +16,7 @@ urlpatterns = patterns('',
     url(r'^edit/resource/', 'feedstrap.edit.main'),
     url(r'^q/(?P<template>.+)/', 'feedstrap.home.MainPage'),
     url(r'^q', 'feedstrap.home.MainPage'),
-    # url(r'^read', 'feedstrap.home.read'),
+    url(r'^profile', 'feedstrap.user.main'),
     url(r'^filter', 'feedstrap.filter.main'),
     url(r'(?P<static_page>.+)', 'feedstrap.home.StaticPage'),
 )

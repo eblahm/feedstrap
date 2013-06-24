@@ -75,7 +75,7 @@
                     <div class="btn-group">
                       <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-share"></i> Export this Feed </a>
                       <ul class="dropdown-menu pull-right" style="text-align:left">
-                        {% if admin %}
+                        {% if auth %}
                         <li><a href="/weeklyreads/export_to_word/?{{ get_query }}"><i class="icon-file"></i> Weekly Reads Format</a></li>
                         {% endif %}
                         <li><a href="/csv?{{ get_query }}"><i class="icon-file"></i> CSV Format</a></li>

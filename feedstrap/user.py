@@ -1,5 +1,4 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from filter import apply_filter, generate_filter_tags
 import render
 from models import UserProfile, Feed
 from django.core.context_processors import csrf
@@ -23,7 +22,7 @@ class Profile(forms.Form):
 def main(request):
     if request.user.is_authenticated():
         usr = request.user
-        v = {'user_obj': request.user}
+        v = {}
         feed = Feed.objects.all()[0]
         v['feeds'] = [(feed.name, feed.url)]
         if request.method == "POST":
@@ -48,5 +47,6 @@ def main(request):
         v['Profile'] = Profile(initial=input)
 
         v.update(csrf(request))
-        template_file = "/user/profile.html"
-        return HttpResponse(render.load(template_file, v))
+        v['nav'] = "profile"
+        template_file = "/main/user/profile.html"
+        return render.response(request, template_file, v)
