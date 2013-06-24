@@ -54,3 +54,10 @@ def response(request, template_file, template_values={}):
     # why do I use jinja2 instead of django templates, you ask... no good reason, just a bad habit
     template = env.get_template(template_file)
     return HttpResponse(template.render(template_values))
+
+
+def load(template_file, template_values={}):
+    v = {}
+    template_values.update(v)
+    template = env.get_template(template_file)
+    return template.render(template_values)

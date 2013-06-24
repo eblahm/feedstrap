@@ -62,7 +62,7 @@ def esil(request,  site="vacloud.us"):
         v['topic'] = topic
         v['resources'] = rsearch
         v['get_url'] = request.GET.urlencode()
-        return HttpResponse(render.load("/main/esil/topic_card.html", v))
+        return render.response(request, "/main/esil/topic_card.html", v)
     else:
         topics = []
         if v['admin'] == True:
@@ -81,7 +81,7 @@ def esil(request,  site="vacloud.us"):
         else:
             template_file = '/main/esil/main_view.html'
 
-        return HttpResponse(render.load(template_file, v))
+        return render.response(request, template_file, v)
 
 def weeklyreads(request, site="sharepoint"):
     v = {'site': site}
@@ -102,7 +102,7 @@ def weeklyreads(request, site="sharepoint"):
     elif site == 'ajax':
         v.update(apply_filter(request))
         template_file = '/main/weekly_reads/table_body.html'
-        return HttpResponse(render.load(template_file, v))
+        return render.response(request, template_file, v)
     else:
         if len(request.GET.dict()) == 0:
             v['hide_table'] = True
@@ -110,7 +110,7 @@ def weeklyreads(request, site="sharepoint"):
             v.update(apply_filter(request))
         v['headline'] = 'Weekly Reads Database'
         template_file = '/main/weekly_reads/sharepoint_view.html'
-        return HttpResponse(render.load(template_file, v))
+        return render.response(request, template_file, v)
 
 def export_csv(request):
     v = {}
