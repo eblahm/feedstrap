@@ -44,6 +44,10 @@
         padding: 7px 9px;
       }
 
+    form li {list-style: none;
+    color: red;
+    font-style: italic
+    };
     </style>
 {% endblock %}
 
@@ -54,12 +58,21 @@
 <div class="row-fluid">
 
     <div class="offset1 span4">
+     {% block user_form %}
         <form class="form-signin" action="/profile" method="POST" onsubmit="return validatelogin();">
 
         {% if saved %}
             <div class="alert alert-block">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <strong>Saved!</strong> Your profile was updated at {{ datetime }}!
+            <strong>Saved!</strong> Your {% if psw_change %}password{% else %}profile{% endif %} was updated at {{ datetime }}!
+            </div>
+        {% endif %}
+
+
+        {% if pchanged %}
+            <div class="alert alert-block">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Changed!</strong> Your password was changed at {{ datetime }}!
             </div>
         {% endif %}
 
@@ -74,6 +87,7 @@
         <input style="float: right" class="btn btn-primary" type="submit" value="Save" /><br>
 
         </form>
+    {% endblock %}
     </div>
 
 </div>

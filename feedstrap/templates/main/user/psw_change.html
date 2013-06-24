@@ -1,0 +1,19 @@
+{% extends "/main/user/profile.html" %}
+
+     {% block user_form %}
+        <form class="form-signin" action="/profile/change_password" method="POST">
+
+            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+
+            <h1>Change Password</h1>
+            Old Password: ***** <br><br>
+            <label for="id_new_password1">New Password</label>{{ f.new_password1 }}
+
+            <label for="id_new_password2">New Password Confirm</label>{{ f.new_password2.errors }}{{ f.new_password2 }}
+
+
+            <input style="float: right" class="btn btn-primary" type="submit" value="Submit" /><br><br>
+
+        </form>
+    {% endblock %}
+
