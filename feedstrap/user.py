@@ -89,3 +89,8 @@ def psw(request):
             template_file = "/main/user/psw_change.html"
             return render.response(request, template_file, v)
 
+def post_it_btn(request):
+    v = {}
+    v['nav'] = "post_btn"
+    template_file = "/main/user/post_it_btn.html"
+    return render.response(request, template_file, v)

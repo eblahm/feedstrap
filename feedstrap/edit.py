@@ -10,17 +10,19 @@ from models import Resource, ResourceForm, Topic, Tag
 import models
 import render
 
+def get_tags():
+    tag_cache = cache.get('all_tags')
+    if tag_cache == None:
+        all_tags = sorted([t for t in Tag.objects.all()])
+        cache.set('all_tags', all_tags)
+    else:
+        all_tags = tag_cache
+    return all_tags
 
 def main(request):
     if request.method == "GET":
         v = {}
-        tag_cache = cache.get('all_tags')
-        if tag_cache == None:
-            all_tags = sorted([t for t in Tag.objects.all()])
-            cache.set('all_tags', all_tags)
-        else:
-            all_tags = tag_cache
-        v['all_tags'] = all_tags
+        v['all_tags'] = get_tags()
         rec_key = request.GET.dict()['k']
         rec = Resource.objects.get(pk=rec_key)
         rec.all_reports = [r.pk for r in rec.reports.all()]
@@ -29,7 +31,7 @@ def main(request):
         v['resource_form'] = ResourceForm(instance=rec)
         v['topics'] = Topic.objects.all()
         template_file = '/main/forms/basic.html'
-        return HttpResponse(render.load(template_file, v))
+        return render.response(request, template_file, v)
     elif request.method == "POST":
         response_data = {}
         if not request.user.is_authenticated():
@@ -88,4 +90,21 @@ def main(request):
             response_data['save_status'] = message
             json_response = json.dumps(response_data)
             return HttpResponse(json_response)
+
+def add_new(request):
+    if request.method == "GET":
+        v = {}
+        v['all_tags'] = get_tags()
+        g = request.GET
+        rec = Resource(title=g['t'], link=g['l'], description=g['d'], date=datetime.now())
+        v['rec'] = rec
+        v.update(csrf(request))
+        v['resource_form'] = ResourceForm(instance=rec)
+        v['topics'] = Topic.objects.all()
+        template_file = '/main/forms/post_it.html'
+        return render.response(request, template_file, v)
+    if request.method == "POST":
+        v = {}
+        template_file = '/main/forms/post_it.html'
+        return render.response(request, template_file, v)
 

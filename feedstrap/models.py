@@ -6,6 +6,7 @@ from tinymce.models import HTMLField
 from ssg_site import config
 
 
+
 def generate_choices(model, displayed_value='name', real_value="pk"):
     options = ()
     for r in model.objects.all():
@@ -126,6 +127,6 @@ class StaticPage(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
-    feeds = models.ManyToManyField(Feed, blank=True, null=True)
+    post_it = models.OneToOneField(Feed)
     office = models.OneToOneField(Office, blank=True, null=True)
     sidebar_links = models.ManyToManyField(SidebarLink, blank=True, null=True)
