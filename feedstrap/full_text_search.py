@@ -58,5 +58,3 @@ class solr_server():
     def delete_resource(self, resource_item):
         self.solr.delete(id=resource_item.pk)
         return 'deleted'
-
-

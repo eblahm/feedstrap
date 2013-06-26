@@ -15,7 +15,7 @@ def response(request, template_file, template_values={}):
     if v['auth']:
         v['user'] = request.user
 
-    # load the link items under the "Feed" section on the sidebar
+    # feed_navs relate to link items under the "Feed" section on the sidebar
     # this info is cached
     feed_navs = cache.get('feed_navs')
     if feed_navs == None:
@@ -28,9 +28,9 @@ def response(request, template_file, template_values={}):
     # a dictionary to enable the "active" class links within the sidebar navigation
     feed_nav_lookup = dict(feed_navs)
 
-    # if the user has searched sidebar nav link automatically
-    # defaults to advanced search in the active state
+    # the active sidebar link is by default "advanced search"
     # unless the search is is a recognized "feed"
+    # the look up determins if its a recognized feed
     perams = template_values.get('get_query', "")
     v['advanced_search'] = feed_nav_lookup.get(perams, True)
 
@@ -51,7 +51,7 @@ def response(request, template_file, template_values={}):
     # view template is updated based on the global data above
     template_values.update(v)
 
-    # why do I use jinja2 instead of django templates, you ask... no good reason, just a bad habit
+    # why do I use jinja2 instead of django templates, you may ask?... no good reason, just a bad habit
     template = env.get_template(template_file)
     return HttpResponse(template.render(template_values))
 
@@ -61,3 +61,7 @@ def load(template_file, template_values={}):
     template_values.update(v)
     template = env.get_template(template_file)
     return template.render(template_values)
+
+def not_found(request):
+    template = env.get_template('/main/404.html')
+    return HttpResponse(template.render())

@@ -1,0 +1,50 @@
+{% extends "/main/home.html" %}
+{% block title %}FeedStrap Login{% endblock %}
+{% block head %}
+    {{ super() }}
+    <script type="text/javascript">
+    function validatelogin() {
+        if ($("#username").val() == "") {
+            alert("Please provide a username!");
+            return false;
+        }
+        if ($("#password").val() == "") {
+            alert("Please provide a password!");
+            return false;
+        }
+    };
+    </script>
+
+   <style type="text/css">
+      body {
+        padding-top: 40px;
+        padding-bottom: 40px;
+        background-color: #f5f5f5;
+      }
+    form em {
+    color: red;
+    font-style: italic
+    }
+    </style>
+{% endblock %}
+{% block full_content %}
+    <div class="row-fluid" style="margin-top: 2em">
+        <div class="span12">
+            <form class="form-signin" action="/signin" method="POST" onsubmit="return validatelogin();" >
+
+                <h2 class="form-signin-heading">FeedStrap Sign In </h2>
+                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+                {% if invalid %}
+                    <em>Incorrect User Name or Password.  Please Try Again! </em>
+                {% endif %}
+                <label for="username">User Name:</label>
+                <input class="input-block-level" id="username" name="username" type="text" placeholder="username">
+                <label for="password">Password:</label>
+                <input class="input-block-level" id="password" name="password" type="password">
+                <br>
+                <button style="float:right" class="btn btn-large btn-primary" type="submit">Sign in</button><br>
+                <br>
+            </form>
+        </div>
+    </div>
+{% endblock %}

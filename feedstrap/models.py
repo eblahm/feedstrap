@@ -125,8 +125,8 @@ class StaticPage(models.Model):
     published = models.BooleanField()
 
 
-class UserProfile(models.Model):
+class PostIt(models.Model):
     user = models.OneToOneField(User)
-    post_it = models.OneToOneField(Feed)
+    feed = models.OneToOneField(Feed)
     office = models.OneToOneField(Office, blank=True, null=True)
     sidebar_links = models.ManyToManyField(SidebarLink, blank=True, null=True)

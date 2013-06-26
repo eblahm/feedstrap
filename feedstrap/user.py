@@ -1,25 +1,29 @@
-from django.http import HttpResponse, HttpResponseRedirect
-import render
-from models import UserProfile, Feed
+from datetime import datetime
+import pytz
+
+from django.http import HttpResponseRedirect
+from django.contrib.auth import authenticate, login, logout
 from django.core.context_processors import csrf
 from django import forms
 from django.forms import ModelForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
-from django.contrib.auth.views import password_change
-import pytz
-from datetime import datetime
 
-
-class upf(ModelForm):
-    class Meta:
-        model = UserProfile
+from models import Feed
+import render
 
 
 class Profile(forms.Form):
     first_name = forms.CharField(max_length=30)
     last_name = forms.CharField(max_length=30)
     email = forms.EmailField()
+
+def info(request):
+    v = {}
+    v['nav'] = "info"
+    template_file = "/main/user/info.html"
+    return render.response(request, template_file, v)
+
 
 def main(request):
     errors = False
@@ -55,7 +59,7 @@ def main(request):
 
         v.update(csrf(request))
         v['nav'] = "profile"
-        template_file = "/main/user/profile.html"
+        template_file = "/main/user/edit.html"
         return render.response(request, template_file, v)
 
 def psw(request):
@@ -74,7 +78,7 @@ def psw(request):
                 v['Profile'] = Profile(initial=input)
                 v.update(csrf(request))
                 v['nav'] = "profile"
-                template_file = "/main/user/profile.html"
+                template_file = "/main/user/edit.html"
 
                 return render.response(request, template_file, v)
             else:
@@ -89,8 +93,27 @@ def psw(request):
             template_file = "/main/user/psw_change.html"
             return render.response(request, template_file, v)
 
-def post_it_btn(request):
-    v = {}
-    v['nav'] = "post_btn"
-    template_file = "/main/user/post_it_btn.html"
-    return render.response(request, template_file, v)
+
+
+def signin(request):
+    v = {'invalid': False}
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect('/')
+            else:
+                return render.not_found(request)
+        else:
+            v['invalid'] = True
+    if request.method == 'GET' or v['invalid'] == True:
+        v.update(csrf(request))
+        template_file = "/main/forms/signin.html"
+        return render.response(request, template_file, v)
+
+def signout(request):
+    logout(request)
+    return HttpResponseRedirect('/')

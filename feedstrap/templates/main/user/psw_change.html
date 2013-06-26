@@ -1,7 +1,7 @@
-{% extends "/main/user/profile.html" %}
+{% extends "/main/user/edit.html" %}
 
      {% block user_form %}
-        <form class="form-signin" action="/profile/change_password" method="POST">
+        <form class="form-signin" action="/account/change_password" method="POST">
 
             <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
 

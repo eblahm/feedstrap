@@ -53,6 +53,11 @@ class Command(BaseCommand):
             ## Query fetches in ascending order according to when feeds were last updated
             feeds_query = models.Feed.objects.all().order_by('last_updated')
             for feed in feeds_query:
+                # unfortunately internal "post it button" feeds are stored the same way as external feeds
+                # these obviously don't need to be updated
+                # the description is the on off switch (not optimal)
+                if feed.description == 'postit':
+                    continue
                 parsed_feed = feedparser.parse(feed.url)
                 # query for latest database item according to this particular feed
                 ## The latest item in the RSS feed is compared with latest item in the database to determine

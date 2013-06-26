@@ -1,0 +1,44 @@
+{% extends "/main/home.html" %}
+{% block head %}
+    {{ super() }}
+    <style>
+    a.bookmarklet {
+        background: none repeat scroll 0 0 #FFFFEE;
+        border: 1px dotted #AAAAAA;
+        color: #444444;
+        font-size: 90%;
+        padding: 1px 2px 0;
+    }
+
+    </style>
+{% endblock %}
+{% block content_header %}{% endblock %}
+{% block title %}Account Info{% endblock %}
+{% block content_view %}
+
+<div class="row-fluid">
+    <div class="span4">
+        <table><tr><td><h2>Profile</h2></td><td>(<a href="/account/edit">edit</a>)</td></tr></table>
+            <p>
+                <table>
+                <tr><td style="width: 100px;"><strong>User Name:</strong></td><td>{{ user.username }}</td></tr>
+                <tr><td><strong>Password:</strong></td><td>****** (<a href="/account/change_password">change</a>)</td></tr>
+                <tr><td><strong>First Name:</strong></td><td>{{ user.first_name }}</td></tr>
+                <tr><td><strong>Last Name:</strong></td><td>{{ user.last_name }}</td></tr>
+                <tr><td><strong>Email:</strong></td><td>{{ user.email }}</td></tr>
+                </table>
+            </p>
+        <h2>Post It Button</h2>
+            <p>
+                <a class="bookmarklet" href="javascript:l=location.href;if(document.getSelection){d=document.getSelection();}else{d='';};t=document.title;void(open('http://127.0.0.1:8000/add_new?l='+encodeURIComponent(l)+'&d='+encodeURIComponent(d)+'&t='+encodeURIComponent(t),'FeedStrap Pin It','width=700,height=650'));">
+                  Post It Button
+                </a>
+            </p>
+
+    </div>
+</div>
+
+{% endblock %}
+
+
+
