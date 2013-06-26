@@ -38,9 +38,9 @@ def esil(request,  site="vacloud.us"):
     v = {'site':site}
     v['nav'] = 'esil'
     v['admin'] = request.user.is_authenticated()
-    selected = request.GET.dict().get('k', None)
+    selected = request.GET.get('k', None)
     if selected != None:
-        topic = Topic.objects.get(pk=int(selected))
+        topic = Topic.objects.get(pk=int(str(selected)))
         v['site'] = request.GET.dict().get('site', "vacloud.us")
         mm_fields = ['imperatives', 'capabilities']
         for i in mm_fields:

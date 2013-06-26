@@ -12,6 +12,8 @@ from django.db.models import Q
 import pysolr
 import operator
 
+from edit import get_tags
+
 class Filter():
     def __init__(self, name, qstring, qmodel=models.Resource):
         self.name = name
@@ -183,6 +185,7 @@ def main(request):
     if request.method == "GET":
         perams = request.GET.dict()
         v = {}
+        v['all_tags'] = get_tags()
         if len(perams) == 0:
             v.update(csrf(request))
             template_file = '/main/forms/filter.html'

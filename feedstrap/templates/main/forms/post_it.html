@@ -63,8 +63,8 @@ return false;
             <h3><a href="/">Post It to FeedStrap</a></h3>
             <form id="popup_form" class="db_rec" action="add_new" method="POST">
               <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
-              <label for="title">Link:</label> <input class="input-xlarge" id="link" name="link" type="text" value="{{ rec.link|e }}"></input><br>
-              <label for="title">Title:</label> <input class="input-xlarge" id="title" name="title" type="text" value="{{ rec.title|e }}"></input><br>
+              <label for="title">Link:</label> <input style="width: 80%" id="link" name="link" type="text" value="{{ rec.link|e }}"></input><br>
+              <label for="title">Title:</label> <input style="width: 80%" id="title" name="title" type="text" value="{{ rec.title|e }}"></input><br>
 
 
               <label for="description">Description:</label><textarea class="tarea" id="description" name="description">{% if rec.description %}{{ rec.description|e }}{%  endif  %}</textarea>
@@ -88,9 +88,12 @@ return false;
                 <span style="vertical-align: middle; margin-right:10px; white-space: nowrap">Include in Weekly Reads Report?  <input id="wrcheck" name="weekly_reads" type='checkbox' {% if wr == True %} checked{% endif %}></span>
                    <br>
                    <br>
-                <button id="save_btn" class="btn" style="text-align:right; float: right">Save</button>
-                <div id="save_status" style="text-align:right"></div>
 
+                <div class="row-fluid">
+                    <div class="span12" style="text-align:right;">
+                        <button class="btn" >Save</button>
+                    </div>
+                </div>
                 </div>
 
             </form>

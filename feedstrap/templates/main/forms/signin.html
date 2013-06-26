@@ -1,4 +1,4 @@
-{% extends "/main/home.html" %}
+{% extends "/main/base.html" %}
 {% block title %}FeedStrap Login{% endblock %}
 {% block head %}
     {{ super() }}
@@ -27,7 +27,7 @@
     }
     </style>
 {% endblock %}
-{% block full_content %}
+{% block content_box %}
     <div class="row-fluid" style="margin-top: 2em">
         <div class="span12">
             <form class="form-signin" action="/signin" method="POST" onsubmit="return validatelogin();" >
@@ -38,6 +38,7 @@
                     <em>Incorrect User Name or Password.  Please Try Again! </em>
                 {% endif %}
                 <label for="username">User Name:</label>
+                <input type="text" style="display: none" name="redirect" value="{{ redirect }}">
                 <input class="input-block-level" id="username" name="username" type="text" placeholder="username">
                 <label for="password">Password:</label>
                 <input class="input-block-level" id="password" name="password" type="password">

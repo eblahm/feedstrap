@@ -1,5 +1,6 @@
 from datetime import datetime
 import pytz
+import urllib
 
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
@@ -104,12 +105,16 @@ def signin(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect('/')
+                if request.POST['redirect'] != "":
+                    return HttpResponseRedirect(urllib.unquote(request.POST['redirect']))
+                else:
+                    return HttpResponseRedirect('/')
             else:
                 return render.not_found(request)
         else:
             v['invalid'] = True
     if request.method == 'GET' or v['invalid'] == True:
+        v['redirect'] = request.REQUEST.get('redirect', "")
         v.update(csrf(request))
         template_file = "/main/forms/signin.html"
         return render.response(request, template_file, v)

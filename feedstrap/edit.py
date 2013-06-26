@@ -1,6 +1,7 @@
 import pytz
 import json
 from datetime import datetime
+import urllib
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.cache import cache
@@ -155,7 +156,7 @@ def add_new(request):
                 rec.save()
             rec = save_wr_topic_tags(rec, request)
 
-            v['rec'] = rec
+            v['feed_pk'] = feed.pk
             template_file = '/main/user/postit_confirmation.html'
             return render.response(request, template_file, v)
         else:
@@ -186,4 +187,4 @@ def add_new(request):
             template_file = '/main/forms/post_it.html'
             return render.response(request, template_file, v)
         else:
-            return HttpResponseRedirect('/signin')
+            return HttpResponseRedirect('/signin?redirect=%s' % (urllib.quote(request.get_full_path())))
