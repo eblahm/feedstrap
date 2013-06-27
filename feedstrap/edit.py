@@ -70,6 +70,26 @@ def save_wr_topic_tags(rec, request):
     save_tags(rec, tags_list)
     return rec
 
+def create_new_postit(user):
+    feed = models.Feed(
+        url = "http://feedstrap.vacloud.us/rss?feeds=",
+        name = "%s Post It" % (user.username),
+        owner = "%s" %  (user.first_name),
+        description = "postit",
+        last_updated = datetime.now()
+    )
+    feed.save()
+    feed.url += str(feed.pk)
+    if user.first_name in ['James', 'Matt', 'Sharaelle', 'Joe', 'Thomas']:
+        feed.offices.add(models.Office.objects.get(name='SSG'))
+    feed.save()
+    postit = models.PostIt(
+        user = user,
+        feed = feed
+    )
+    postit.save()
+    return postit
+
 
 def main(request):
     if request.method == "GET":
@@ -113,26 +133,10 @@ def add_new(request):
             user = request.user
             postitq = models.PostIt.objects.filter(user=user)
             if postitq.count() == 0:
-                feed = models.Feed(
-                    url = "http://feedstrap.vacloud.us/rss?feeds=",
-                    name = "%s Post It" % (user.username),
-                    owner = "%s" %  (user.first_name),
-                    description = "postit",
-                    last_updated = datetime.now()
-                )
-                feed.save()
-                feed.url += str(feed.pk)
-                if user.first_name in ['James', 'Matt', 'Sharaelle', 'Joe', 'Thomas']:
-                    feed.offices.add(models.Office.objects.get(name='SSG'))
-                feed.save()
-                postit = models.PostIt(
-                    user = user,
-                    feed = feed
-                )
-                postit.save()
+                postit = create_new_postit(user)
+                feed = postit.feed
             elif postitq.count() == 1:
                 feed = postitq[0].feed
-
             recq = Resource.objects.filter(link=request.POST['link'])
             if recq.count() == 0:
                 rec = Resource(
@@ -154,6 +158,9 @@ def add_new(request):
             if rec.feeds.filter(pk=feed.pk).count() == 0:
                 rec.feeds.add(feed)
                 rec.save()
+                all_offices = [feed.offices.all()] + [rec.offices.all()]
+                save_manytomany(rec, 'offices', list(set([o.pk for o in all_office])))
+                
             rec = save_wr_topic_tags(rec, request)
 
             v['feed_pk'] = feed.pk
@@ -188,3 +195,30 @@ def add_new(request):
             return render.response(request, template_file, v)
         else:
             return HttpResponseRedirect('/signin?redirect=%s' % (urllib.quote(request.get_full_path())))
+            
+            
+def add_simple(request):
+    js = ""
+    if request.user.is_authenticated():
+        user = request.user
+        postitq = models.PostIt.objects.filter(user=user)
+        if postitq.count() == 0:
+            postit = create_new_postit(user)
+            feed = postit.feed
+        elif postitq.count() == 1:
+            feed = postitq[0].feed
+        g = request.GET
+        recq = Resource.objects.filter(link=g['l'])
+        if recq.count() == 0:
+            rec = Resource(title=en(g['t']), link=en(g['l']), description=en(g['d']), date=datetime.now())
+            rec.save()
+            save_manytomany(rec, 'offices', [o.pk for o in feed.offices.all()])
+        else:
+            rec = recq[0]
+        if rec.feeds.filter(pk=feed.pk).count() == 0:
+            rec.feeds.add(feed)
+            rec.save()
+        return HttpResponse("alert('saved!')")
+    else:
+        return HttpResponse("alert('Please Log into FeedStrap before attempting to Post links')")
+            
