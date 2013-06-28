@@ -158,8 +158,8 @@ def add_new(request):
             if rec.feeds.filter(pk=feed.pk).count() == 0:
                 rec.feeds.add(feed)
                 rec.save()
-                all_offices = [feed.offices.all()] + [rec.offices.all()]
-                save_manytomany(rec, 'offices', list(set([o.pk for o in all_offices])))
+                all_offices = [o.pk for o in feed.offices.all()] + [o.pk for o in rec.offices.all()]
+                save_manytomany(rec, 'offices', list(set(all_offices))
                 
             rec = save_wr_topic_tags(rec, request)
             return HttpResponse("/q?feeds=" + str(feed.pk))
