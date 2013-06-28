@@ -181,9 +181,8 @@ def add_new(request):
                 rec = recq[0]
                 v['topics_pks'] = [t.pk for t in rec.topics.all()]
                 v['tags'] = ", ".join([t.name for t in rec.tags.all()])
-                if rec.reports.filter(name="Weekly Reads") > 0:
+                if rec.reports.filter(name="Weekly Reads").count() > 0:
                     v['wr'] = True
-
             v['rec'] = rec
             v.update(csrf(request))
             v['resource_form'] = ResourceForm(instance=rec)
