@@ -4,64 +4,59 @@
 <style>
   .db_rec label {font-weight:bold;}
   .tarea {text-align: left; width:95%}
-  body {padding-top: 0 !important;}
-  .modal-body {
-      width: 99%;
-      max-height: 650px;
-      height: 650px;
-  }
+  body {padding-top: 0 !important;
+        background-color: #f5f5f5;}
 </style>
 
  <script type="text/javascript">
-var all_tags = [{% for t in all_tags %}{% if loop.index > 1 %},{% endif %}"{{ t.name }}"{% endfor %}];
-$(function() {
- function split( val ) {
-return val.split( /,\s*/ );
-}
-function extractLast( term ) {
-return split( term ).pop();
-}
-$( "#tags" )
-// don't navigate away from the field on tab when selecting an item
-.bind( "keydown", function( event ) {
-if ( event.keyCode === $.ui.keyCode.TAB &&
-$( this ).data( "ui-autocomplete" ).menu.active ) {
-event.preventDefault();
-}
-})
-.autocomplete({
-minLength: 0,
-source: function( request, response ) {
-// delegate back to autocomplete, but extract the last term
-response( $.ui.autocomplete.filter(
-all_tags, extractLast( request.term ) ) );
-},
-focus: function() {
-// prevent value inserted on focus
-return false;
-},
-select: function( event, ui ) {
-var terms = split( this.value );
-// remove the current input
-terms.pop();
-// add the selected item
-terms.push( ui.item.value );
-// add placeholder to get the comma-and-space at the end
-// terms.push( "" );
- this.value = terms.join( ", " );
-return false;
-}
-});
+        var all_tags = [{% for t in all_tags %}{% if loop.index > 1 %},{% endif %}"{{ t.name }}"{% endfor %}];
+        $(function() {
+         function split( val ) {
+        return val.split( /,\s*/ );
+        }
+        function extractLast( term ) {
+        return split( term ).pop();
+        }
+        $( "#tags" )
+        // don't navigate away from the field on tab when selecting an item
+        .bind( "keydown", function( event ) {
+        if ( event.keyCode === $.ui.keyCode.TAB &&
+        $( this ).data( "ui-autocomplete" ).menu.active ) {
+        event.preventDefault();
+        }
+        })
+        .autocomplete({
+        minLength: 0,
+        source: function( request, response ) {
+        // delegate back to autocomplete, but extract the last term
+        response( $.ui.autocomplete.filter(
+        all_tags, extractLast( request.term ) ) );
+        },
+        focus: function() {
+        // prevent value inserted on focus
+        return false;
+        },
+        select: function( event, ui ) {
+        var terms = split( this.value );
+        // remove the current input
+        terms.pop();
+        // add the selected item
+        terms.push( ui.item.value );
+        // add placeholder to get the comma-and-space at the end
+        // terms.push( "" );
+         this.value = terms.join( ", " );
+        return false;
+        }
+        });
 });
 </script>
 {% endblock %}
 
 {% block content_box %}
-<div class="row-fluid">
-    <div class="span12">
-        <div class="modal-body">
-            <h3><a href="/">Post It to FeedStrap</a></h3>
-            <form id="popup_form" class="db_rec" action="add_new" method="POST">
+    <div class="row-fluid" style="margin-top: 2em">
+        <div class="offset3 span6">
+            <h3><a href="/">FeedStrap - Post It</a></h3>
+            <form id="postit" class="db_rec form-postit" action="add_new" method="POST">
               <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
               <label for="title">Link:</label> <input style="width: 80%" id="link" name="link" type="text" value="{{ rec.link|e }}"></input><br>
               <label for="title">Title:</label> <input style="width: 80%" id="title" name="title" type="text" value="{{ rec.title|e }}"></input><br>
@@ -88,18 +83,16 @@ return false;
                 <span style="vertical-align: middle; margin-right:10px; white-space: nowrap">Include in Weekly Reads Report?  <input id="wrcheck" name="weekly_reads" type='checkbox' {% if wr == True %} checked{% endif %}></span>
                    <br>
                    <br>
-
+                </div>
                 <div class="row-fluid">
                     <div class="span12" style="text-align:right;">
-                        <button class="btn" >Save</button>
+                       <span class="btn save">Save</span>  <span class="btn save closetab">Save and Close</span> 
                     </div>
                 </div>
-                </div>
+
 
             </form>
 
-
-        </div>
     </div>
 </div>
 

@@ -14,7 +14,7 @@ import render
 
 def en(s):
     if isinstance(s, unicode):
-        return s.encode('utf8', 'ignore')
+        return s.encode('ascii', 'xmlcharrefreplace')
     else:
         return str(s)
 
@@ -151,8 +151,8 @@ def add_new(request):
             else:
                 rec = recq[0]
                 rec.title = en(request.POST['title'])
-                rec.description += en(request.POST['description'])
-                rec.relevance += en(request.POST['relevance'])
+                rec.description = en(request.POST['description'])
+                rec.relevance = en(request.POST['relevance'])
                 rec.save()
 
             if rec.feeds.filter(pk=feed.pk).count() == 0:
@@ -162,12 +162,9 @@ def add_new(request):
                 save_manytomany(rec, 'offices', list(set([o.pk for o in all_office])))
                 
             rec = save_wr_topic_tags(rec, request)
-
-            v['feed_pk'] = feed.pk
-            template_file = '/main/user/postit_confirmation.html'
-            return render.response(request, template_file, v)
+            return HttpResponse("/q?feeds=" + str(feed.pk))
         else:
-            return HttpResponseRedirect('/signin')
+            return HttpResponseRedirect('/signin?redirect=%s' % (urllib.quote(request.get_full_path())))
     if request.method == "GET" or errors == True:
         errors = False
         v = {}
