@@ -11,7 +11,7 @@ def generate_choices(model, displayed_value='name', real_value="pk"):
     options = ()
     for r in model.objects.all():
         options += ((str(getattr(r, real_value)), getattr(r, displayed_value)),)
-    return sorted(options, key=lambda opt: opt[1])
+    return tuple(set(sorted(options, key=lambda opt: opt[1])))
 
 office_choices = (
     ('SSG', 'Strategic Stuides Group'),
