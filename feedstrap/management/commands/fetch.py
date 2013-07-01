@@ -4,7 +4,7 @@ import urllib2
 import urllib
 import pytz
 from time import mktime
-from datetime import datetime
+from datetime import datetime, timedelta
 import xml.etree.ElementTree as etree
 
 from goose import Goose
@@ -37,13 +37,28 @@ def convert_pdf(path):
     return str
 
 def normalize(x):
-    try:
+    if isinstance(x, unicode):
+        return x.encode('ascii', 'xmlcharrefreplace')
+    else:
         return str(x)
-    except:
-        try:
-            return x.decode('utf8').encode('ascii', 'xmlcharrefreplace')
-        except:
-            return x.encode('ascii', 'xmlcharrefreplace')
+
+def extract_save_content(g, r):
+    if r.link[-3:] == 'pdf':
+        article_page = urllib2.urlopen(r.link)
+        pdf_data = article_page.read()
+        fn = settings.MEDIA_ROOT + r.title
+        if fn[-4:] != '.pdf':
+            fn += ".pdf"
+        new_file = file(fn, 'wb')
+        new_file.write(pdf_data)
+        new_file.close()
+        text = convert_pdf(fn)
+    else:
+        article = g.extract(url=r.link)
+        text = article.cleaned_text
+    r.content = normalize(text)
+    r.save()
+    return r
 
 
 class Command(BaseCommand):
@@ -57,6 +72,18 @@ class Command(BaseCommand):
                 # these obviously don't need to be updated
                 # the description is the on off switch (not optimal)
                 if feed.description == 'postit':
+                    dayago = datetime.now() - timedelta(days=1)
+                    postit_q = models.Resource.objects.filter(feeds=feed).filter(date__gte=dayago)
+                    for pi in postit_q:
+                        if not pi.content:
+                            try:
+                                pi = extract_save_content(g, pi)
+                                self.stdout.write('%s -- CONTENT SAVED -- %s -- "%s"' % (datetime.now().strftime('%d %b %y %I:%M:%S%p'), feed.name, pi.title[:20]))
+                            except:
+                                pi.content = ""
+                                pi.save()
+                                self.stdout.write('TEXT EXTRACTION ERROR -- %s -- "%s"' % (feed.name, pi.title[:20]))
+                                traceback.print_exc(file=sys.stdout)
                     continue
                 parsed_feed = feedparser.parse(feed.url)
                 # query for latest database item according to this particular feed
@@ -93,31 +120,6 @@ class Command(BaseCommand):
                             r.save()
                             r.feeds.add(feed)
                             r.save()
-                            if r.link[-3:] == 'pdf':
-                                try:
-                                    article_page = urllib2.urlopen(r.link)
-                                    pdf_data = article_page.read()
-                                    fn = settings.MEDIA_ROOT + r.title
-                                    if fn[-4:] != '.pdf':
-                                        fn += ".pdf"
-                                    new_file = file(fn, 'wb')
-                                    new_file.write(pdf_data)
-                                    new_file.close()
-                                    text = convert_pdf(fn)
-                                except:
-                                    self.stdout.write('PDF PARSING ERROR -- %s -- "%s"' % (feed.name, r.title[:20]))
-                                    traceback.print_exc(file=sys.stdout)
-                                    text = ''
-                            else:
-                                try:
-                                    article = g.extract(url=r.link)
-                                    text = article.cleaned_text
-                                except:
-                                    self.stdout.write('TEXT EXTRACTION ERROR -- %s -- "%s"' % (feed.name, r.title[:20]))
-                                    traceback.print_exc(file=sys.stdout)
-                                    text = ''
-                            r.content = normalize(text)
-                            r.save()
                         else:
                             r = membership_query.get()
                         if feed not in r.feeds.all():
@@ -139,6 +141,11 @@ class Command(BaseCommand):
                         log.save()
                         log.feeds.add(feed)
                         log.save()
+                        try:
+                            r = extract_save_content(g, r)
+                        except:
+                            self.stdout.write('TEXT EXTRACTION ERROR -- %s -- "%s"' % (feed.name, r.title[:20]))
+                            traceback.print_exc(file=sys.stdout)
                         self.stdout.write('%s -- %s -- "%s"' % (datetime.now().strftime('%d %b %y %I:%M:%S%p'), feed.name, r.title[:20]))
         except:
             er = sys.exc_info()[-1]
