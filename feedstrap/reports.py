@@ -55,7 +55,7 @@ def esil(request,  site="vacloud.us"):
                 if mm_item.name not in index:
                     index.append(mm_item.name)
             v[i] = mapping
-        rsearch = Resource.objects.filter(topics=topic)
+        rsearch = Resource.objects.filter(topics=topic).order_by('-date')
         topic.intensity = get_rating(rsearch.count(), 'intensity')
         topic.impact = get_rating(topic.capabilities.all().count(), 'impact')
         topic.relevance = get_rating(topic.imperatives.all().count(), 'relevance')
