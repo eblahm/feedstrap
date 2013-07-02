@@ -2,25 +2,17 @@ import render
 from models import Topic, Resource, Report
 from filter import apply_filter
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 
 from datetime import datetime
 import csv
+import urllib
 
 def ascii_safe(s):
-    try:
-        s = str(s)
-        return s
-    except:
-        try:
-            s = s.decode('utf-8', 'ignore')
-            s = str(s)
-            return s
-        except:
-            s = s.encode('utf-8', 'ignore')
-            s = s.decode('ascii', 'ignore')
-            s = str(s)
-            return s
+    if isinstance(s, unicode):
+        return s.encode('ascii', 'xmlcharrefreplace')
+    else:
+        return str(s)
 
 def get_rating(val, factor):
     rate_dic = {'intensity': (15, 30),
@@ -37,51 +29,54 @@ def get_rating(val, factor):
 def esil(request,  site="vacloud.us"):
     v = {'site':site}
     v['nav'] = 'esil'
-    v['admin'] = request.user.is_authenticated()
-    selected = request.GET.get('k', None)
-    if selected != None:
-        topic = Topic.objects.get(pk=int(str(selected)))
-        v['site'] = request.GET.dict().get('site', "vacloud.us")
-        mm_fields = ['imperatives', 'capabilities']
-        for i in mm_fields:
-            mm_rec = getattr(topic, i)
-            mapping = {}
-            for mm_item in mm_rec.all().order_by('name'):
-                try:
-                    index = mapping[mm_item.category]
-                except:
-                    mapping[mm_item.category] = []
-                    index = mapping[mm_item.category]
-                if mm_item.name not in index:
-                    index.append(mm_item.name)
-            v[i] = mapping
-        rsearch = Resource.objects.filter(topics=topic).order_by('-date')
-        topic.intensity = get_rating(rsearch.count(), 'intensity')
-        topic.impact = get_rating(topic.capabilities.all().count(), 'impact')
-        topic.relevance = get_rating(topic.imperatives.all().count(), 'relevance')
-        v['topic'] = topic
-        v['resources'] = rsearch
-        v['get_url'] = request.GET.urlencode()
-        return render.response(request, "/main/esil/topic_card.html", v)
+    v['auth'] = request.user.is_authenticated()
+    if v['auth']:
+        selected = request.GET.get('k', None)
+        if selected != None:
+            topic = Topic.objects.get(pk=int(str(selected)))
+            v['site'] = request.GET.dict().get('site', "vacloud.us")
+            mm_fields = ['imperatives', 'capabilities']
+            for i in mm_fields:
+                mm_rec = getattr(topic, i)
+                mapping = {}
+                for mm_item in mm_rec.all().order_by('name'):
+                    try:
+                        index = mapping[mm_item.category]
+                    except:
+                        mapping[mm_item.category] = []
+                        index = mapping[mm_item.category]
+                    if mm_item.name not in index:
+                        index.append(mm_item.name)
+                v[i] = mapping
+            rsearch = Resource.objects.filter(topics=topic).order_by('-date')
+            topic.intensity = get_rating(rsearch.count(), 'intensity')
+            topic.impact = get_rating(topic.capabilities.all().count(), 'impact')
+            topic.relevance = get_rating(topic.imperatives.all().count(), 'relevance')
+            v['topic'] = topic
+            v['resources'] = rsearch
+            v['get_url'] = request.GET.urlencode()
+            return render.response(request, "/main/esil/topic_card.html", v)
+        else:
+            topics = []
+            if v['auth'] == True:
+                q = Topic.objects.all()
+            else:
+                q = Topic.objects.filter(published=True)
+            for t in q.order_by('-attachment', 'name'):
+                rsearch = Resource.objects.filter(topics=t)
+                t.intensity = get_rating(rsearch.count(), 'intensity')
+                t.impact = get_rating(t.capabilities.all().count(), 'impact')
+                t.relevance = get_rating(t.imperatives.all().count(), 'relevance')
+                topics.append(t)
+            v['topics'] = topics
+            if site == 'sharepoint':
+                template_file = '/main/esil/sharepoint_view.html'
+            else:
+                template_file = '/main/esil/main_view.html'
+    
+            return render.response(request, template_file, v)
     else:
-        topics = []
-        if v['admin'] == True:
-            q = Topic.objects.all()
-        else:
-            q = Topic.objects.filter(published=True)
-        for t in q.order_by('-attachment', 'name'):
-            rsearch = Resource.objects.filter(topics=t)
-            t.intensity = get_rating(rsearch.count(), 'intensity')
-            t.impact = get_rating(t.capabilities.all().count(), 'impact')
-            t.relevance = get_rating(t.imperatives.all().count(), 'relevance')
-            topics.append(t)
-        v['topics'] = topics
-        if site == 'sharepoint':
-            template_file = '/main/esil/sharepoint_view.html'
-        else:
-            template_file = '/main/esil/main_view.html'
-
-        return render.response(request, template_file, v)
+        return HttpResponseRedirect('/signin?redirect=%s' % (urllib.quote(request.get_full_path())))
 
 def weeklyreads(request, site="sharepoint"):
     v = {'site': site}

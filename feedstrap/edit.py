@@ -105,13 +105,22 @@ def main(request):
         template_file = '/main/forms/basic.html'
         return render.response(request, template_file, v)
     elif request.method == "POST":
+        rec = Resource.objects.get(pk=int(request.POST['pk']))
+        write_access = False        
+        auth = request.user.is_authenticated()
+        if auth:
+            if request.user.is_staff:
+                write_access = True
+            else:
+                feeds = [f for f in rec.feeds.all()]
+                postitq = models.PostIt.objects.filter(user=request.user)
+                if postitq.count() == 0:
+                    this_user_feed = []
+                else:
+                    this_user_feed = [postitq[0].feed]
+                write_access = feeds == this_user_feed
         response_data = {}
-        if not request.user.is_authenticated():
-            response_data['save_status'] = 'You are not authorized to edit this record. If this is a mistake, <a href="/admin">please login</a>'
-            json_response = json.dumps(response_data)
-            return HttpResponse(json_response)
-        else:
-            rec = Resource.objects.get(pk=int(request.POST['pk']))
+        if write_access:
             rec.title = en(request.POST['title'])
             rec.description = en(request.POST['description'])
             rec.relevance = en(request.POST['relevance'])
@@ -124,6 +133,11 @@ def main(request):
             response_data['save_status'] = message
             json_response = json.dumps(response_data)
             return HttpResponse(json_response)
+        else:
+            response_data['save_status'] = '<br><em>You are not authorized to edit this record.</em>'
+            json_response = json.dumps(response_data)
+            return HttpResponse(json_response)
+
 
 def add_new(request):
     errors = False
