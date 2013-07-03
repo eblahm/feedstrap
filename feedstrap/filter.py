@@ -1,6 +1,7 @@
 from ssg_site import config
 import models
 from models import Resource, ResourceForm, Topic
+from django.contrib.auth.models import User
 from datetime import datetime
 
 import render
@@ -29,7 +30,7 @@ class Filter():
 
 filters = {
     'tags': Filter('tags', 'tags__name', models.Tag),
-    'person': Filter('person', 'feeds__owner', models.Feed),
+    'firstname': Filter('firstname', 'feeds__user__first_name', models.Feed),
     'feeds': Filter('feeds', 'feeds__pk', models.Feed),
     'esil': Filter('esil', 'topics__pk', models.Topic),
     'dateto': Filter('dateto', 'date__lte'),
@@ -39,7 +40,7 @@ filters = {
 }
 
 labels = {
-    'person': 'background-color: orange;',
+    'firstname': 'background-color: orange;',
     'report': 'background-color: #2D6987;',
     'tags': 'background-color: #0088CC',
     'office': 'background-color: green',
@@ -54,7 +55,7 @@ class FilterForm(forms.Form):
     dateto = forms.DateField('%Y-%m-%d')
     esil = forms.ChoiceField(choices=models.generate_choices(models.Topic))
     office = forms.ChoiceField(choices=models.generate_choices(models.Office,'name', 'name'))
-    person = forms.ChoiceField(choices=models.generate_choices(models.Feed, 'owner', 'owner'))
+    firstname = forms.ChoiceField(choices=models.generate_choices(User, 'first_name', 'first_name'))
     feeds = forms.ChoiceField(choices=models.generate_choices(models.Feed))
     report = forms.ChoiceField(choices=models.generate_choices(models.Report, 'name', 'name'))
 

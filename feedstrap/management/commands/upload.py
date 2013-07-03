@@ -35,7 +35,7 @@ class Command(BaseCommand):
             if Feed.objects.filter(url=row[0]).count() == 0:
                 new = Feed(url = row[0],
                     name = row[1],
-                    owner = row[2],
+                    # owner = row[2],
                     description = row[3],
                     last_updated = datetime.now(),)
                 new.save()
@@ -91,10 +91,7 @@ class Command(BaseCommand):
                 return s
         for row in reader:
             try:
-                if row[3] == "null" or row[3] == "":
-                    feed = Feed.objects.get(owner='Matt')
-                else:
-                    feed = Feed.objects.get(url=row[3])
+                feed = Feed.objects.get(url=row[3])
             except:
                 continue
 

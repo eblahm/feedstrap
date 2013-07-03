@@ -65,15 +65,13 @@ class Office(models.Model):
 class Feed(models.Model):
     url = models.CharField(max_length=500)
     name = models.CharField(max_length=100)
-    owner = models.CharField(max_length=100)
+    user = models.ForeignKey(User, blank=True, null=True)
     description = models.CharField(max_length=500)
     offices = models.ManyToManyField(Office, blank=True)
     topics = models.ManyToManyField(Topic, blank=True, null=True)
     tags = models.ManyToManyField(Tag, blank=True, null=True)
     reports = models.ManyToManyField(Report, blank=True, null=True)
     last_updated = models.DateTimeField()
-
-
 
 class Resource(models.Model):
     # for versioning

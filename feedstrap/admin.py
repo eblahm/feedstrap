@@ -54,7 +54,7 @@ class FeedForm(forms.ModelForm):
 
 class FeedAdmin(admin.ModelAdmin):
     form = FeedForm
-    list_display = ('name', 'owner', 'url')
+    list_display = ('name', 'user', 'url')
 
 admin.site.register(Feed, FeedAdmin)
 

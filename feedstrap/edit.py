@@ -74,7 +74,7 @@ def create_new_postit(user):
     feed = models.Feed(
         url = "http://feedstrap.vacloud.us/rss?feeds=",
         name = "%s Post It" % (user.username),
-        owner = "%s" %  (user.first_name),
+        user = user,
         description = "postit",
         last_updated = datetime.now()
     )
