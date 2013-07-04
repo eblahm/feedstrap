@@ -8,7 +8,7 @@ from datetime import datetime
 import csv
 import urllib
 
-def ascii_safe(s):
+def en(s):
     if isinstance(s, unicode):
         return s.encode('ascii', 'xmlcharrefreplace')
     else:
@@ -115,13 +115,18 @@ def export_csv(request):
     response['Content-Disposition'] = 'attachment; filename="search results.csv"'
 
     writer = csv.writer(response)
-    header_row = [f.name for f in Resource._meta.fields]
-    header_row.remove('content')
+    header_row = ['feed urls', 'date', 'title', 'link', 'tags', 'description', 'relevance', 'content']
     writer.writerow(header_row)
-    results = v['results'].values()
+    results = v['results']
     for rec in results:
         row = []
-        for field in header_row:
-            row.append(ascii_safe(rec[field]))
+        row += [', '.join([en(f.url) for f in rec.feeds.all()])]
+        row += [rec.date.strftime("%Y-%m-%dT%H:%M:%S")]
+        row += [en(rec.title)]
+        row += [en(rec.link)]
+        row += [', '.join([en(t.name) for t in rec.tags.all()])]
+        row += [en(rec.description)][:131071]
+        row += [en(rec.relevance)][:131071]
+        row += [en(rec.content)][:131071]
         writer.writerow(row)
     return response
