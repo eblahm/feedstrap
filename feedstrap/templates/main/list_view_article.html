@@ -19,7 +19,14 @@
 
             <em>{{i.date.strftime('%d %b %y') }}</em>
             {% for feed in i.feeds.all() %}
-            {% if loop.index > 1 %}, {% else%}<span class="spacer">|</span> posted by {% endif %}<a href="/q?feeds={{ feed.pk }}">{% if feed.user.first_name %}{{ feed.user.first_name|e }}{% else %}{{ feed.name }}{% endif %}</a>
+            {% if loop.index > 1 %}, {% else%}<span class="spacer">|</span> posted by {% endif %}
+
+                {% if feed.user.first_name %}<a href="/q?person={{ feed.user.first_name }}">{{ feed.user.first_name|e }}</a>
+                {% else %}
+                <a href="/q?feeds={{ feed.pk }}">{{ feed.name|e }}</a>
+                {% endif %}
+
+
             {% endfor %}
             {% if i.tags.all() %}
                 {% for tag in i.tags.all() %}
