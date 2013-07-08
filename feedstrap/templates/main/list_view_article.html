@@ -4,14 +4,20 @@
             <h4>
                 <a href="{{ i.link }}" target="_blank">{{ i.title }}</a>
             </h4>
-        {% if search_snippets %}
-            <p class="ar_snippet">
-            {% for snip in search_snippets[i.pk]['content'] %}...{{ snip }}...{% endfor %}
-            </p>
-        {% else %}
-            {% if i.description %}<p> Description: {{ i.description }}</p>{% endif %}
-            {% if i.relevance %} <p>Relevance: {{ i.relevance }}</p>{% endif %}
-        {% endif %}
+
+
+                <div  style="margin-left: 1em; margin-right: 2em; font-size: 16px">
+                {% if search_snippets %}
+                    <p class="ar_snippet">
+                    {% for snip in search_snippets[i.pk]['content'] %}...{{ snip }}...{% endfor %}
+                    </p>
+                {% else %}
+                    {% if i.description %}<p> Description: {{ i.description }}</p>{% endif %}
+                    {% if i.relevance %} <p>Relevance: {{ i.relevance }}</p>{% endif %}
+                {% endif %}
+                </div>
+
+
         </section>
 
 
@@ -20,13 +26,10 @@
             <em>{{i.date.strftime('%d %b %y') }}</em>
             {% for feed in i.feeds.all() %}
             {% if loop.index > 1 %}, {% else%}<span class="spacer">|</span> posted by {% endif %}
-
                 {% if feed.user.first_name %}<a href="/q?person={{ feed.user.first_name }}">{{ feed.user.first_name|e }}</a>
                 {% else %}
                 <a href="/q?feeds={{ feed.pk }}">{{ feed.name|e }}</a>
                 {% endif %}
-
-
             {% endfor %}
             {% if i.tags.all() %}
                 {% for tag in i.tags.all() %}

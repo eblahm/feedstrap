@@ -1,9 +1,11 @@
 {% if alert %}
-<div id="outside_alert">
-    <div class="alrt">
-    {{ alert }}
+
+    <div id="outside_alert">
+        <div class="alrt">
+        {{ alert }}
+        </div>
     </div>
-</div>
+
     
 {% endif %}
 
@@ -13,10 +15,12 @@
         </div>
 {% endfor %}
 
-        <div style="text-align:center;">
-            {% if next_offset %}
-            <span class="eb"><button class="btn btn-primary show_more" data-parent="content_view" data-query="/q/ajax/?{{ show_more_perams }}"> Show More </button></span>
-            {% else %}
-            <strong>------ END -----</strong> 
-            {% endif %}
-        </div>
+
+    <div style="text-align:center;">
+        {% if next_offset %}
+        <span class="eb"><button class="btn btn-primary show_more" data-parent="content_view" data-query="/q/ajax/?{{ show_more_perams }}"> Show More </button></span>
+        {% else %}
+        <strong>------ END -----</strong>
+        {% endif %}
+    </div>
+

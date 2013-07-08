@@ -62,8 +62,7 @@
 {% block full_content %}
 
     <div id="content_header" class="row-fluid">
-        
-        <div class="span10 offset2" >
+        <div class="span8 offset2" >
         {% if not alert %}
         {% block content_header %}
                 <div style="float: left; margin-top: .6em">
@@ -93,7 +92,7 @@
                 {% include '/main/sidebar.html' %}
             {% endblock %}
         </div>
-        <div id="article_list_zone" class="span10">
+        <div id="article_list_zone" class="span8">
             <div id="content_view">
                 {% block content_view %}
                     {% include '/main/list_view.html' %}
