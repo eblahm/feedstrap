@@ -70,6 +70,33 @@ def save_wr_topic_tags(rec, request):
     save_tags(rec, tags_list)
     return rec
 
+def write_access(rec, user):
+    WA = False        
+    if user.is_authenticated():
+        if user.is_staff:
+            WA = True
+        else:
+            feeds = [f for f in rec.feeds.all()]
+            postitq = models.PostIt.objects.filter(user=user)
+            if postitq.count() == 0:
+                this_user_feed = []
+            else:
+                this_user_feed = [postitq[0].feed]
+            WA = feeds == this_user_feed
+    return WA
+
+def delete_access(rec, user):
+    DA = False
+    if user.is_authenticated():
+        feeds = [f for f in rec.feeds.all()]
+        postitq = models.PostIt.objects.filter(user=user)
+        if postitq.count() == 0:
+            this_user_feed = []
+        else:
+            this_user_feed = [postitq[0].feed]
+        DA = feeds == this_user_feed
+    return DA    
+
 def create_new_postit(user):
     feed = models.Feed(
         url = "http://feedstrap.vacloud.us/rss?feeds=",
@@ -106,21 +133,8 @@ def main(request):
         return render.response(request, template_file, v)
     elif request.method == "POST":
         rec = Resource.objects.get(pk=int(request.POST['pk']))
-        write_access = False        
-        auth = request.user.is_authenticated()
-        if auth:
-            if request.user.is_staff:
-                write_access = True
-            else:
-                feeds = [f for f in rec.feeds.all()]
-                postitq = models.PostIt.objects.filter(user=request.user)
-                if postitq.count() == 0:
-                    this_user_feed = []
-                else:
-                    this_user_feed = [postitq[0].feed]
-                write_access = feeds == this_user_feed
         response_data = {}
-        if write_access:
+        if write_access(rec, request.user):
             rec.title = en(request.POST['title'])
             rec.description = en(request.POST['description'])
             rec.relevance = en(request.POST['relevance'])
@@ -231,4 +245,24 @@ def add_simple(request):
         return HttpResponse("alert('saved!')")
     else:
         return HttpResponse("alert('Please Log into FeedStrap before attempting to Post links')")
+        
+def delete(request):
+    link = request.REQUEST['l']
+    rec = Resource.objects.get(link=str(link))
+    if delete_access(rec, request.user) and request.method == "POST":
+        rec.delete()
+        return HttpResponse("deleted")
+    else:
+        return HttpResponse("not authorized")
+            
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
             

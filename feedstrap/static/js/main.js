@@ -57,6 +57,28 @@ $(document).ready(function () {
             })
         });
     });
+    
+    $("#modal_content").on("click", ".delete", function (event) {
+        var d = 'l=' + encodeURIComponent($(this).data('l')) +"&csrfmiddlewaretoken=" + $("#csrf").val();
+        var ar = $('#ar_'+ $(this).data('k'));
+        if (window.confirm("Are you sure you want to delete this record?")) {
+            $.ajax({
+                url: '/edit/resource/delete',
+                method: "POST",
+                data: d,
+                dataType: "html",
+                error: function() {alert('fail :(')},
+                success: (function (data) {
+                    if (data=='deleted'){ 
+                        $("#modal_content").modal('hide');
+                        ar.hide();
+                        }
+                    else {alert(data);}
+                    
+                })
+            });
+        }
+    });
 
       
     $("#modal_content").on("click", "#save_btn", function () {  
