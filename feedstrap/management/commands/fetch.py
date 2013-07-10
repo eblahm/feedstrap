@@ -140,11 +140,11 @@ class Command(BaseCommand):
                     if not pi.content:
                         try:
                             pi = extract_save_content(g, pi)
-                            self.stdout.write('%s -- CONTENT SAVED -- %s -- "%s"' % (datetime.now().strftime('%d %b %y %I:%M:%S%p'), feed.name, pi.title[:20]))
+                            self.stdout.write('%s -- CONTENT SAVED -- %s -- "%s"' % (datetime.now().strftime('%d %b %y %I:%M:%S%p'), p.feed.name, pi.title[:20]))
                         except:
                             pi.content = "-"
                             pi.save()
-                            self.stdout.write('TEXT EXTRACTION ERROR -- %s -- "%s"' % (feed.name, pi.title[:20]))
+                            self.stdout.write('TEXT EXTRACTION ERROR -- %s -- "%s"' % (p.feed.name, pi.title[:20]))
                             traceback.print_exc(file=sys.stdout)
         except:
             er = sys.exc_info()[-1]
