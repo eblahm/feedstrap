@@ -12,8 +12,8 @@ env = Environment(loader=PackageLoader('feedstrap', 'templates'))
 def response(request, template_file, template_values={}):
     v = {}
     v['auth'] = request.user.is_authenticated()
-    if v['auth']:
-        v['user'] = request.user
+    v['user'] = request.user
+    v['staff'] = request.user.is_staff
 
     # feed_navs relate to link items under the "Feed" section on the sidebar
     # this info is cached
