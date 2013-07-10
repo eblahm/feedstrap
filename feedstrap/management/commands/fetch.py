@@ -66,25 +66,8 @@ class Command(BaseCommand):
         try:
             g = Goose()
             ## Query fetches in ascending order according to when feeds were last updated
-            feeds_query = models.Feed.objects.all().order_by('last_updated')
+            feeds_query = models.Feed.objects.filter(fetching=True).order_by('last_updated')
             for feed in feeds_query:
-                # unfortunately internal "post it button" feeds are stored the same way as external feeds
-                # these obviously don't need to be updated
-                # the description is the on off switch (not optimal)
-                if feed.description == 'postit':
-                    dayago = datetime.now() - timedelta(days=1)
-                    postit_q = models.Resource.objects.filter(feeds=feed).filter(date__gte=dayago)
-                    for pi in postit_q:
-                        if not pi.content:
-                            try:
-                                pi = extract_save_content(g, pi)
-                                self.stdout.write('%s -- CONTENT SAVED -- %s -- "%s"' % (datetime.now().strftime('%d %b %y %I:%M:%S%p'), feed.name, pi.title[:20]))
-                            except:
-                                pi.content = ""
-                                pi.save()
-                                self.stdout.write('TEXT EXTRACTION ERROR -- %s -- "%s"' % (feed.name, pi.title[:20]))
-                                traceback.print_exc(file=sys.stdout)
-                    continue
                 parsed_feed = feedparser.parse(feed.url)
                 # query for latest database item according to this particular feed
                 ## The latest item in the RSS feed is compared with latest item in the database to determine
@@ -147,6 +130,22 @@ class Command(BaseCommand):
                             self.stdout.write('TEXT EXTRACTION ERROR -- %s -- "%s"' % (feed.name, r.title[:20]))
                             traceback.print_exc(file=sys.stdout)
                         self.stdout.write('%s -- %s -- "%s"' % (datetime.now().strftime('%d %b %y %I:%M:%S%p'), feed.name, r.title[:20]))
+
+            # now update the postit button content
+            dayago = datetime.now() - timedelta(days=1)
+            dayago = dayago.replace(tzinfo=pytz.utc)
+            for p in models.PostIt.objects.all():
+                postit_q = models.Resource.objects.filter(feeds=p.feed).filter(date__gte=dayago)
+                for pi in postit_q:
+                    if not pi.content:
+                        try:
+                            pi = extract_save_content(g, pi)
+                            self.stdout.write('%s -- CONTENT SAVED -- %s -- "%s"' % (datetime.now().strftime('%d %b %y %I:%M:%S%p'), feed.name, pi.title[:20]))
+                        except:
+                            pi.content = "-"
+                            pi.save()
+                            self.stdout.write('TEXT EXTRACTION ERROR -- %s -- "%s"' % (feed.name, pi.title[:20]))
+                            traceback.print_exc(file=sys.stdout)
         except:
             er = sys.exc_info()[-1]
             traceback.print_exc(file=sys.stdout)
@@ -158,6 +157,7 @@ class Command(BaseCommand):
                       traceback_email,
                       'vaphshalbem@localhost',
                       ['matthew.c.halbe@gmail.com'])
+
 
 
 

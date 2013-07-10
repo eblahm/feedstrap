@@ -72,6 +72,7 @@ class Feed(models.Model):
     tags = models.ManyToManyField(Tag, blank=True, null=True)
     reports = models.ManyToManyField(Report, blank=True, null=True)
     last_updated = models.DateTimeField()
+    fetching = models.BooleanField()
 
 class Resource(models.Model):
     # for versioning
