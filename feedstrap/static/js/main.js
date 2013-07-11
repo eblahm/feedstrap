@@ -173,5 +173,5 @@ $(document).ready(function () {
             $("#sidebar").css({width: max_width - 20});
         }
     });
-
+$("#esil").tablesorter();  
 });

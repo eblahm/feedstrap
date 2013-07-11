@@ -10,23 +10,25 @@
     .javascript_link:hover {text-decoration:underline; color:3399FF; cursor:pointer;}
     .javascript_link:active {text-decoration:underline;}
     .no_edge {border:none; margin:0px; padding:0px;}
+    .initialism {padding-right:15px;}
     </style>
 
   <div>
     <div style="text-align:center">
       <h3>Emerging Strategic Issues List</h3>
-      <table class="table table-hover">
-        <thead>
+      <table id="esil" class="tablesorter table table-hover">
+        <thead> 
           <tr>
           <th style="width:129px">Name</th>
             <th style="width:280px">Description</th>
-             <th style="text-align:center"><abbr title="Intensity represents the frequency an issue." class="initialism">Intensity</abbr></th>
-            <th style="text-align:center"><abbr title="Relevance represents the topics resonance with current VA strategic ideas.  If the topic can help illustrate Strategic Imperatives, the Relevance will be high." class="initialism">Relevance</abbr></th>
-            <th style="text-align:center"><abbr title="Impact represents the topics potential to effect VA capabilities.  Each topic is cross walked against the VA capabilities, then given a score.  Topics that involve many different VA capabilities will have a high score." class="initialism">Impact</abbr></th>
-            <th style="width:40px">Attachement</th>
+             <th><abbr title="Intensity represents the frequency an issue." class="initialism">Intensity</abbr></th>
+            <th><abbr title="Relevance represents the topics resonance with current VA strategic ideas.  If the topic can help illustrate Strategic Imperatives, the Relevance will be high." class="initialism">Relevance</abbr></th>
+            <th><abbr title="Impact represents the topics potential to effect VA capabilities.  Each topic is cross walked against the VA capabilities, then given a score.  Topics that involve many different VA capabilities will have a high score." class="initialism">Impact</abbr></th>
+            <th style="width:40px"><span style="padding-right:15px">Attachement</span></th>
         </tr>
         </thead>
         <tbody>
+
           {% for topic in topics %}
         <tr data-k="{{ topic.pk }}" data-site="{{ site }}" class="topic_row">
           <td class="rpoint">{{ topic.name }}</td>
@@ -38,7 +40,7 @@
           <td class="rpoint" style="text-align:center; vertical-align:top; height:100%"> {% if topic.attachment %}<br><a href="{{ topic.attachment.url }}"><img src="/static/img/icons/glyphicons_062_paperclip.png"></img></a>{% endif %}</td>
         </tr>
           {% endfor %}        
-        </tbody>
+       </tbody>
       </table>
       
     </div>
