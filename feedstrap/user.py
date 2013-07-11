@@ -22,6 +22,9 @@ class Profile(forms.Form):
 def info(request):
     v = {}
     v['nav'] = "info"
+    v['host_url'] = request.get_host()
+    if str(v['host_url'])[:3] != 'htt':
+        v['host_url'] = 'http://' + v['host_url']
     template_file = "/main/user/info.html"
     return render.response(request, template_file, v)
 
