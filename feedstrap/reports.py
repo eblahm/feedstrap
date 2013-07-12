@@ -115,9 +115,9 @@ def export_csv(request):
     response['Content-Disposition'] = 'attachment; filename="search results.csv"'
 
     writer = csv.writer(response)
-    header_row = ['feed urls', 'date', 'title', 'link', 'tags', 'description', 'relevance', 'content']
+    header_row = ['feed urls', 'date', 'title', 'link', 'tags', 'description', 'relevance']
     writer.writerow(header_row)
-    results = v['results']
+    results = v['results'][:100]
     for rec in results:
         row = []
         row += [', '.join([en(f.url) for f in rec.feeds.all()])]
@@ -127,6 +127,5 @@ def export_csv(request):
         row += [', '.join([en(t.name) for t in rec.tags.all()])]
         row += [en(rec.description)][:131071]
         row += [en(rec.relevance)][:131071]
-        row += [en(rec.content)][:131071]
         writer.writerow(row)
     return response
