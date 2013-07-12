@@ -62,7 +62,7 @@ def esil(request,  site="vacloud.us"):
                 q = Topic.objects.all()
             else:
                 q = Topic.objects.filter(published=True)
-            for t in q.order_by('-attachment', 'name'):
+            for t in q.order_by('name'):
                 rsearch = Resource.objects.filter(topics=t)
                 t.intensity = get_rating(rsearch.count(), 'intensity')
                 t.impact = get_rating(t.capabilities.all().count(), 'impact')
