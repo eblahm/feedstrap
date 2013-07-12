@@ -23,7 +23,7 @@
           <td class="rpoint" style="text-align:center">{{ topic.intensity }}</td>
           <td class="rpoint" style="text-align:center">{{ topic.relevance }}</td>
           <td class="rpoint" style="text-align:center; vertical-align:top; height:100%">{{ topic.impact }}</td>
-          <td class="rpoint" style="text-align:center; vertical-align:top; height:100%"> {% if topic.attachment %}<br><a href="{{ topic.attachment.url }}"><img src="/static/img/icons/glyphicons_062_paperclip.png"></img></a>{% endif %}</td>
+          <td class="rpoint" style="text-align:center; vertical-align:top; height:100%"> {% if topic.attachment %}<br><span style="color:white">1</span><a href="{{ topic.attachment.url }}"><img src="/static/img/icons/glyphicons_062_paperclip.png"></img></a>{% endif %}</td>
         </tr>
           {% endfor %}        
        </tbody>
