@@ -71,7 +71,7 @@ def save_wr_topic_tags(rec, request):
     return rec
 
 def write_access(rec, user):
-    WA = False        
+    WA = False
     if user.is_authenticated():
         if user.is_staff:
             WA = True
@@ -95,7 +95,7 @@ def delete_access(rec, user):
         else:
             this_user_feed = [postitq[0].feed]
         DA = feeds == this_user_feed
-    return DA    
+    return DA
 
 def create_new_postit(user):
     feed = models.Feed(
@@ -128,7 +128,7 @@ def main(request):
         v['rec'] = rec
         v.update(csrf(request))
         v['resource_form'] = ResourceForm(instance=rec)
-        v['topics'] = Topic.objects.all()
+        v['topics'] = Topic.objects.all().order_by('name')
         template_file = '/main/forms/basic.html'
         return render.response(request, template_file, v)
     elif request.method == "POST":
@@ -188,7 +188,7 @@ def add_new(request):
                 rec.save()
                 all_offices = [o.pk for o in feed.offices.all()] + [o.pk for o in rec.offices.all()]
                 save_manytomany(rec, 'offices', list(set(all_offices)))
-                
+
             rec = save_wr_topic_tags(rec, request)
             return HttpResponse("/q?feeds=" + str(feed.pk))
         else:
@@ -214,13 +214,13 @@ def add_new(request):
             v['rec'] = rec
             v.update(csrf(request))
             v['resource_form'] = ResourceForm(instance=rec)
-            v['topics'] = Topic.objects.all()
+            v['topics'] = Topic.objects.all().order_by('name')
             template_file = '/main/forms/post_it.html'
             return render.response(request, template_file, v)
         else:
             return HttpResponseRedirect('/signin?redirect=%s' % (urllib.quote(request.get_full_path())))
-            
-            
+
+
 def add_simple(request):
     js = ""
     if request.user.is_authenticated():
@@ -245,7 +245,7 @@ def add_simple(request):
         return HttpResponse("alert('saved!')")
     else:
         return HttpResponse("alert('Please Log into FeedStrap before attempting to Post links')")
-        
+
 def delete(request):
     link = request.REQUEST['l']
     rec = Resource.objects.get(link=str(link))
@@ -254,15 +254,15 @@ def delete(request):
         return HttpResponse("deleted")
     else:
         return HttpResponse("not authorized")
-            
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-            
+
+
+
+
+
+
+
+
+
+
+
+
