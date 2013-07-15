@@ -137,7 +137,7 @@ class Command(BaseCommand):
             for p in models.PostIt.objects.all():
                 postit_q = models.Resource.objects.filter(feeds=p.feed).filter(date__gte=dayago)
                 for pi in postit_q:
-                    if not pi.content:
+                    if pi.content == None:
                         try:
                             pi = extract_save_content(g, pi)
                             self.stdout.write('%s -- CONTENT SAVED -- %s -- "%s"' % (datetime.now().strftime('%d %b %y %I:%M:%S%p'), p.feed.name, pi.title[:20]))
