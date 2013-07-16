@@ -71,13 +71,13 @@ def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_l
     elif text_search != None and config.solr_enabled:
         solr = pysolr.Solr('http://localhost:8983/solr/', timeout=10)
         srt = 'score desc'
-        if '/rss' in request.path:
-            srt = 'id desc'
+        # if '/rss' in request.path:
+        #     srt = 'id desc'
         results = solr.search(text_search,sort=srt, **{'hl': 'true',
                                             'hl.fl': '*',
                                             'fl': '*,score',
                                             'rows': 50,
-                                            #'sort': srt,
+                                            'sort': srt,
                                             'hl.fragsize': 200,
                                             'hl.snippets': 3})
         search_snippets = {}
