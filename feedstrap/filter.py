@@ -66,7 +66,7 @@ def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_l
     applied_filters.pop('field', None)
     start_offset = applied_filters.get('s', '0')
     start_offset = int(start_offset)
-    
+
     text_search = applied_filters.get('term', None)
     if len(applied_filters) == 0:
         pass
@@ -79,7 +79,6 @@ def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_l
                                             'hl.fl': '*',
                                             'fl': '*,score',
                                             'rows': 50,
-                                            'start': start_offset,
                                             'sort': srt,
                                             'hl.fragsize': 200,
                                             'hl.snippets': 3})
@@ -98,7 +97,10 @@ def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_l
         else:
             q = []
             for p in pk_list:
-                q.append(Resource.objects.get(pk=p))       
+                pk = int(str(p))
+                lookup = Resource.objects.filter(pk=pk)
+                if lookup.count() > 0:
+                    q.append(lookup.get())
     else:
         q = Resource.objects.all()
         sorted_filters = sorted(applied_filters.iteritems(), key=operator.itemgetter(0))
@@ -143,7 +145,7 @@ def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_l
     if text_search != None:
         count = len(q)
     else:
-        coutn = q.count()
+        count = q.count()
     if count == per_page_limit:
         v['next_offset'] = start_offset + per_page_limit
     v['results'] = q
@@ -158,7 +160,7 @@ def generate_filter_tags(request):
     data = request.GET.dict()
     data.pop('csrfmiddlewaretoken', None)
     data.pop('field', None)
-    
+
     filter_tags = []
     i = 1
     for tag in data:
