@@ -83,12 +83,13 @@ def weeklyreads(request, site="sharepoint"):
     v.update(request.GET.dict())
     v['admin'] = request.user.is_authenticated()
     if site == 'export_to_word':
-        v.update(apply_filter(request, per_page_limit=100))
+        v.update(apply_filter(request, slice=False))
         v['next_offset'] = False
         template_file = '/main/weekly_reads/export_view.html'
         v['headline'] = 'Weekly Reads Report'
         v['subheadline'] = 'Prepared by Strategic Studies Group, Office of Policy'
         v['date'] = datetime.now().strftime('%x')
+        v['results'] = v['results'].order_by('tags__name')[:100]
         response = HttpResponse(content_type='application/msword')
         response['Content-Disposition'] = 'attachment; filename="%s SSG Weekly Reads.doc"' % (datetime.now().strftime('%y%m%d'))
         ms_doc = render.load(template_file, v)

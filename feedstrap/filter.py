@@ -59,7 +59,7 @@ class FilterForm(forms.Form):
     feeds = forms.ChoiceField(choices=models.generate_choices(models.Feed))
     report = forms.ChoiceField(choices=models.generate_choices(models.Report, 'name', 'name'))
 
-def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_limit=config.per_page_limit):
+def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_limit=config.per_page_limit, slice=True):
     v = {}
     applied_filters = request.GET.dict()
     applied_filters.pop('csrfmiddlewaretoken', None)
@@ -135,12 +135,12 @@ def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_l
                 q |= oq
         q = q.order_by('-date')
 
-
-    if start_offset == 0:
-        q = q[:per_page_limit]
-    else:
-        limit = start_offset + per_page_limit
-        q = q[start_offset:limit]
+    if slice:
+        if start_offset == 0:
+            q = q[:per_page_limit]
+        else:
+            limit = start_offset + per_page_limit
+            q = q[start_offset:limit]
 
     if text_search != None:
         count = len(q)
