@@ -64,7 +64,9 @@ def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_l
     applied_filters = request.GET.dict()
     applied_filters.pop('csrfmiddlewaretoken', None)
     applied_filters.pop('field', None)
-
+    start_offset = applied_filters.get('s', '0')
+    start_offset = int(start_offset)
+    
     text_search = applied_filters.get('term', None)
     if len(applied_filters) == 0:
         pass
@@ -73,10 +75,11 @@ def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_l
         srt = 'score desc'
         # if '/rss' in request.path:
         #     srt = 'id desc'
-        results = solr.search(text_search,sort=srt, **{'hl': 'true',
+        results = solr.search(text_search, **{'hl': 'true',
                                             'hl.fl': '*',
                                             'fl': '*,score',
                                             'rows': 50,
+                                            'start': start_offset,
                                             'sort': srt,
                                             'hl.fragsize': 200,
                                             'hl.snippets': 3})
@@ -87,10 +90,15 @@ def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_l
             search_snippets[int(r['id'])] = hl[r['id']]
             pk_list.append(r['id'])
         v.update({'search_snippets': search_snippets})
-        q = Resource.objects.all()
-        q = q.filter(pk__in=pk_list)
+
         if applied_filters.get('report', None) is not None:
+            q = Resource.objects.all()
+            q = q.filter(pk__in=pk_list)
             q = q.filter(reports__name=applied_filters.get('report'))
+        else:
+            q = []
+            for p in pk_list:
+                q.append(Resource.objects.get(pk=p))       
     else:
         q = Resource.objects.all()
         sorted_filters = sorted(applied_filters.iteritems(), key=operator.itemgetter(0))
@@ -125,15 +133,18 @@ def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_l
                 q |= oq
         q = q.order_by('-date')
 
-    start_offset = applied_filters.get('s', '0')
-    start_offset = int(start_offset)
+
     if start_offset == 0:
         q = q[:per_page_limit]
     else:
         limit = start_offset + per_page_limit
         q = q[start_offset:limit]
 
-    if q.count() == per_page_limit:
+    if text_search != None:
+        count = len(q)
+    else:
+        coutn = q.count()
+    if count == per_page_limit:
         v['next_offset'] = start_offset + per_page_limit
     v['results'] = q
 
