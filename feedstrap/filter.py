@@ -133,7 +133,7 @@ def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_l
             q = all_qs[0]
             for oq in all_qs[1:]:
                 q |= oq
-        q = q.order_by('-date')
+        q = q.distinct().order_by('-date')
 
     if slice:
         if start_offset == 0:

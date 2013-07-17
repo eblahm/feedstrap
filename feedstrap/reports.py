@@ -73,7 +73,7 @@ def esil(request,  site="vacloud.us"):
                 template_file = '/main/esil/sharepoint_view.html'
             else:
                 template_file = '/main/esil/main_view.html'
-    
+
             return render.response(request, template_file, v)
     else:
         return HttpResponseRedirect('/signin?redirect=%s' % (urllib.quote(request.get_full_path())))
