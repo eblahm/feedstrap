@@ -38,6 +38,6 @@ def StaticPage(request, static_page=""):
         v['static_page'] = q.get()
         v['nav'] = v['static_page'].slug
         template_file = '/main/static.html'
+        return render.response(request, template_file, v)
     else:
-        template_file = '/main/404.html'
-    return render.response(request, template_file, v)
+        return render.not_found(request)

@@ -1,8 +1,9 @@
+from datetime import datetime
 from jinja2 import Environment, PackageLoader
 from django.http import HttpResponse
 from django.core.cache import cache
 
-from ssg_site.config import solr_enabled
+from ssg_site.config import solr_enabled, app_root
 from feedstrap.models import SidebarLink, StaticPage
 
 
@@ -62,6 +63,11 @@ def load(template_file, template_values={}):
     template = env.get_template(template_file)
     return template.render(template_values)
 
+
 def not_found(request):
+    log_file = open(app_root + "/error_log", 'a')
+    error = "%s - %s - %s\n" % (datetime.now().strftime("%X %x"), request.META.get('REMOTE_ADDR', '?'), request.get_full_path())
+    log_file.writelines(error)
+    log_file.close()
     template = env.get_template('/main/404.html')
     return HttpResponse(template.render())

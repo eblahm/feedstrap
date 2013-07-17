@@ -59,7 +59,7 @@ class FilterForm(forms.Form):
     feeds = forms.ChoiceField(choices=models.generate_choices(models.Feed))
     report = forms.ChoiceField(choices=models.generate_choices(models.Report, 'name', 'name'))
 
-def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_limit=config.per_page_limit, slice=True):
+def apply_filter(request, q=Resource.objects.all(), per_page_limit=config.per_page_limit, slice=True):
     v = {}
     applied_filters = request.GET.dict()
     applied_filters.pop('csrfmiddlewaretoken', None)
@@ -102,17 +102,16 @@ def apply_filter(request, q=Resource.objects.all().order_by("-date"), per_page_l
                 if lookup.count() > 0:
                     q.append(lookup.get())
     else:
-        q = Resource.objects.all()
         sorted_filters = sorted(applied_filters.iteritems(), key=operator.itemgetter(0))
         and_queries = None
         all_qs = []
         for i in sorted_filters:
-            if i[0] == 's':
-                continue
             field = i[0].split('_')[-1]
             value = i[1]
             if field != 'andor':
-                filter = filters[str(field)]
+                filter = filters.get(str(field), None)
+                if filter == None:
+                    continue
                 if field in ['dateto', 'datefrom']:
                     value = datetime.strptime(value, '%Y-%m-%d')
                 x = Q((filter.qstring, value))
@@ -170,28 +169,29 @@ def generate_filter_tags(request):
         filter_value = data[tag]
         field_name = tag.split("_")[-1]
         i = tag.split("_")[0]
-        if field_name == 'andor':
-            if filter_value == "OR":
+        if filters.get(field_name, None) != None and field_name != 'andor':
+            if field_name == 'andor':
+                if filter_value == "OR":
+                    class ft:
+                        css = labels.get(field_name, 'background-color: black')
+                        name = "OR"
+                        link = "/q?" + new_perameters
+                        index = i + 'a'
+                else:
+                    continue
+            elif field_name == 'term':
                 class ft:
                     css = labels.get(field_name, 'background-color: black')
-                    name = "OR"
+                    name = "%s: %s" % (field_name, filter_value)
                     link = "/q?" + new_perameters
-                    index = i + 'a'
+                    index = '1'
             else:
-                continue
-        elif field_name == 'term':
-            class ft:
-                css = labels.get(field_name, 'background-color: black')
-                name = "%s: %s" % (field_name, filter_value)
-                link = "/q?" + new_perameters
-                index = '1'
-        else:
-            class ft:
-                css = labels.get(field_name, 'background-color: black')
-                name = "%s: %s" % (field_name, filters[field_name].get_displayed_filter(filter_value))
-                link = "/q?" + new_perameters
-                index = i + 'b'
-        filter_tags.append(ft)
+                class ft:
+                    css = labels.get(field_name, 'background-color: black')
+                    name = "%s: %s" % (field_name, filters[field_name].get_displayed_filter(filter_value))
+                    link = "/q?" + new_perameters
+                    index = i + 'b'
+            filter_tags.append(ft)
     filter_tags = sorted(filter_tags, key=lambda ft: ft.index)
     return filter_tags
 
