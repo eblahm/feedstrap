@@ -89,7 +89,7 @@ def weeklyreads(request, site="sharepoint"):
         v['headline'] = 'Weekly Reads Report'
         v['subheadline'] = 'Prepared by Strategic Studies Group, Office of Policy'
         v['date'] = datetime.now().strftime('%x')
-        v['results'] = v['results'].order_by('tags__name')[:100]
+        v['results'] = v['results'].order_by('tags__name').distinct()[:100]
         response = HttpResponse(content_type='application/msword')
         response['Content-Disposition'] = 'attachment; filename="%s SSG Weekly Reads.doc"' % (datetime.now().strftime('%y%m%d'))
         ms_doc = render.load(template_file, v)
