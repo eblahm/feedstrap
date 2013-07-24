@@ -65,7 +65,7 @@ def load(template_file, template_values={}):
 
 
 def not_found(request):
-    log_file = open(app_root + "/error_log", 'a')
+    log_file = open('/var/www/media/feedstrap/404_log', 'a')
     error = "%s - %s - %s\n" % (datetime.now().strftime("%X %x"), request.META.get('REMOTE_ADDR', '?'), request.get_full_path())
     log_file.writelines(error)
     log_file.close()

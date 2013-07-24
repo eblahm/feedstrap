@@ -67,7 +67,7 @@
         {% block content_header %}
                 <div style="float: left; margin-top: .6em">
                 {% for t in filter_tags %}
-                    <span class="filter_tag" style="{{ t.css }}">{{ t.name }}<a class="xtag" href="{{ t.link }}">×</a></span>
+                    <span class="filter_tag" style="{{ t.css }}">{{ t.name|e }}<a class="xtag" href="{{ t.link }}">×</a></span>
                 {% endfor %}
                 </div>
                 <div class="hidden-phone" style="float: right;">

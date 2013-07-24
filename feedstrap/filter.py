@@ -59,7 +59,7 @@ class FilterForm(forms.Form):
     feeds = forms.ChoiceField(choices=models.generate_choices(models.Feed))
     report = forms.ChoiceField(choices=models.generate_choices(models.Report, 'name', 'name'))
 
-def apply_filter(request, q=Resource.objects.all(), per_page_limit=config.per_page_limit, slice=True):
+def apply_filter(request, q=Resource.objects.all().order_by('-date'), per_page_limit=config.per_page_limit, slice=True):
     v = {}
     applied_filters = request.GET.dict()
     applied_filters.pop('csrfmiddlewaretoken', None)
