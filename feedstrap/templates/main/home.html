@@ -1,4 +1,4 @@
-{% extends "/main/base.html" %}
+{% extends "main/base.html" %}
 {% block modal %}
 <div id="modal_content" class="modal hide fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false" style="display: none;">   
 <div class="container-fluid">
@@ -89,13 +89,13 @@
     <div class="row-fluid">
         <div id="sidebar_zone" class="span2 hidden-phone">
             {% block sidebar %}
-                {% include '/main/sidebar.html' %}
+                {% include 'main/sidebar.html' %}
             {% endblock %}
         </div>
         <div id="article_list_zone" class="span8">
             <div id="content_view">
                 {% block content_view %}
-                    {% include '/main/list_view.html' %}
+                    {% include 'main/list_view.html' %}
                 {% endblock %}
             </div>
         </div>

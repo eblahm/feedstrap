@@ -1,4 +1,4 @@
-{% extends "/main/home.html" %}
+{% extends "main/home.html" %}
 {% block head %}
 {{ block.super }}
 <style>
@@ -32,5 +32,5 @@ th {
 {% block content_header %}{% endblock %}
 {% block title %}Emerging Strategic Issues List{% endblock %}
 {% block content_view %}
-{% include '/main/esil/table.html' %}
+{% include 'main/esil/table.html' %}
 {% endblock %}

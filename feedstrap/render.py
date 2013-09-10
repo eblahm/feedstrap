@@ -65,7 +65,6 @@ def response(request, template_file, template_values={}):
         active_nav = template_values.get('nav', False)
         ))
 
-    # why do I use jinja2 instead of django templates, you may ask?... no good reason, just a bad habit
     return render_to_response(template_file,
                               template_values,
                               context_instance=RequestContext(request))
