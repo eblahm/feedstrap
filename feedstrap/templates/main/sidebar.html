@@ -5,10 +5,10 @@
 
 
         <li class="nav-header">Feeds</li>
-        {% for fn in feed_navs %}
-        <li {% if get_query == fn[0] %}class="active"{% endif %}>
-            <a href="/?{{ fn[0] }}">
-               {{ fn[1] }}
+        {% for nav_peramters, nav_name in feed_navs %}
+        <li {% if get_query == nav_peramters %}class="active"{% endif %}>
+            <a href="/?{{ nav_peramters }}">
+               {{ nav_name }}
             </a>
         </li>
         {% endfor %}

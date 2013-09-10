@@ -1,5 +1,6 @@
 .javascript_link:hover {text-decoration:underline; color:3399FF; cursor:pointer;}
 .javascript_link:active {text-decoration:underline;}
+.javascript_link {color:#3366CC;}
 body {
     padding-top:50px;
 }
@@ -13,6 +14,24 @@ body {
     margin-bottom: 50px;
 }
 
+.esil_column {text-align:center; vertical-align:top; line-height: 1em;}
+.esil_header {
+    cursor: pointer; 
+    font-weight: bold; 
+    background-image: url(/static/img/bg.gif); 
+    background-repeat: no-repeat; 
+    background-position: right; 
+}
+.headerSortUp { 
+    background-image: url(/static/img/desc.gif); 
+} 
+.headerSortDown { 
+    background-image: url(/static/img/asc.gif); 
+} 
+
+span.rpoint:hover, td.rpoint:hover {cursor:pointer;}
+.no_edge {border:none; margin:0; padding:0;}
+.initialism {padding-right:15px;}
 
 .view_btn { margin:2px; }
 .show_more{
@@ -23,7 +42,6 @@ body {
     margin-right: 5px;
     margin-left: 5px;
 }
-
 .xtag:hover {text-decoration:none; color:white; cursor:pointer;}
 .xtag:active {text-decoration:none;}
 .xtag {
@@ -65,7 +83,7 @@ body {
     padding: 60px;
     
 }
-.alrt h1 {
+h1.alrt {
     color: #0088CC;
 }
 .ar {
@@ -115,7 +133,6 @@ body {
     text-align: center;
     text-decoration: underline;
 }
-
 .af_row td{
     line-height: 50px;
     vertical-align: middle;
@@ -202,7 +219,8 @@ body {
     padding: 7px 9px;
   }
 
-form li {list-style: none;
-color: red;
-font-style: italic
+form li {
+    list-style: none;
+    color: red;
+    font-style: italic
 }

@@ -6,7 +6,7 @@
   
 </style>
  <script>
-var all_tags = [{% for t in all_tags %}{% if loop.index > 1 %},{% endif %}"{{ t.name }}"{% endfor %}];
+var all_tags = [{% for t in all_tags %}{% ifequal t all_tags|first %}{% else %}, {% endifequal %}"{{ t.name }}"{% endfor %}];
 $(function() {
  function split( val ) {
 return val.split( /,\s*/ );
@@ -50,8 +50,20 @@ return false;
 
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h4 id="myModalLabel" style="margin-bottom: 0px"><a href="{{ rec.link }}" target="_blank">{{ rec.title|e }}</a></h4>
-    <div style="text-align: right">added {{ rec.date.strftime('%d %b %y') }} by {% for feed in rec.feeds.all() %}{% if loop.index > 1 %}, {% endif %}{% if feed.user.first_name %}{{ feed.user.first_name|e }}{% else %}{{ feed.name }}{% endif %}{% endfor %}</div>
+    <h4 id="myModalLabel" style="margin-bottom: 0px"><a href="{{ rec.link }}" target="_blank">{{ rec.title }}</a></h4>
+    <div style="text-align: right">
+    added {{ rec.date |date:'d b y' | title }} by 
+    {% for feed in rec.feeds.all %}
+
+    {% ifequal feed rec.feeds.all|first %}{% else %}, {% endifequal %}
+        {% if feed.user.first_name %}
+            {{ feed.user.first_name }}
+        {% else %}
+            {{ feed.name }}
+        {% endif %}
+    {% endfor %}
+                    
+    </div>
 </div>
 
 <div class="modal-body">
@@ -60,20 +72,21 @@ return false;
 
       <input type="hidden" name="pk" value="{{ rec.pk }}" />
       
-      <label for="title">Title:</label> <input id="title" name="title" type="text" class="input-xxlarge" value="{{ rec.title|e }}"></input><br>
+      <label for="title">Title:</label> <input id="title" name="title" type="text" class="input-xxlarge" value="{{ rec.title }}"></input><br>
 
-      <label for="description">Description:</label><textarea style="min-height: 50px" id="description" name="description">{% if rec.description %}{{ rec.description|e }}{%  endif  %}</textarea>
+      <label for="description">Description:</label><textarea style="min-height: 50px" id="description" name="description">{% if rec.description %}{{ rec.description }}{%  endif  %}</textarea>
 
-      <label for="relevance">Relevance:</label><textarea style="min-height: 50px" id="relevance" name="relevance">{% if rec.relevance %}{{ rec.relevance|e  }}{%  endif  %}</textarea>
+      <label for="relevance">Relevance:</label><textarea style="min-height: 50px" id="relevance" name="relevance">{% if rec.relevance %}{{ rec.relevance  }}{%  endif  %}</textarea>
 
       <div>
           <div style="float: right; text-align: left; margin-right: 10%;">
-          <label for="tags">Tags:</label><input id="tags" name="tags" type="text" class="input-xlarge"  class="ui-autocomplete2 tag_selector"{% if rec.tags.all() %}value="{% for t in rec.tags.all() %}{% if loop.index > 1 %}, {% endif %}{{ t.name|e }}{% endfor %}"{% endif %}></input>
+            <label for="tags">Tags:</label>
+            <input id="tags" name="tags" type="text" class="input-xlarge"  class="ui-autocomplete2 tag_selector"{% if rec.tags.all %}value="{% for t in rec.tags.all|dictsort:"name" %}{% ifequal t rec.tags.all|dictsort:"name"|first %}{% else %}, {% endifequal %}{{ t.name }}{% endfor %}"{% endif %}></input>
           </div>
           <label for="topics">ESIL:</label>
             <select multiple="multiple" id="topics" name="topics">
                 <option value=""></option>
-                {% for t in topics %}<option value="{{ t.pk }}"{% if t in rec.topics.all() %} selected="selected"{% endif %}>{{ t.name|e }}</option>{% endfor %}
+                {% for t in topics|dictsort:"name" %}<option value="{{ t.pk }}"{% if t in rec.topics.all %} selected="selected"{% endif %}>{{ t.name }}</option>{% endfor %}
             </select>
         </div>
 

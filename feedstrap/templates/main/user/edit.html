@@ -1,7 +1,7 @@
 {% extends "/main/home.html" %}
 
 {% block head %}
-    {{ super() }}
+    {{ block.super }}
     <script type="text/javascript">
     function validatelogin() {
         if ($("#post_code").val() == "") {

@@ -1,6 +1,6 @@
 {% extends "/main/base.html" %}
 {% block head %}
-{{ super() }}
+{{ block.super }}
 <style>
   .db_rec label {font-weight:bold;}
   .tarea {text-align: left; width:95%}
@@ -9,7 +9,7 @@
 </style>
 
  <script type="text/javascript">
-        var all_tags = [{% for t in all_tags %}{% if loop.index > 1 %},{% endif %}"{{ t.name }}"{% endfor %}];
+        var all_tags = [{% for t in all_tags %}{% ifequal t all_tags|first %}{% else %}, {% endifequal %}"{{ t.name }}"{% endfor %}];
         $(function() {
          function split( val ) {
         return val.split( /,\s*/ );
@@ -58,23 +58,23 @@
             <h3><a href="/">FeedStrap - Post It</a></h3>
             <form id="postit" class="db_rec form-postit" action="add_new" method="POST">
               <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
-              <label for="title">Link:</label> <input style="width: 80%" id="link" name="link" type="text" value="{{ rec.link|e }}"></input><br>
-              <label for="title">Title:</label> <input style="width: 80%" id="title" name="title" type="text" value="{{ rec.title|e }}"></input><br>
+              <label for="title">Link:</label> <input style="width: 80%" id="link" name="link" type="text" value="{{ rec.link }}"></input><br>
+              <label for="title">Title:</label> <input style="width: 80%" id="title" name="title" type="text" value="{{ rec.title }}"></input><br>
 
 
-              <label for="description">Description:</label><textarea class="tarea" id="description" name="description">{% if rec.description %}{{ rec.description|e }}{%  endif  %}</textarea>
+              <label for="description">Description:</label><textarea class="tarea" id="description" name="description">{% if rec.description %}{{ rec.description }}{%  endif  %}</textarea>
 
-              <label for="relevance">Relevance:</label><textarea class="tarea" id="relevance" name="relevance">{% if rec.relevance %}{{ rec.relevance|e  }}{%  endif  %}</textarea>
+              <label for="relevance">Relevance:</label><textarea class="tarea" id="relevance" name="relevance">{% if rec.relevance %}{{ rec.relevance  }}{%  endif  %}</textarea>
 
 
                   <div style="float: right; text-align: left; margin-right: 10%;">
-                  <label for="tags">Tags:</label><input id="tags" name="tags" type="text" class="input" value="{{ tags|e }}" class="ui-autocomplete2 tag_selector"></input>
+                  <label for="tags">Tags:</label><input id="tags" name="tags" type="text" class="input" value="{{ tags }}" class="ui-autocomplete2 tag_selector"></input>
                   </div>
 
                   <label for="topics">ESIL:</label>
                     <select multiple="multiple" id="topics" name="topics">
                         <option value=""></option>
-                        {% for t in topics %}<option value="{{ t.pk }}"{% if t.pk in topics_pks %} selected="selected"{% endif %}>{{ t.name|e }}</option>{% endfor %}
+                        {% for t in topics %}<option value="{{ t.pk }}"{% if t.pk in topics_pks %} selected="selected"{% endif %}>{{ t.name }}</option>{% endfor %}
                     </select>
 
 

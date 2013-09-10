@@ -3,7 +3,7 @@ from django.db import models
 from django.forms import ModelForm
 from django.core.cache import cache
 from tinymce.models import HTMLField
-from ssg_site import config
+from feedstrap import config
 
 
 

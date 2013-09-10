@@ -5,7 +5,9 @@
 <div class="row-fluid">
 
     <div class="span8 offset2">
+    {% autoescape off %}
         {{ static_page.content }}
+    {% endautoescape %}
     </div>
 
 </div>

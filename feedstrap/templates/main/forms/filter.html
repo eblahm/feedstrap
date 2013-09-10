@@ -1,5 +1,5 @@
 <script type="text/javascript">
-var all_tags = [{% for t in all_tags %}{% if loop.index > 1 %},{% endif %}"{{ t.name }}"{% endfor %}];
+var all_tags = [{% for t in all_tags %}{% ifequal t all_tags|first %}{% else %}, {% endifequal %}"{{ t.name }}"{% endfor %}];
 document.getElementById("advanced_search_form").reset();
 $(function() {$( "#fe1" ).autocomplete({source: all_tags});});
 
@@ -54,8 +54,6 @@ $("#submit_advanced_filter").click(function (event){
     window.open(url, "_self");
 });
 </script>
-
-
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         <h3 id="myModalLabel">Advanced Search</h3>
@@ -66,19 +64,14 @@ $("#submit_advanced_filter").click(function (event){
 
                 <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
                 <table id="advanced_search" align="center">
-
                     <tr>
                         <td style="width:50%; text-align:center"><strong>Field</strong></td>
                         <td style="width:50%; text-align:center"><strong>Value</strong></td>
                     </tr>
-
                     {% include "/main/forms/filter_row.html" %}
-
                 </table>
 
         </form>
-
-
     </div>
     <div class="modal-footer">
         <button style="float:left" class="modal_view"  data-url="/filter" data-dbk="">Reset</button>

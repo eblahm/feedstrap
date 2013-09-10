@@ -5,14 +5,12 @@
 <div class="container" style="margin-bottom:100px;">
     <div class="row">
         <div class="span12"> 
-        <div style="float:left; width:50%">
-            <a class="btn" href="/esil{% if site == 'sharepoint' %}/sharepoint/{% endif %}"><i class="icon-list"></i> Back to Emerging Strategic Issues List</a>
-        </div> 
-        {% if site != 'sharepoint' %}
-        <div style="float:right; width:50%; text-align:right">  
-            <a class="btn" href="/admin/feedstrap/topic/{{ topic.pk }}/"><i class="icon-edit"></i> Edit</a>
-        </div>
-        {% endif %}
+            <div style="float:left; width:50%">
+                <a class="btn" href="/esil"><i class="icon-list"></i> Back to Emerging Strategic Issues List</a>
+            </div> 
+            <div style="float:right; width:50%; text-align:right">  
+                <a class="btn" href="/admin/feedstrap/topic/{{ topic.pk }}/"><i class="icon-edit"></i> Edit</a>
+            </div>
         </div>
     </div>
     
@@ -23,7 +21,7 @@
             {% if topic.attachment %}
             <br>
             <strong>Final Paper:</strong><a href="{{ topic.attachment.url }}"> 
-                {{ topic.attachment.url.replace('/files/final/', '').replace("_", " ").replace('.pdf', '') }}</a>
+                {{ topic.attachment.name }}</a>
             <br>
             {% endif %}
             </p>
@@ -39,9 +37,11 @@
                     <th style="text-align:center">Impact</th></tr>
                 </thead>
                 <tbody>
+                {% autoescape off %}
                     <tr><td style="text-align:center">{{ topic.intensity }}</td>
                     <td style="text-align:center">{{ topic.relevance }}</td>
                     <td style="text-align:center">{{ topic.impact }}</td></tr>
+                {% endautoescape %}
                 </tbody>
             </table>
         </div>
@@ -53,14 +53,16 @@
             <h4>Strategic Imperatives</h4>
             <p>
                 <ul class="unstyled">
-                {% for category in imperatives %}
-                    <li><strong>{{ category }}</strong></li>
-                    {% for item in imperatives[category] %}
-                        <ul>
-                            <li>{{ item }}</li>
-                        </ul>
+                    {% regroup imperatives by category as imperatives_list %}
+                    {% for category in imperatives_list %}
+                        <li><strong>{{ category.grouper }}</strong>
+                            <ul>
+                            {% for item in category.list %}
+                                    <li>{{ item.name }}</li>
+                            {% endfor %}
+                            </ul>
+                        </li>
                     {% endfor %}
-                {% endfor %}      
                 </ul>
             </p>
         </div>
@@ -68,34 +70,27 @@
             <h4>VA Capabilities</h4>
             <p>
                 <ul class="unstyled">
-                {% for category in capabilities %}
-                    <li><strong>{{ category }}</strong></li>
-                    {% for item in capabilities[category] %}
-                        <ul>
-                            <li>{{ item }}</li>
-                        </ul>
+                    {% regroup capabilities by category as capabilities_list %}
+                    {% for category in capabilities_list %}
+                        <li><strong>{{ category.grouper }}</strong>
+                            <ul>
+                            {% for item in category.list %}
+                                    <li>{{ item.name }}</li>
+                            {% endfor %}
+                            </ul>
+                        </li>
                     {% endfor %}
-                {% endfor %}      
                 </ul>
             </p>
         </div>
     </div>
     
     <div class="row">
-    
-    
-        <div class="span6" style="margin-top:20px"> 
-        
-
+        <div class="span12" style="margin-top:20px"> 
+            <h4>Comments:</h4>  
+                {{ comments }}
         </div>
-        
-        <div class="span6" style="margin-top:20px"> 
-    
-    
-        </div>
-    
     </div>
-    
     
     <div class="row">
         <div class="span12" style="margin-top:20px"> 

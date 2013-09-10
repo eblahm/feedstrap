@@ -1,4 +1,4 @@
-from ssg_site import config
+from feedstrap import config
 import models
 from models import Resource, ResourceForm, Topic
 from django.contrib.auth.models import User
@@ -82,25 +82,21 @@ def apply_filter(request, q=Resource.objects.all().order_by('-date'), per_page_l
                                             'sort': srt,
                                             'hl.fragsize': 200,
                                             'hl.snippets': 3})
-        search_snippets = {}
-        hl = results.highlighting
-        pk_list = []
-        for r in results:
-            search_snippets[int(r['id'])] = hl[r['id']]
-            pk_list.append(r['id'])
-        v.update({'search_snippets': search_snippets})
 
-        if applied_filters.get('report', None) is not None:
-            q = Resource.objects.all()
-            q = q.filter(pk__in=pk_list)
-            q = q.filter(reports__name=applied_filters.get('report'))
-        else:
-            q = []
-            for p in pk_list:
-                pk = int(str(p))
-                lookup = Resource.objects.filter(pk=pk)
-                if lookup.count() > 0:
-                    q.append(lookup.get())
+
+        # each solr result should correspond to sql db resource
+        # must create custom made interable so search results comply with view settings
+        # each sql db resource is given temporary highlighted keyword snippets attribute 
+        hl = results.highlighting
+        q = []
+        for textDocument in results:
+            dbResource = Resource.objects.filter(pk=int(textDocument['id']))
+            if dbResource:
+                snippets = []
+                for snip in hl.get(textDocument['id']).get('content', []):
+                    snippets.append(snip)
+                dbResource.snippets = "".join(snippets)
+                q.append(dbResource)
     else:
         sorted_filters = sorted(applied_filters.iteritems(), key=operator.itemgetter(0))
         and_queries = None

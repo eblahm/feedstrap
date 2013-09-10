@@ -1,7 +1,7 @@
 {% extends "/main/base.html" %}
 {% block title %}FeedStrap Login{% endblock %}
 {% block head %}
-    {{ super() }}
+    {{ block.super }}
     <script type="text/javascript">
     function validatelogin() {
         if ($("#username").val() == "") {

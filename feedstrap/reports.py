@@ -3,6 +3,8 @@ from models import Topic, Resource, Report
 from filter import apply_filter
 
 from django.http import HttpResponse, HttpResponseRedirect
+from django.template import Template
+from django.forms.models import model_to_dict
 
 from datetime import datetime
 import csv
@@ -35,19 +37,9 @@ def esil(request,  site="vacloud.us"):
         if selected != None:
             topic = Topic.objects.get(pk=int(str(selected)))
             v['site'] = request.GET.dict().get('site', "vacloud.us")
-            mm_fields = ['imperatives', 'capabilities']
-            for i in mm_fields:
-                mm_rec = getattr(topic, i)
-                mapping = {}
-                for mm_item in mm_rec.all().order_by('name'):
-                    try:
-                        index = mapping[mm_item.category]
-                    except:
-                        mapping[mm_item.category] = []
-                        index = mapping[mm_item.category]
-                    if mm_item.name not in index:
-                        index.append(mm_item.name)
-                v[i] = mapping
+            v['imperatives'] = [model_to_dict(t, fields=['name', 'category']) for t in topic.imperatives.all()]
+            v['capabilities'] = [model_to_dict(c, fields=['name', 'category']) for c in topic.capabilities.all()]
+            
             rsearch = Resource.objects.filter(topics=topic).order_by('-date')
             topic.intensity = get_rating(rsearch.count(), 'intensity')
             topic.impact = get_rating(topic.capabilities.all().count(), 'impact')
