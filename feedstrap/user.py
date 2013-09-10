@@ -25,7 +25,7 @@ def info(request):
     v['host_url'] = request.get_host()
     if str(v['host_url'])[:3] != 'htt':
         v['host_url'] = 'http://' + v['host_url']
-    template_file = "/main/user/info.html"
+    template_file = "main/user/info.html"
     return render.response(request, template_file, v)
 
 
@@ -63,7 +63,7 @@ def main(request):
 
         v.update(csrf(request))
         v['nav'] = "profile"
-        template_file = "/main/user/edit.html"
+        template_file = "main/user/edit.html"
         return render.response(request, template_file, v)
 
 def psw(request):
@@ -82,7 +82,7 @@ def psw(request):
                 v['Profile'] = Profile(initial=input)
                 v.update(csrf(request))
                 v['nav'] = "profile"
-                template_file = "/main/user/edit.html"
+                template_file = "main/user/edit.html"
 
                 return render.response(request, template_file, v)
             else:
@@ -94,7 +94,7 @@ def psw(request):
                 v['f'] = PasswordChangeForm(request.user)
             v.update(csrf(request))
             v['nav'] = "profile"
-            template_file = "/main/user/psw_change.html"
+            template_file = "main/user/psw_change.html"
             return render.response(request, template_file, v)
 
 
@@ -119,7 +119,7 @@ def signin(request):
     if request.method == 'GET' or v['invalid'] == True:
         v['redirect'] = request.REQUEST.get('redirect', "")
         v.update(csrf(request))
-        template_file = "/main/forms/signin.html"
+        template_file = "main/forms/signin.html"
         return render.response(request, template_file, v)
 
 def signout(request):

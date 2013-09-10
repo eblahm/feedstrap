@@ -198,13 +198,13 @@ def main(request):
         v['all_tags'] = get_tags()
         if len(perams) == 0:
             v.update(csrf(request))
-            template_file = '/main/forms/filter.html'
+            template_file = 'main/forms/filter.html'
             v['filter_count'] = 1
             return render.response(request, template_file, v)
         else:
             v['filter_count'] = perams['filter_count']
             if perams['a'] == 'new':
-                template_file = '/main/forms/filter_row.html'
+                template_file = 'main/forms/filter_row.html'
                 return render.response(request, template_file, v)
             elif perams['a'] == 'field':
                 f = FilterForm()

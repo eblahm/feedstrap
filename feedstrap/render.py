@@ -79,4 +79,4 @@ def not_found(request):
     error = "%s - %s - %s\n" % (datetime.now().strftime("%X %x"), request.META.get('REMOTE_ADDR', '?'), request.get_full_path())
     log_file.writelines(error)
     log_file.close()
-    return HttpResponse(load('/main/404.html'))
+    return HttpResponse(load('main/404.html'))

@@ -11,8 +11,8 @@
   normal'><span style='mso-ascii-font-family:Calibri;mso-ascii-theme-font:minor-latin;
   mso-fareast-font-family:"Times New Roman";mso-hansi-font-family:Calibri;
   mso-hansi-theme-font:minor-latin;color:#366092'>
-     {% for for tag in rec.tags.all|dictsort:"name" %}
-        {% ifequal tag i.tags.all|dictsort:"name"|first %}{% else %}, {% endifequal %}
+     {% for tag in rec.tags.all|dictsort:"name" %}
+        {% ifequal tag rec.tags.all|dictsort:"name"|first %}{% else %}, {% endifequal %}
         {{ tag.name }}
     {% endfor %}
     <o:p></o:p></span></p>

@@ -22,9 +22,9 @@ def MainPage(request, template=""):
 
     # has the user landed at the page or just clicked "Show More"?
     if template == "ajax":
-        template_file = '/main/list_view.html'
+        template_file = 'main/list_view.html'
     else:
-        template_file = '/main/home.html'
+        template_file = 'main/home.html'
         v['get_query'] = request.GET.urlencode()
         v['filter_tags'] = generate_filter_tags(request)
 
@@ -37,7 +37,7 @@ def StaticPage(request, static_page=""):
     if q.count() == 1:
         v['static_page'] = q.get()
         v['nav'] = v['static_page'].slug
-        template_file = '/main/static.html'
+        template_file = 'main/static.html'
         return render.response(request, template_file, v)
     else:
         return render.not_found(request)

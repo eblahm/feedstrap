@@ -2,7 +2,9 @@
 
     <div id="outside_alert">
         <div class="alrt">
-        {{ alert }}
+            {% autoescape off %}
+                {{ alert }}
+            {% endautoescape %}
         </div>
     </div>
 

@@ -129,7 +129,7 @@ def main(request):
         v.update(csrf(request))
         v['resource_form'] = ResourceForm(instance=rec)
         v['topics'] = Topic.objects.all().order_by('name')
-        template_file = '/main/forms/basic.html'
+        template_file = 'main/forms/basic.html'
         return render.response(request, template_file, v)
     elif request.method == "POST":
         rec = Resource.objects.get(pk=int(request.POST['pk']))
@@ -143,7 +143,7 @@ def main(request):
             message = '<em>updated %s</em>' % (now_est.strftime('%I:%M:%S%p'))
             message = message.lower() + " EST"
             response_data['id'] = 'ar_%s' % (rec.pk)
-            response_data['ajax_html'] = render.load('/main/list_view_article.html', {'i': rec, 'auth': True})
+            response_data['ajax_html'] = render.load('main/list_view_article.html', {'i': rec, 'auth': True})
             response_data['save_status'] = message
             json_response = json.dumps(response_data)
             return HttpResponse(json_response)
@@ -215,7 +215,7 @@ def add_new(request):
             v.update(csrf(request))
             v['resource_form'] = ResourceForm(instance=rec)
             v['topics'] = Topic.objects.all().order_by('name')
-            template_file = '/main/forms/post_it.html'
+            template_file = 'main/forms/post_it.html'
             return render.response(request, template_file, v)
         else:
             return HttpResponseRedirect('/signin?redirect=%s' % (urllib.quote(request.get_full_path())))
