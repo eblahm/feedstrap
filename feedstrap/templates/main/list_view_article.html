@@ -19,7 +19,7 @@
         <section class="ar_details">
 
             <em>{{i.date| date:'d b y'|title }}</em>
-            {% if i.feed.all %}<span class="spacer">|</span> posted by 
+            {% if i.feeds.all %}<span class="spacer">|</span> posted by 
                 {% for feed in i.feeds.all %}
                     {% ifequal feed i.feeds.all|first %}{% else %}, {% endifequal %}
                     {% if feed.user.first_name %}
