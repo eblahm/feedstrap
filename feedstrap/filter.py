@@ -86,7 +86,7 @@ def apply_filter(request, q=Resource.objects.all().order_by('-date'), per_page_l
 
         # each solr result should correspond to sql db resource
         # must create custom made interable so search results comply with view settings
-        # each sql db resource is given temporary highlighted keyword snippets attribute 
+        # each sql db resource is given temporary highlighted keyword snippets attribute
         hl = results.highlighting
         q = []
         for textDocument in results:
@@ -95,8 +95,9 @@ def apply_filter(request, q=Resource.objects.all().order_by('-date'), per_page_l
                 snippets = []
                 for snip in hl.get(textDocument['id']).get('content', []):
                     snippets.append(snip)
-                dbResource.snippets = "".join(snippets)
-                q.append(dbResource)
+                rec = dbResource.get()
+                rec.snippets = "".join(snippets)
+                q.append(rec)
     else:
         sorted_filters = sorted(applied_filters.iteritems(), key=operator.itemgetter(0))
         and_queries = None

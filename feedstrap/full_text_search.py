@@ -23,9 +23,7 @@ def doc_maker(db_obj):
     tags_list = sorted([t.name for t in db_obj.tags.all()])
     db_obj.tags_cont = ", ".join(tags_list)
     template_values = {'r':db_obj}
-    template_env = render.env
-    template = template_env.get_template('search/index.html')
-    text = template.render(template_values)
+    text = render.load('search/index.html', template_values)
     text = normalize(text)
     doc = {"id": str(db_obj.pk), "content": text, "url": db_obj.link}
     return doc
