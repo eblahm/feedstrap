@@ -1,0 +1,18 @@
+{% load comments_xtd %}
+{% load url from future %}
+  {% for comment in comment_list %}
+    <p id="c{{ comment.id }}">
+        <blockquote style="margin-left:{{ comment.level }}00px;">
+        <p><strong>{{ comment.name }}</strong> on <em>{{ comment.submit_date|date:'d b y' | title }}</em></p>
+
+            {{ comment.comment|linebreaks }}
+
+            <span style="color: #999999;">
+                <i class="icon-plus"></i>
+                {% if comment.allow_thread %}<a href="{{ comment.get_reply_url }}">Reply</a>{% endif %}
+            </span>
+
+
+        </blockquote>
+    </p>
+  {% endfor %}
