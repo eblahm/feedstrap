@@ -86,12 +86,30 @@
     </div>
     
     <div class="row">
-        <div class="span12" style="margin-top:20px"> 
-            <h4>Comments:</h4>
-            {% load comments %}
-            {% load comments_xtd %}
-            {% render_comment_list for topic %}
-            {% render_comment_form for topic %}
+        <div class="span12" style="margin-top:20px">
+
+           <div class="row" style="width: 95%">
+               <div class="span8">
+                   <h4>Comment:</h4>
+                   {% load comments %}
+                   {% load comments_xtd %}
+                   <div style="display: none;">{% render_comment_form for topic %}</div>
+
+                   <div class="comment_mini_form">
+                        <p><em>You are logged in as {{ user.username }}...</em></p>
+                        <textarea id="nc0" style="width: 98%"></textarea>
+                       <div style="text-align: right; width: 100%">
+                        <button type="button" class="btn btn-small post_comment" data-reply_to="{% if reply_to %}{{ reply_to }}{% elif comment.id %}{{ comment.id }}{% else %}0{% endif %}">POST</button>
+                       </div>
+                   </div>
+                   <hr>
+                   <div id="comment_list">
+                       {% render_comment_list for topic %}
+                   </div>
+
+               </div>
+           </div>
+
         </div>
     </div>
 

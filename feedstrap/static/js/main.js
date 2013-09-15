@@ -115,10 +115,7 @@ $(document).ready(function () {
     $(".topic_row").on({
     
       click: function() {
-        var loc = '/esil?k=' + $(this).data('k');
-        if ($(this).data('site') == 'sharepoint') {
-            loc += "&site=sharepoint";
-        } 
+        var loc = '/esil/' + $(this).data('k') + '/';
         window.location.href=loc;
       }
     });
@@ -130,11 +127,13 @@ $(document).ready(function () {
         $("#" + parent).html(full);
      
      });
+
+
      if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
          var pt = true
     }
     else {
-        if ($(window).width() > 760){
+        if ($(window).width() > 760 && ($('#sidebar').length)){
                 $(window).scroll(function() {
                     if ($(window).width() > 760) {
                         var scrollposition = $(window).scrollTop();
@@ -173,5 +172,49 @@ $(document).ready(function () {
             $("#sidebar").css({width: max_width - 20});
         }
     });
-$("#esil").tablesorter();  
-});
+$("#esil").tablesorter();
+
+    function getAllTopicComments(comment_id) {
+        var comments = "";
+
+        $.ajax({
+            method: 'GET',
+            url: '/esil/' + comment_id  + '/comments',
+            error: (function () { comments = 'error' }),
+            success: (function (data) {
+                comments = data;
+            })
+        });
+        return comments;
+    }
+
+    $('body').on("click", ".post_comment", function (event) {
+        $("#comment_list").html(loader_gif);
+
+        var reply_to = $(this).data('reply_to');
+        var commentID = '#nc' + reply_to;
+
+        $("#id_comment").val($(commentID).val());
+        $("#id_reply_to").val(reply_to);
+
+        $.ajax({
+            method: 'POST',
+            url: '/comments/post/',
+            data: $('#comment_form').serialize(),
+            success: (function (data) {
+
+                    $("#comment_list").html(data);
+                    var newcomment = $( $('.comment')[ ($('.comment').length - 1) ] );
+                    var centerdPoint = ( newcomment.offset().top - (window.innerHeight / 2) );
+                    var scrolltopoint = 0;
+                    if (window.innerHeight < $(document).height()) {
+                        if (centerdPoint > 0) { scrolltopoint = centerdPoint }
+                        $('html, body').animate({
+                            scrollTop: scrolltopoint
+                        }, 1000);
+                    }
+            })
+        });
+    });
+
+ });

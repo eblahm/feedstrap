@@ -1,20 +1,15 @@
 import render
-from models import Topic, Resource, Report
+from models import Topic, Resource
 from filter import apply_filter
 
 from django.http import HttpResponse, HttpResponseRedirect
-from django.template import Template
 from django.forms.models import model_to_dict
+from django.template import Template, Context
 
 from datetime import datetime
 import csv
 import urllib
 
-def en(s):
-    if isinstance(s, unicode):
-        return s.encode('ascii', 'xmlcharrefreplace')
-    else:
-        return str(s)
 
 def get_rating(val, factor):
     rate_dic = {'intensity': (15, 30),
@@ -28,82 +23,82 @@ def get_rating(val, factor):
         button = '<span style="color:white">3</span><span class="label label-important">HIGH</span>'
     return button
 
-def esil(request,  site="vacloud.us"):
-    v = {'site':site}
-    v['nav'] = 'esil'
-    v['auth'] = request.user.is_authenticated()
-    if v['auth']:
-        selected = request.GET.get('k', None)
-        if selected != None:
-            topic = Topic.objects.get(pk=int(str(selected)))
-            v['site'] = request.GET.dict().get('site', "vacloud.us")
-            v['imperatives'] = [model_to_dict(t, fields=['name', 'category']) for t in topic.imperatives.all()]
-            v['capabilities'] = [model_to_dict(c, fields=['name', 'category']) for c in topic.capabilities.all()]
-            
-            rsearch = Resource.objects.filter(topics=topic).order_by('-date')
-            topic.intensity = get_rating(rsearch.count(), 'intensity')
-            topic.impact = get_rating(topic.capabilities.all().count(), 'impact')
-            topic.relevance = get_rating(topic.imperatives.all().count(), 'relevance')
-            v['topic'] = topic
-            v['resources'] = rsearch
-            v['get_url'] = request.GET.urlencode()
-            return render.response(request, "main/esil/topic_card.html", v)
-        else:
-            topics = []
-            if v['auth'] == True:
-                q = Topic.objects.all()
-            else:
-                q = Topic.objects.filter(published=True)
-            for t in q.order_by('name'):
-                rsearch = Resource.objects.filter(topics=t)
-                t.intensity = get_rating(rsearch.count(), 'intensity')
-                t.impact = get_rating(t.capabilities.all().count(), 'impact')
-                t.relevance = get_rating(t.imperatives.all().count(), 'relevance')
-                topics.append(t)
-            v['topics'] = topics
-            if site == 'sharepoint':
-                template_file = 'main/esil/sharepoint_view.html'
-            else:
-                template_file = 'main/esil/main_view.html'
 
-            return render.response(request, template_file, v)
+def all_comments(request, pk):
+    topic = Topic.objects.get(pk=int(pk))
+    context = Context({'topic': topic})
+    mini_template = '{% load comments %}{% load comments_xtd %}{% render_comment_list for topic %}'
+    raw_ajax_string = Template(mini_template).render(context=context)
+    return HttpResponse(raw_ajax_string)
+
+
+def single_topic(request, pk):
+    v = {}
+    topic = Topic.objects.get(pk=int(pk))
+    if request.user.is_authenticated() and topic:
+        v['imperatives'] = [model_to_dict(t, fields=['name', 'category']) for t in topic.imperatives.all()]
+        v['capabilities'] = [model_to_dict(c, fields=['name', 'category']) for c in topic.capabilities.all()]
+        v['next'] = request.path + 'comments'
+
+        rsearch = Resource.objects.filter(topics=topic).order_by('-date')
+        topic.intensity = get_rating(rsearch.count(), 'intensity')
+        topic.impact = get_rating(topic.capabilities.all().count(), 'impact')
+        topic.relevance = get_rating(topic.imperatives.all().count(), 'relevance')
+
+        v['topic'] = topic
+        v['resources'] = rsearch
+        v['get_url'] = request.GET.urlencode()
+        return render.response(request, "main/esil/topic_card.html", v)
+    else:
+        return render.not_found(request)
+
+def all_topics(request):
+    v = {}
+    if request.user.is_authenticated():
+        topics = []
+        q = Topic.objects.all()
+        for t in q.order_by('name'):
+            rsearch = Resource.objects.filter(topics=t)
+            t.intensity = get_rating(rsearch.count(), 'intensity')
+            t.impact = get_rating(t.capabilities.all().count(), 'impact')
+            t.relevance = get_rating(t.imperatives.all().count(), 'relevance')
+            topics.append(t)
+        v['topics'] = topics
+        v['nav'] = 'esil'
+        template_file = 'main/esil/main_view.html'
+        return render.response(request, template_file, v)
     else:
         return HttpResponseRedirect('/signin?redirect=%s' % (urllib.quote(request.get_full_path())))
 
-def weeklyreads(request, site="sharepoint"):
-    v = {'site': site}
+def weeklyreads(request):
+    v = {}
     v.update(request.GET.dict())
     v['admin'] = request.user.is_authenticated()
-    if site == 'export_to_word':
-        v.update(apply_filter(request, slice=False))
-        v['next_offset'] = False
-        template_file = 'main/weekly_reads/export_view.html'
-        v['headline'] = 'Weekly Reads Report'
-        v['subheadline'] = 'Prepared by Strategic Studies Group, Office of Policy'
-        v['date'] = datetime.now().strftime('%x')
-        v['results'] = v['results'].order_by('tags__name')[:100]
-        dedup = []
-        for r in v['results']:
-            if r not in dedup:
-                dedup.append(r)
-        v['results'] = dedup
-        response = HttpResponse(content_type='application/msword')
-        response['Content-Disposition'] = 'attachment; filename="%s SSG Weekly Reads.doc"' % (datetime.now().strftime('%y%m%d'))
-        ms_doc = render.load(template_file, v)
-        response.write(ms_doc)
-        return response
-    elif site == 'ajax':
-        v.update(apply_filter(request))
-        template_file = 'main/weekly_reads/table_body.html'
-        return render.response(request, template_file, v)
+    v.update(apply_filter(request, slice=False))
+    v['next_offset'] = False
+    template_file = 'main/weekly_reads/export_view.html'
+    v['headline'] = 'Weekly Reads Report'
+    v['subheadline'] = 'Prepared by Strategic Studies Group, Office of Policy'
+    v['date'] = datetime.now().strftime('%x')
+    v['results'] = v['results'].order_by('tags__name')[:100]
+    dedup = []
+    for r in v['results']:
+        if r not in dedup:
+            dedup.append(r)
+    v['results'] = dedup
+    response = HttpResponse(content_type='application/msword')
+    response['Content-Disposition'] = 'attachment; filename="%s SSG Weekly Reads.doc"' % (datetime.now().strftime('%y%m%d'))
+    ms_doc = render.load(template_file, v)
+    response.write(ms_doc)
+    return response
+
+
+def en(s):
+    if isinstance(s, unicode):
+        return s.encode('ascii', 'xmlcharrefreplace')
     else:
-        if len(request.GET.dict()) == 0:
-            v['hide_table'] = True
-        else:
-            v.update(apply_filter(request))
-        v['headline'] = 'Weekly Reads Database'
-        template_file = 'main/weekly_reads/sharepoint_view.html'
-        return render.response(request, template_file, v)
+        return str(s)
+
 
 def export_csv(request):
     v = {}
@@ -118,12 +113,12 @@ def export_csv(request):
     results = v['results'][:100]
     for rec in results:
         row = []
-        row += [', '.join([en(f.url) for f in rec.feeds.all()])]
-        row += [rec.date.strftime("%Y-%m-%dT%H:%M:%S")]
-        row += [en(rec.title)]
-        row += [en(rec.link)]
-        row += [', '.join([en(t.name) for t in rec.tags.all()])]
-        row += [en(rec.description)][:131071]
-        row += [en(rec.relevance)][:131071]
+        row.append(', '.join([en(f.url) for f in rec.feeds.all()]))
+        row.append(rec.date.strftime("%Y-%m-%dT%H:%M:%S"))
+        row.append(en(rec.title))
+        row.append(en(rec.link))
+        row.append(', '.join([en(t.name) for t in rec.tags.all()]))
+        row.append(en(rec.description)[:131071])
+        row.append(en(rec.relevance)[:131071])
         writer.writerow(row)
     return response
