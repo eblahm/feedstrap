@@ -1,6 +1,7 @@
 {% load comments %}
 {% load comments_xtd %}
 {% load url from future %}
+<div id="comment_list">
 <p><strong>
     {% get_comment_count for topic as comment_count %}
     {% with two=2 %}
@@ -9,7 +10,6 @@
     {% endwith %}
 </strong>
 </p>
-<div id="comment_list">
 {% if comment_list %}
     <hr>
 {% endif %}

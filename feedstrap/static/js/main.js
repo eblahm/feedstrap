@@ -203,8 +203,11 @@ $("#esil").tablesorter();
 
         var reply_to = $(this).data('reply_to');
         var commentID = '#nc' + reply_to;
+        var subscribeID = '#subscribe' + reply_to;
 
         $("#id_comment").val($(commentID).val());
+
+        $("#id_followup").prop('checked', $(subscribeID).prop('checked'));
         $("#id_reply_to").val(reply_to);
 
         if (!/^\s*$/.test($("#id_comment").val())) {
