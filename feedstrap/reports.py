@@ -5,6 +5,9 @@ from filter import apply_filter
 from django.http import HttpResponse, HttpResponseRedirect
 from django.forms.models import model_to_dict
 from django.template import Template, Context
+from django.core.mail import send_mail
+from django.contrib.comments.views.comments import post_comment
+from django_comments_xtd.models import XtdComment as Comment
 
 from datetime import datetime
 import csv
@@ -26,7 +29,10 @@ def get_rating(val, factor):
 
 def all_comments(request, pk):
     topic = Topic.objects.get(pk=int(pk))
-    context = Context({'topic': topic})
+    context = Context({
+        'topic': topic,
+        'user': request.user,
+        })
     mini_template = '{% load comments %}{% load comments_xtd %}{% render_comment_list for topic %}'
     raw_ajax_string = Template(mini_template).render(context=context)
     return HttpResponse(raw_ajax_string)
@@ -41,6 +47,7 @@ def single_topic(request, pk):
         v['next'] = request.path + 'comments'
 
         rsearch = Resource.objects.filter(topics=topic).order_by('-date')
+        topic.link_count = rsearch.count()
         topic.intensity = get_rating(rsearch.count(), 'intensity')
         topic.impact = get_rating(topic.capabilities.all().count(), 'impact')
         topic.relevance = get_rating(topic.imperatives.all().count(), 'relevance')
@@ -52,6 +59,38 @@ def single_topic(request, pk):
     else:
         return render.not_found(request)
 
+
+def comment_handler(request):
+    if request.user.is_authenticated():
+
+        send_mail('New Comment',
+                          'foo message',
+                          'vaphshalbem@localhost',
+                          ['matthew.c.halbe@gmail.com'])
+
+        return post_comment(request)
+    else:
+        return HttpResponse('you must be logged in to post comments')
+
+
+def delete_comment(request, comment_id):
+
+    try:
+        q = Comment.objects.filter(pk=int(comment_id)).get()
+    except:
+        q = False
+
+    if request.user.is_authenticated() and q:
+        topic_pk = q.object_pk
+        q.is_removed = True
+        q.save()
+        # q.delete()
+        return all_comments(request, topic_pk)
+    else:
+        return HttpResponse('error')
+
+
+
 def all_topics(request):
     v = {}
     if request.user.is_authenticated():
@@ -59,6 +98,7 @@ def all_topics(request):
         q = Topic.objects.all()
         for t in q.order_by('name'):
             rsearch = Resource.objects.filter(topics=t)
+            t.link_count = rsearch.count()
             t.intensity = get_rating(rsearch.count(), 'intensity')
             t.impact = get_rating(t.capabilities.all().count(), 'impact')
             t.relevance = get_rating(t.imperatives.all().count(), 'relevance')

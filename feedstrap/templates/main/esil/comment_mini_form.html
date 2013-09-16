@@ -1,0 +1,10 @@
+{% if comment.id %}<div id="cform{{ comment.id }}" class="comment_mini_form" style="text-align: right;display: none;">
+{% else %}<div style="text-align: right">
+{% endif %}
+    <div {% if comment.id %}style="margin-left:{{ comment.level|add:"1" }}00px;"{% endif %}>
+        <textarea id="nc{% if comment.id %}{{ comment.id }}{% else %}0{% endif %}" style="width: 98%;"></textarea>
+    </div>
+    <div style="width: 100%">
+        <button type="button" class="btn btn-small post_comment" data-reply_to="{% if reply_to %}{{ reply_to }}{% elif comment.id %}{{ comment.id }}{% else %}0{% endif %}">POST</button>
+    </div>
+</div>

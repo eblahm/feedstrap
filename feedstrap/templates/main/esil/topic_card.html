@@ -17,7 +17,10 @@
     <div class="row">
         <div class="span12" style="margin-top:20px"> 
             <h1><em>{{ topic.name }}</em></h1>
-            <div><strong>Description:</strong><br>{{ topic.description|linebreaks }}
+        <br>
+            <h4>Description:</h4>
+            <div style="font-size: 16px !important;">
+                {{ topic.description|linebreaks }}
             {% if topic.attachment %}
             <p>
             <strong>Final Paper:</strong><a href="{{ topic.attachment.url }}"> 
@@ -66,7 +69,7 @@
                 </ul>
             </p>
         </div>
-        <div class="span6" style="margin-top:20px"> 
+        <div class="span6" style="margin-top:20px">
             <h4>VA Capabilities</h4>
             <p>
                 <ul class="unstyled">
@@ -84,28 +87,20 @@
             </p>
         </div>
     </div>
-    
+
     <div class="row">
         <div class="span12" style="margin-top:20px">
 
            <div class="row" style="width: 95%">
                <div class="span8">
-                   <h4>Comment:</h4>
+                   <h4>Comments:</h4>
                    {% load comments %}
                    {% load comments_xtd %}
                    <div style="display: none;">{% render_comment_form for topic %}</div>
 
-                   <div class="comment_mini_form">
-                        <p><em>You are logged in as {{ user.username }}...</em></p>
-                        <textarea id="nc0" style="width: 98%"></textarea>
-                       <div style="text-align: right; width: 100%">
-                        <button type="button" class="btn btn-small post_comment" data-reply_to="{% if reply_to %}{{ reply_to }}{% elif comment.id %}{{ comment.id }}{% else %}0{% endif %}">POST</button>
-                       </div>
-                   </div>
-                   <hr>
-                   <div id="comment_list">
-                       {% render_comment_list for topic %}
-                   </div>
+                   <p><em>You are logged in as {{ user.first_name }} {{ user.last_name }}...</em></p>
+                   {% include 'main/esil/comment_mini_form.html' %}
+                   {% render_comment_list for topic %}
 
                </div>
            </div>
@@ -115,7 +110,7 @@
 
     <div class="row">
         <div class="span12" style="margin-top:20px">
-            <h4>Links:</h4>
+            <h4>{{ topic.link_count }} Links:</h4>
             {% for i in resources %}
                 <div id="ar_{{ i.pk }}" class="feed_item">
                 {% include 'main/list_view_article.html' %}

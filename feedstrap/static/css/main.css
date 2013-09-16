@@ -15,23 +15,33 @@ body {
 }
 
 .esil_column {text-align:center; vertical-align:top; line-height: 1em;}
-.esil_header {
+.eh {
     cursor: pointer; 
-    font-weight: bold; 
+    font-weight: bold;
+    white-space: nowrap;
     background-image: url(/static/img/bg.gif); 
     background-repeat: no-repeat; 
-    background-position: right; 
+    background-position: right;
 }
 .headerSortUp { 
     background-image: url(/static/img/desc.gif); 
 } 
 .headerSortDown { 
     background-image: url(/static/img/asc.gif); 
-} 
+}
+.critera_header {
+   text-align: center !important;
+}
+.esil_count {
+    text-align: center !important;
+    font-size: 2em;
+}
+.inner_comment p {
+    margin: 1em 0 1em 1em;
+}
 
 span.rpoint:hover, td.rpoint:hover {cursor:pointer;}
 .no_edge {border:none; margin:0; padding:0;}
-.initialism {padding-right:15px;}
 
 .view_btn { margin:2px; }
 .show_more{

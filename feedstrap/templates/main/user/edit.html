@@ -22,44 +22,40 @@
 {% block content_header %}{% endblock %}
 {% block title %}Profile{% endblock %}
 {% block content_view %}
+<div class="span10">
+    <div class="row-fluid">
+        <div class="span4">
+         {% block user_form %}
+            <form class="form-signin" action="/account/edit" method="POST" onsubmit="return validatelogin();">
 
-<div class="row-fluid">
+            {% if saved %}
+                <div class="alert alert-block">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Saved!</strong> Your {% if psw_change %}password{% else %}profile{% endif %} was updated at {{ datetime }}!
+                </div>
+            {% endif %}
 
-    <div class="span4">
-     {% block user_form %}
-        <form class="form-signin" action="/account/edit" method="POST" onsubmit="return validatelogin();">
+            {% if pchanged %}
+                <div class="alert alert-block">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Changed!</strong> Your password was changed at {{ datetime }}!
+                </div>
+            {% endif %}
 
-        {% if saved %}
-            <div class="alert alert-block">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <strong>Saved!</strong> Your {% if psw_change %}password{% else %}profile{% endif %} was updated at {{ datetime }}!
-            </div>
-        {% endif %}
+            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
 
+            <h2>Edit Profile</h2>
+            User Name: {{ user.username }}<br>
+            Password: ******* (<a href="/account/change_password">change</a>)<br><br>
+            {{ Profile }}<br>
 
-        {% if pchanged %}
-            <div class="alert alert-block">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <strong>Changed!</strong> Your password was changed at {{ datetime }}!
-            </div>
-        {% endif %}
+            <input style="float: right" class="btn btn-primary" type="submit" value="Save" /><br>
 
-
-        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
-
-        <h2>Edit Profile</h2>
-        User Name: {{ user.username }}<br>
-        Password: ******* (<a href="/account/change_password">change</a>)<br><br>
-        {{ Profile }}<br>
-
-        <input style="float: right" class="btn btn-primary" type="submit" value="Save" /><br>
-
-        </form>
-    {% endblock %}
+            </form>
+        {% endblock %}
+        </div>
     </div>
-
 </div>
-
 {% endblock %}
 
 

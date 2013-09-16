@@ -188,8 +188,18 @@ $("#esil").tablesorter();
         return comments;
     }
 
+    function scroll_to_me(JqueryElement) {
+        var centerdPoint = ( JqueryElement.offset().top - (window.innerHeight / 2) );
+        var scrolltopoint = 0;
+        if (window.innerHeight < $(document).height()) {
+            if (centerdPoint > 0) { scrolltopoint = centerdPoint }
+            $('html, body').animate({
+                scrollTop: scrolltopoint
+            }, 1000);
+        }
+    };
+
     $('body').on("click", ".post_comment", function (event) {
-        $("#comment_list").html(loader_gif);
 
         var reply_to = $(this).data('reply_to');
         var commentID = '#nc' + reply_to;
@@ -197,24 +207,52 @@ $("#esil").tablesorter();
         $("#id_comment").val($(commentID).val());
         $("#id_reply_to").val(reply_to);
 
-        $.ajax({
-            method: 'POST',
-            url: '/comments/post/',
-            data: $('#comment_form').serialize(),
-            success: (function (data) {
+        if (!/^\s*$/.test($("#id_comment").val())) {
+            $.ajax({
+                method: 'POST',
+                url: '/comments/post/',
+                data: $('#comment_form').serialize(),
+                success: (function (data) {
 
                     $("#comment_list").html(data);
-                    var newcomment = $( $('.comment')[ ($('.comment').length - 1) ] );
-                    var centerdPoint = ( newcomment.offset().top - (window.innerHeight / 2) );
-                    var scrolltopoint = 0;
-                    if (window.innerHeight < $(document).height()) {
-                        if (centerdPoint > 0) { scrolltopoint = centerdPoint }
-                        $('html, body').animate({
-                            scrollTop: scrolltopoint
-                        }, 1000);
-                    }
-            })
-        });
+                    var focuscomment = $( $('.comment' + reply_to)[ ($('.comment' + reply_to).length - 1) ] );
+                    scroll_to_me(focuscomment);
+
+                })
+            });
+        }
     });
+
+    $('body').on("click", ".btn-delete-comment", function (event) {
+        var commentID = $(this).data('delete_target');
+        if (window.confirm("Are you sure you want to delete this comment?")) {
+
+            $.ajax({
+                method: 'GET',
+                url: '/esil/comment/delete/' + commentID,
+                success: (function (data) {
+                    $("#comment_list").html(data);
+                })
+            });
+        }
+    });
+
+    $('body').on("click", ".btn-reply-thread", function (event) {
+       if ($(this).hasClass('disabled')) {
+           $( $(this).data('hide_target') ).hide();
+           $(this).removeClass('disabled');
+       }
+       else {
+           $('.disabled.btn-reply-thread').removeClass('disabled')
+           $('.comment_mini_form').hide();
+
+           $(this).addClass('disabled');
+           $( $(this).data('hide_target') ).show();
+           $( $(this).data('textarea_target') ).select();
+       }
+
+    });
+
+
 
  });

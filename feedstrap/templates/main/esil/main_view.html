@@ -1,36 +1,10 @@
 {% extends "main/home.html" %}
-{% block head %}
-{{ block.super }}
-<style>
-th {
-    cursor: pointer; 
-    font-weight: bold; 
-    background-image: url(/static/img/bg.gif); 
-    background-repeat: no-repeat; 
-    background-position: right; 
-}
-.headerSortUp { 
-    background-image: url(/static/img/desc.gif); 
-
-} 
-
-.headerSortDown { 
-    background-image: url(/static/img/asc.gif); 
-} 
-
-      span.rpoint:hover, td.rpoint:hover {cursor:pointer;}
-    
-    .javascript_link {
-    color:#3366CC;
-    }
-    .javascript_link:hover {text-decoration:underline; color:3399FF; cursor:pointer;}
-    .javascript_link:active {text-decoration:underline;}
-    .no_edge {border:none; margin:0px; padding:0px;}
-    .initialism {padding-right:15px;}
-</style>
-{% endblock %}
 {% block content_header %}{% endblock %}
 {% block title %}Emerging Strategic Issues List{% endblock %}
 {% block content_view %}
-{% include 'main/esil/table.html' %}
+    <div class="span10">
+        <div id="content_view">
+            {% include 'main/esil/table.html' %}
+        </div>
+    </div>
 {% endblock %}

@@ -92,13 +92,13 @@
                 {% include 'main/sidebar.html' %}
             {% endblock %}
         </div>
+        {% block content_view %}
         <div id="article_list_zone" class="span8">
             <div id="content_view">
-                {% block content_view %}
                     {% include 'main/list_view.html' %}
-                {% endblock %}
             </div>
         </div>
+        {% endblock %}
     </div>
     
 {% endblock %}
