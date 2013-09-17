@@ -40,8 +40,9 @@ def all_comments(request, pk):
 
 def single_topic(request, pk):
     v = {}
-    topic = Topic.objects.get(pk=int(pk))
+    topic = Topic.objects.filter(pk=int(pk))
     if request.user.is_authenticated() and topic:
+        topic = topic.get()
         v['imperatives'] = [model_to_dict(t, fields=['name', 'category']) for t in topic.imperatives.all()]
         v['capabilities'] = [model_to_dict(c, fields=['name', 'category']) for c in topic.capabilities.all()]
         v['next'] = request.path + 'comments'
