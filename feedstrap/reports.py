@@ -5,7 +5,7 @@ from filter import apply_filter
 from django.http import HttpResponse, HttpResponseRedirect
 from django.forms.models import model_to_dict
 from django.template import Template, Context
-from django.core.mail import send_mail
+from django.core.mail import send_mail, mail_admins
 from django.contrib.comments.views.comments import post_comment
 from django_comments_xtd.models import XtdComment as Comment
 
@@ -63,11 +63,10 @@ def single_topic(request, pk):
 
 def comment_handler(request):
     if request.user.is_authenticated():
-
-        send_mail('New Comment',
-                          'foo message',
-                          'vaphshalbem@localhost',
-                          ['matthew.c.halbe@gmail.com'])
+        topic_pk = request.GET.get('object_pk', None)
+        topic = Topic.objects.get(pk=topic_pk)
+        subject = 'New Comment for ' + topic.name
+        mail_admins(subject, subject)
 
         return post_comment(request)
     else:

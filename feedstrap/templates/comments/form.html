@@ -1,4 +1,3 @@
-{% load comments i18n %}
 <form id="comment_form" action="/esil/comment/" method="post">{% csrf_token %}
   {% if next %}<div><input type="hidden" name="next" value="{{ next }}" /></div>{% endif %}
   {% for field in form %}
@@ -17,5 +16,5 @@
 
     {% endif %}
   {% endfor %}
-    <input type="submit" name="post" class="submit-post" value="{% trans "Post" %}" />
+    <input type="submit" name="post" class="submit-post" value="POST" />
 </form>
