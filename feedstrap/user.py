@@ -2,15 +2,17 @@ from datetime import datetime
 import pytz
 import urllib
 
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.core.context_processors import csrf
 from django import forms
 from django.forms import ModelForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
+from django.core import mail
 
-from models import Feed
+from models import Feed, Invitee
+from admin import InviteeAdmin
 import render
 
 
@@ -125,3 +127,79 @@ def signin(request):
 def signout(request):
     logout(request)
     return HttpResponseRedirect('/')
+
+
+def parse(request):
+    if request.method == "POST" and request.user.is_superuser:
+        import re
+        
+        emails = request.POST['emails'].encode('utf8').strip()
+        if emails:
+            emails = [e.strip() for e in emails.split(';')]
+            parsed = []
+            malformed = []
+            for e in emails:
+                
+                found = re.search('\<(.*?@.*?)\>', e)
+                if found:
+                    parsed.append(found.group(1).strip())
+                    continue
+                
+                found = re.search('\((.*?@.*?)\)', e)
+                if found:
+                    p = found.group(1).strip()
+                    if '(' in p:
+                        p = p.split('(')[-1]
+                    parsed.append(p)
+                    
+                    continue
+                
+                found = re.search('^(.*?@.*?)$', e)
+                if found:
+                    parsed.append(found.group(1).strip())
+                    continue
+                
+                if '@' in e:
+                    parsed.append(e)
+                else:
+                    malformed.append(e)
+                    
+            return render.response(request, 'admin/invitee/confirm.html', {
+                'parsed': parsed,
+                'malformed': malformed
+                })
+        else:
+            return render.not_found(request)
+    else:
+        return render.not_found(request)
+        
+def confirmed_invite(request):
+    email_connection = mail.get_connection()
+    email_connection.open()
+    
+    emails = request.POST.getlist('email')
+    for e in emails:
+        new = Invitee(email = e)
+        new.save()
+        new.invite(connection=email_connection)
+        
+    email_connection.close()
+    
+    return render.response(request, 'admin/invitee/thank_you.html', {})
+    
+    
+def invite(request, action):
+    
+    _run_action = {
+        'parse': parse,
+        'add': confirmed_invite
+    }
+    return _run_action.get(action, render.not_found)(request)
+
+    
+
+
+        
+        
+
+    

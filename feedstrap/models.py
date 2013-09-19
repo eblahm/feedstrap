@@ -2,9 +2,14 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.forms import ModelForm
 from django.core.cache import cache
+from django.core.mail import send_mail
+from django.conf import settings
+from django.template.loader import render_to_string
+
 from tinymce.models import HTMLField
 from feedstrap import config
 
+import hashlib
 
 
 def generate_choices(model, displayed_value='name', real_value="pk"):
@@ -129,3 +134,25 @@ class PostIt(models.Model):
     feed = models.OneToOneField(Feed)
     office = models.OneToOneField(Office, blank=True, null=True)
     sidebar_links = models.ManyToManyField(SidebarLink, blank=True, null=True)
+    
+    
+class Invitee(models.Model):
+    date = models.DateTimeField(auto_now=True)
+    url_secret = models.CharField(max_length=500)
+    email = models.EmailField(max_length=254)
+    has_accepted = models.BooleanField()
+    
+    def save(self):
+        if self.url_secret == None:
+            self.url_secret = hashlib.md5(self.email).hexdigest()
+        super(Invitee, self).save()
+    
+    def invite(self, connection=None):
+        message = render_to_string('admin/inivtee/email.html', {'invitee', self})
+        return send_mail(
+            "VA's Strategic Studies group invites you to Sign Up for FeedStrap!", 
+            message, 
+            setting.DEFAULT_FROM_EMAIL, [self.email], 
+            connection=connection
+        )
+    

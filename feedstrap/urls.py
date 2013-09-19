@@ -28,5 +28,6 @@ urlpatterns = patterns('',
     url(r'^signin', 'feedstrap.user.signin'),
     url(r'^signout', 'feedstrap.user.signout'),
     url(r'^filter', 'feedstrap.filter.main'),
+    url(r'^invite/(?P<action>.*)/', 'feedstrap.user.invite'),
     url(r'(?P<static_page>.+)', 'feedstrap.home.StaticPage'),
 )

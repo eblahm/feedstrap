@@ -97,6 +97,16 @@ class LinkLogAdmin(admin.ModelAdmin):
 
 admin.site.register(LinkLog, LinkLogAdmin)
 
+class InviteeAdmin(admin.ModelAdmin):
+    ordering = ('date',)
+    list_display = ('email', 'has_accepted', 'date')
+    
+    change_list_template = 'admin/invitee/change_list.html'
+    def changelist_view(self, request, extra_context={}):
+        return super(InviteeAdmin, self).changelist_view(request, extra_context=extra_context)
+    
+admin.site.register(Invitee, InviteeAdmin)
+
 class SidebarLinkAdmin(admin.ModelAdmin):
     ordering = ('position',)
     list_display = ('name', 'parameters', 'position')

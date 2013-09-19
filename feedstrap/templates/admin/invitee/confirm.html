@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <title>Select invitee to change | Django site admin</title>
+  <link href="/static/admin/css/base.css" rel="stylesheet" type="text/css">
+  <link href="/static/admin/css/changelists.css" rel="stylesheet" type="text/css">
+</head>
+
+<body class="change-list">
+  <div id="container">
+    <div id="header">
+      <div id="branding">
+        <h1 style=
+        "color: #777777;font-size: 20px;font-weight: 200;font-family: Georgia,Times,serif;">
+        <a href="/">FeedStrap</a></h1>
+      </div>
+
+      <div id="user-tools">
+        Welcome, <strong>Matt</strong>. <a href=
+        "/admin/password_change/">Change password</a> / <a href=
+        "/admin/logout/">Log out</a>
+      </div>
+    </div><!-- END Header -->
+    <div class="breadcrumbs">
+      <a href="/admin/">Home</a> › <a href="/admin/feedstrap/">Feedstrap</a> ›
+      Invitees
+    </div><!-- Content -->
+    
+    <div style="margin-left: 3em;">
+    <h2>Please Confirm that you want to send inviations to the following email addresses</h2>
+        <form method="POST" action="/invite/add/">
+            
+            {% for p in parsed %}
+                <input style="width:500px" type="text" name="email" value="{{ p }}"/><br>
+            {% endfor %}
+            
+            <input type="submit" value="submit">
+            
+        </form>
+    </div>
+
+
+
+
+  </div>
+</body>
+</html>
