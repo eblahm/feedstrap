@@ -25,8 +25,26 @@
       <a href="/admin/">Home</a> › <a href="/admin/feedstrap/">Feedstrap</a> ›
       Invitees
     </div><!-- Content -->
-    
-    <div style="margin-left: 3em;">
+
+    <div style="margin-left: 3em; margin-top: 1em; width: 500px">
+    {% if malformed or already_exists %}
+        <em>the following emails were either improperly formated or they are already in the system as Invitees or Users</em>
+        {% if malformed %}
+        <ul><strong>Malformed:</strong>
+            {% for m in malformed %}
+            <li>{{ m }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% if already_exists %}
+            <ul><strong>Already in the System:</strong>
+                {% for ae in already_exists %}
+                    <li>{{ ae }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endif %}
+    {% if parsed %}
     <h2>Please Confirm that you want to send inviations to the following email addresses</h2>
         <form method="POST" action="/invite/add/">{% csrf_token %}
             
@@ -34,11 +52,16 @@
                 <input style="width:500px" type="text" name="email" value="{{ p }}"/><br>
             {% endfor %}
             
-            <input type="submit" value="submit">
+            <input type="submit" value="Send Emails">
             
         </form>
+    {% endif %}
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
     </div>
-
 
 
 

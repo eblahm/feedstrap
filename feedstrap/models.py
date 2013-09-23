@@ -5,6 +5,9 @@ from django.core.cache import cache
 from django.core.mail import send_mail
 from django.conf import settings
 from django.template.loader import render_to_string
+from django.core.mail import EmailMultiAlternatives
+from django.template import Template, Context
+from HTMLParser import HTMLParser
 
 from tinymce.models import HTMLField
 from feedstrap import config
@@ -141,7 +144,8 @@ class Invitee(models.Model):
     url_secret = models.CharField(max_length=500)
     email = models.EmailField(max_length=254)
     has_accepted = models.BooleanField(default=False)
-    
+    is_email_sent = models.BooleanField(default=False)
+
     def save(self):
         if not self.url_secret:
             self.url_secret = hashlib.md5(self.email).hexdigest()
@@ -149,11 +153,39 @@ class Invitee(models.Model):
         return self
     
     def invite(self, connection=None):
-        message = render_to_string('admin/invitee/email.html', {'url_secret': self.url_secret})
-        return send_mail(
-            "VA's Strategic Studies group invites you to Sign Up for FeedStrap!", 
-            message, 
+
+        editable_template = StaticPage.objects.filter(slug = 'invite')
+        if not editable_template:
+            text = render_to_string('admin/invitee/email.txt', {'url_secret': self.url_secret})
+            html = None
+        else:
+            raw_text = []
+            class text_only(HTMLParser):
+                def handle_data(self, data):
+                    raw_text.append(data)
+
+            cxt = Context({'url_secret': self.url_secret})
+            editable_template = editable_template.get()
+
+            html = Template(editable_template.content).render(cxt)
+
+            text_parser = text_only()
+            text_parser.feed(editable_template.content)
+            raw_text = "".join(raw_text)
+            text = Template(raw_text).render(cxt)
+
+
+        email = EmailMultiAlternatives(
+            "The Strategic Studies Group Invites you to Sign Up for FeedStrap!",
+            text,
             settings.DEFAULT_FROM_EMAIL, [self.email], 
-            connection=connection
+            connection=connection,
+            alternatives=""
         )
+        if html: email.attach_alternative(html, "text/html")
+        if not connection: email.send()
+
+        self.is_email_sent = True
+        self.save()
+        return email
     

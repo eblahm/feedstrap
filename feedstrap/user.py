@@ -8,7 +8,7 @@ from django.core.context_processors import csrf
 from django import forms
 from django.forms import ModelForm
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
+from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm, UserCreationForm
 from django.core import mail
 
 from models import Feed, Invitee
@@ -129,6 +129,48 @@ def signout(request):
     return HttpResponseRedirect('/')
 
 
+
+def signup(request, secret):
+    q = Invitee.objects.filter(has_accepted = False).filter(url_secret=secret)
+    if q:
+        invitee = q.get()
+    else:
+        return render.not_found(request)
+
+    if request.method == "GET":
+        return render.response(request,
+                               'main/user/signup.html',
+                               {'invitee': invitee,
+                                'secret': secret})
+
+    if request.method == "POST":
+        inputs = request.POST.copy()
+        inputs['email'] = invitee.email
+        f = UserCreationForm(inputs)
+        if f.is_valid():
+            f.save()
+            invitee.has_accepted = True
+            invitee.save()
+
+            user = User.objects.get(username=f.cleaned_data['username'])
+            user.email = invitee.email
+            if inputs.get('first_name', ''):
+                user.first_name = inputs['first_name']
+            if inputs.get('last_name', ''):
+                user.last_name = inputs['last_name']
+            user.save()
+
+            password = f.cleaned_data['password1']
+            user = authenticate(username=user.username, password=password)
+            login(request, user)
+            return HttpResponseRedirect("/")
+        else:
+            return render.response(request,
+                                   'main/user/signup.html',
+                                   {'invitee': invitee,
+                                    'form': f,
+                                    'secret': secret})
+
 def parse(request):
     if request.method == "POST" and request.user.is_superuser:
         import re
@@ -136,37 +178,57 @@ def parse(request):
         emails = request.POST['emails'].encode('utf8').strip()
         if emails:
             emails = [e.strip() for e in emails.split(';')]
+            exists = \
+            [str(u.email).lower() for u in User.objects.all()] + \
+            [str(i.email).lower() for i in Invitee.objects.all()]
+
             parsed = []
             malformed = []
+            already_exists = []
+
+            def add_if_non_existant(canidate_email):
+                if str(canidate_email).lower() in exists:
+                    already_exists.append(canidate_email)
+                else:
+                    parsed.append(canidate_email)
+
             for e in emails:
-                
+                e = e.strip()
+                # test 1 > is this email already in the system?
+                if str(e).lower() in exists:
+                    continue
+
+                # test 2 > is the email formated like: Joe <joe@gmail.com>
                 found = re.search('\<(.*?@.*?)\>', e)
                 if found:
-                    parsed.append(found.group(1).strip())
+                    add_if_non_existant(found.group(1).strip())
                     continue
-                
+
+                # test 3 > is the email formated like: Joe (joe@gmail.com)
+                # or in rare case: Joe (company) (joe@gmail.com)
                 found = re.search('\((.*?@.*?)\)', e)
                 if found:
                     p = found.group(1).strip()
+
                     if '(' in p:
                         p = p.split('(')[-1]
-                    parsed.append(p)
+                    add_if_non_existant(p)
                     
                     continue
-                
+
+                # test 4 > is the email formated like: joe@gmail.com
                 found = re.search('^(.*?@.*?)$', e)
                 if found:
-                    parsed.append(found.group(1).strip())
+                    add_if_non_existant(found.group(1).strip())
                     continue
                 
-                if '@' in e:
-                    parsed.append(e)
-                else:
-                    malformed.append(e)
+                # reject > malformed email
+                malformed.append(e)
                     
             return render.response(request, 'admin/invitee/confirm.html', {
                 'parsed': parsed,
-                'malformed': malformed
+                'malformed': malformed,
+                'already_exists': already_exists
                 })
         else:
             return render.not_found(request)
@@ -180,10 +242,13 @@ def confirmed_invite(request):
         email_connection.open()
         
         emails = request.POST.getlist('email')
+        messages = []
         for e in emails:
             new = Invitee(email = e)
             new = new.save()
-            new.invite(connection=email_connection)
+            messages.append(new.invite(connection=email_connection))
+
+        email_connection.send_messages(messages)
         email_connection.close()
         
         return HttpResponseRedirect('/admin/feedstrap/invitee/')

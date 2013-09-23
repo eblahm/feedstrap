@@ -4,12 +4,19 @@
     {{ block.super }}
     <script type="text/javascript">
     function validatesignup() {
-        if ($("#username").val() == "") {
-            alert("Please provide a username!");
-            return false;
+        var manatory = $(".mandatory");
+        for (var i= 0; i < manatory.length; i++) {
+            var elem = $(manatory[i]);
+            if (elem.val() == "") {
+                alert(elem.attr('name') + " is required");
+                return false;
+            }
         }
-        if ($("#password").val() == "") {
-            alert("Please provide a password!");
+
+        if ( !($('#password1').val() == $('#password2').val()) ) {
+            $('#password1').val("");
+            $('#password2').val("");
+            alert("Passwords didn't match. Please retype.");
             return false;
         }
     };
@@ -27,20 +34,48 @@
 {% endblock %}
 {% block full_content %}
     <div class="row-fluid" style="margin-top: 4em">
-        <div class="offset4 span4">
-            <form class="form-sup" action="/signup/{{ url_secret }}" method="POST" onsubmit="return validatesignup();" >
-
-                <h2 class="form-signin-heading">Sign Up </h2>
+        <div class="offset2 span8">
+            <form class="form-signin" style="max-width: 600px !important;" action="/signup/{{ secret }}" method="POST" onsubmit="return validatesignup();" >
                 {% csrf_token %}
 
-                <label for="username">User Name:</label>
-                <input class="input-block-level" id="username" name="username" type="text">
-                
-                <label for="password">Password:</label>
-                <input class="input-block-level" id="password" name="password" type="password">
+                Email:<br>
+                <strong>
+                    {{ invitee.email }}
+                </strong>
                 <br>
+                <br>
+
+                    <div class="row">
+                        <div class="span6">
+                            <div style="margin-left: 30px">
+                                <label for="first_name">First Name: <em>* optional</em></label>
+                                <input class="input-block-level" id="first_name" name="first_name" type="text">
+
+                                <label for="last_name">Last Name: <em>* optional</em></label>
+                                <input class="input-block-level" id="last_name" name="last_name" type="text">
+
+                                <label for="office">Office: <em>* optional</em></label>
+                                <input class="input-block-level" id="office" name="office" type="text">
+                            </div>
+                        </div>
+                        <div class="span6">
+                            {% if form %}{{ form.username.errors }}{% endif %}
+                            <label for="username">User Name:</label>
+                            <input class="input-block-level mandatory" id="username" name="username" type="text">
+
+                            {% if form %}{{ form.password1.errors }}{% endif %}
+                            <label for="password">Password:</label>
+                            <input class="input-block-level mandatory" id="password1" name="password1" type="password">
+
+                            <label for="password">Confirm Password:</label>
+                            <input class="input-block-level mandatory" id="password2" name="password2" type="password">
+
+                        </div>
+                    </div>
+
                 <button style="float:right" class="btn btn-large btn-primary" type="submit">Sign Up</button><br>
                 <br>
+
             </form>
         </div>
     </div>

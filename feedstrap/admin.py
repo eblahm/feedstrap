@@ -5,6 +5,8 @@ from feedstrap.models import *
 from django.core.cache import cache
 from django.contrib.flatpages.models import FlatPage
 from tinymce.widgets import TinyMCE
+from django.core import mail
+
 
 ## Static Page ##
 class StaticPageForm(forms.ModelForm):
@@ -97,14 +99,31 @@ class LinkLogAdmin(admin.ModelAdmin):
 
 admin.site.register(LinkLog, LinkLogAdmin)
 
+
 class InviteeAdmin(admin.ModelAdmin):
+
     ordering = ('date',)
-    list_display = ('email', 'has_accepted', 'date')
-    
+    list_display = ('email', 'is_email_sent', 'has_accepted', 'date', 'url_secret')
+    exclude = ('url_secret', 'is_email_sent')
+
     change_list_template = 'admin/invitee/change_list.html'
     def changelist_view(self, request, extra_context={}):
         return super(InviteeAdmin, self).changelist_view(request, extra_context=extra_context)
-    
+
+    def send_email_invitation(self, request, queryset):
+        email_connection = mail.get_connection()
+        email_connection.open()
+        messages = []
+
+        for i in queryset:
+            messages.append(i.invite(connection=email_connection))
+
+        email_connection.send_messages(messages)
+        email_connection.close()
+
+        self.message_user(request, "%i email invitation sent!" % len(messages))
+    actions = [send_email_invitation]
+
 admin.site.register(Invitee, InviteeAdmin)
 
 class SidebarLinkAdmin(admin.ModelAdmin):
