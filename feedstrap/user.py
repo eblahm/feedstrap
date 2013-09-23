@@ -172,20 +172,23 @@ def parse(request):
             return render.not_found(request)
     else:
         return render.not_found(request)
+    
         
 def confirmed_invite(request):
-    email_connection = mail.get_connection()
-    email_connection.open()
-    
-    emails = request.POST.getlist('email')
-    for e in emails:
-        new = Invitee(email = e)
-        new.save()
-        new.invite(connection=email_connection)
+    if request.method == "POST" and request.user.is_superuser:
+        email_connection = mail.get_connection()
+        email_connection.open()
         
-    email_connection.close()
-    
-    return render.response(request, 'admin/invitee/thank_you.html', {})
+        emails = request.POST.getlist('email')
+        for e in emails:
+            new = Invitee(email = e)
+            new = new.save()
+            new.invite(connection=email_connection)
+        email_connection.close()
+        
+        return HttpResponseRedirect('/admin/feedstrap/invitee/')
+    else:
+        return render.not_found(request)
     
     
 def invite(request, action):
@@ -195,11 +198,3 @@ def invite(request, action):
         'add': confirmed_invite
     }
     return _run_action.get(action, render.not_found)(request)
-
-    
-
-
-        
-        
-
-    

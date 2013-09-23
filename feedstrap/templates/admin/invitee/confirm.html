@@ -28,7 +28,7 @@
     
     <div style="margin-left: 3em;">
     <h2>Please Confirm that you want to send inviations to the following email addresses</h2>
-        <form method="POST" action="/invite/add/">
+        <form method="POST" action="/invite/add/">{% csrf_token %}
             
             {% for p in parsed %}
                 <input style="width:500px" type="text" name="email" value="{{ p }}"/><br>

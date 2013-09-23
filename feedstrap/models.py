@@ -140,19 +140,20 @@ class Invitee(models.Model):
     date = models.DateTimeField(auto_now=True)
     url_secret = models.CharField(max_length=500)
     email = models.EmailField(max_length=254)
-    has_accepted = models.BooleanField()
+    has_accepted = models.BooleanField(default=False)
     
     def save(self):
-        if self.url_secret == None:
+        if not self.url_secret:
             self.url_secret = hashlib.md5(self.email).hexdigest()
         super(Invitee, self).save()
+        return self
     
     def invite(self, connection=None):
-        message = render_to_string('admin/inivtee/email.html', {'invitee', self})
+        message = render_to_string('admin/invitee/email.html', {'url_secret': self.url_secret})
         return send_mail(
             "VA's Strategic Studies group invites you to Sign Up for FeedStrap!", 
             message, 
-            setting.DEFAULT_FROM_EMAIL, [self.email], 
+            settings.DEFAULT_FROM_EMAIL, [self.email], 
             connection=connection
         )
     

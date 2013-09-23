@@ -1,9 +1,9 @@
 {% extends "main/home.html" %}
-{% block title %}FeedStrap Sign In{% endblock %}
+{% block title %}FeedStrap Sign Up{% endblock %}
 {% block head %}
     {{ block.super }}
     <script type="text/javascript">
-    function validatelogin() {
+    function validatesignup() {
         if ($("#username").val() == "") {
             alert("Please provide a username!");
             return false;
@@ -28,20 +28,18 @@
 {% block full_content %}
     <div class="row-fluid" style="margin-top: 4em">
         <div class="offset4 span4">
-            <form class="form-signin" action="/signin" method="POST" onsubmit="return validatelogin();" >
+            <form class="form-sup" action="/signup/{{ url_secret }}" method="POST" onsubmit="return validatesignup();" >
 
-                <h2 class="form-signin-heading">Sign In </h2>
-                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
-                {% if invalid %}
-                    <em>Incorrect User Name or Password.  Please Try Again! </em>
-                {% endif %}
+                <h2 class="form-signin-heading">Sign Up </h2>
+                {% csrf_token %}
+
                 <label for="username">User Name:</label>
-                <input type="text" style="display: none" name="redirect" value="{{ redirect }}">
                 <input class="input-block-level" id="username" name="username" type="text">
+                
                 <label for="password">Password:</label>
                 <input class="input-block-level" id="password" name="password" type="password">
                 <br>
-                <button style="float:right" class="btn btn-large btn-primary" type="submit">Sign in</button><br>
+                <button style="float:right" class="btn btn-large btn-primary" type="submit">Sign Up</button><br>
                 <br>
             </form>
         </div>
