@@ -37,12 +37,18 @@ def all_comments(request, pk):
     raw_ajax_string = Template(mini_template).render(context=context)
     return HttpResponse(raw_ajax_string)
 
+def is_esil_authorized(user):
+    return user.has_perm('feedstrap.view_all') or user.is_staff or user.is_superuser
 
 def single_topic(request, pk):
-    v = {}
     topic = Topic.objects.filter(pk=int(pk))
-    if request.user.is_authenticated() and topic:
-        topic = topic.get()
+    
+    if not request.user.is_authenticated() or not topic:
+        return render.not_found(request)
+
+    topic = topic.get()    
+    v = {}
+    if topic.published or is_esil_authorized(request.user):
         v['imperatives'] = [model_to_dict(t, fields=['name', 'category']) for t in topic.imperatives.all()]
         v['capabilities'] = [model_to_dict(c, fields=['name', 'category']) for c in topic.capabilities.all()]
         v['next'] = request.path + 'comments'
@@ -93,9 +99,8 @@ def delete_comment(request, comment_id):
 
 def all_topics(request):
     v = {}
-    usr = request.user
     if request.user.is_authenticated():
-        if usr.has_perm('feedstrap.view_all') or usr.is_staff or usr.is_superuser:
+        if is_esil_authorized(request.user):
             q = Topic.objects.all()
         else:
             q = Topic.objects.filter(published=True)
