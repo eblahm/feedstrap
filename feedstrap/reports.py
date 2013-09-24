@@ -93,9 +93,13 @@ def delete_comment(request, comment_id):
 
 def all_topics(request):
     v = {}
+    usr = request.user
     if request.user.is_authenticated():
+        if usr.has_perm('feedstrap.view_all') or usr.is_staff or usr.is_superuser:
+            q = Topic.objects.all()
+        else:
+            q = Topic.objects.filter(published=True)
         topics = []
-        q = Topic.objects.all()
         for t in q.order_by('name'):
             rsearch = Resource.objects.filter(topics=t)
             t.link_count = rsearch.count()

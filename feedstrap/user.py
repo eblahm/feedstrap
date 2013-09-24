@@ -2,6 +2,7 @@ from datetime import datetime
 import pytz
 import urllib
 
+from django.contrib.auth.models import Permission
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.core.context_processors import csrf
@@ -11,14 +12,16 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm, UserCreationForm
 from django.core import mail
 
-from models import Feed, Invitee
+from models import Feed, Invitee, Office, PostIt
 from admin import InviteeAdmin
+from edit import create_new_postit
 import render
 
 
 class Profile(forms.Form):
     first_name = forms.CharField(max_length=30)
     last_name = forms.CharField(max_length=30)
+    office = forms.CharField(max_length=100)
     email = forms.EmailField()
 
 def info(request):
@@ -27,6 +30,10 @@ def info(request):
     v['host_url'] = request.get_host()
     if str(v['host_url'])[:3] != 'htt':
         v['host_url'] = 'http://' + v['host_url']
+        
+    usr_xtd, created = PostIt.objects.get_or_create(user=request.user)
+    v['user_xtd_office'] = usr_xtd.office
+    
     template_file = "main/user/info.html"
     return render.response(request, template_file, v)
 
@@ -35,17 +42,10 @@ def main(request):
     errors = False
     if request.user.is_authenticated():
         usr = request.user
+        usr_xtd, created = PostIt.objects.get_or_create(user=usr)
         v = {}
-        feed = Feed.objects.all()[0]
-        v['feeds'] = [(feed.name, feed.url)]
         if request.method == "POST":
-            user_input = request.POST.dict()
-            pops = []
-            for k in user_input:
-                if k.split("_")[0] == "feed":
-                    pops.append(k)
-            for p in pops:
-                user_input.pop(p)
+            user_input = request.POST.copy()
             f = Profile(user_input)
             if f.is_valid():
                 usr = User.objects.get(pk=usr.pk)
@@ -53,18 +53,26 @@ def main(request):
                 usr.first_name = user_input['first_name']
                 usr.last_name = user_input['last_name']
                 usr.save()
+                
+                office, created = Office.objects.get_or_create(name=user_input['office'])
+                usr_xtd.office = office
+                usr_xtd.save()
+                
                 v['saved'] = True
                 v['datetime'] = datetime.now().replace(tzinfo=pytz.timezone('America/New_York')).strftime('%I:%M:%S%p').lower() + " EST"
             else:
                 errors = True
+
         if errors == True:
             v['Profile'] = f
+            
         else:
-            input = {'email': usr.email, 'first_name': usr.first_name, 'last_name': usr.last_name, 'feeds': ['foo']}
+            input = {'email': usr.email, 'first_name': usr.first_name, 'last_name': usr.last_name, 'office': usr_xtd.office.name}
             v['Profile'] = Profile(initial=input)
 
         v.update(csrf(request))
         v['nav'] = "profile"
+        
         template_file = "main/user/edit.html"
         return render.response(request, template_file, v)
 
@@ -104,9 +112,10 @@ def psw(request):
 def signin(request):
     v = {'invalid': False}
     if request.method == "POST":
-        username = request.POST['username']
+        username = request.POST['username'].lower()
         password = request.POST['password']
-        user = authenticate(username=username, password=password)
+        user = authenticate(username=username, password=password) or \
+        authenticate(username=username.title(), password=password)
         if user is not None:
             if user.is_active:
                 login(request, user)
@@ -146,23 +155,34 @@ def signup(request, secret):
     if request.method == "POST":
         inputs = request.POST.copy()
         inputs['email'] = invitee.email
+        inputs['username'] = inputs['username'].lower()
         f = UserCreationForm(inputs)
         if f.is_valid():
             f.save()
-            invitee.has_accepted = True
-            invitee.save()
-
             user = User.objects.get(username=f.cleaned_data['username'])
             user.email = invitee.email
             if inputs.get('first_name', ''):
                 user.first_name = inputs['first_name']
             if inputs.get('last_name', ''):
                 user.last_name = inputs['last_name']
+            esil_view_all = Permission.objects.get(codename='view_all')
             user.save()
+            
+            postit = create_new_postit(user)
+            if inputs.get('office', '').strip():
+                
+                office, created = Office.objects.get_or_create(name=inputs['office'])
+                postit.office = office
+                postit.feed.offices.add(office)
+                postit.save()
 
+            
             password = f.cleaned_data['password1']
             user = authenticate(username=user.username, password=password)
             login(request, user)
+            
+            invitee.has_accepted = True
+            invitee.save()
             return HttpResponseRedirect("/")
         else:
             return render.response(request,

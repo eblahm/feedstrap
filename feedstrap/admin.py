@@ -1,5 +1,9 @@
 from django.contrib import admin
+from django.contrib.auth.models import Group, Permission
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import User
 from django.contrib.admin import widgets
+
 from django import forms
 from feedstrap.models import *
 from django.core.cache import cache
@@ -92,14 +96,6 @@ for simple_model in [Capability, Imperative]:
     admin.site.register(simple_model, simple_admin)
 
 
-
-class LinkLogAdmin(admin.ModelAdmin):
-    ordering = ('date',)
-    list_display = ('link', 'date')
-
-admin.site.register(LinkLog, LinkLogAdmin)
-
-
 class InviteeAdmin(admin.ModelAdmin):
 
     ordering = ('date',)
@@ -133,25 +129,51 @@ class SidebarLinkAdmin(admin.ModelAdmin):
         cache.clear()
         obj.save()
 admin.site.register(SidebarLink, SidebarLinkAdmin)
+    
 
 
 
+class PostItForm(forms.ModelForm):
+    # def __init__(self, *args, **kwargs):
+    #     super(PostItForm, self).__init__(*args, **kwargs)
+    #     for k in ['sidebar_links', 'office']:
+    #         self.fields[k].required = False
+    # sidebar_links = forms.MultipleChoiceField(choices=generate_choices(SidebarLink))
+    class Meta:
+        model = PostIt
+
+class PostItInline(admin.StackedInline):
+    model = PostIt
+    form = PostItForm
+    can_delete = False
+    verbose_name_plural = 'Additional Fields'
+    exclude = ('feed', 'sidebar_links')
+    list_display = ('office',)
 
 
+class UserAdmin(UserAdmin):
+    inlines = (PostItInline, )
 
+    
+    def allow_to_see_full_ESIL(self, request, queryset):
+        group, created = Group.objects.get_or_create(name='Can see full ESIL')
+        if created:
+            esil_view_all = Permission.objects.get(codename='view_all')
+            group.permissions.add(esil_view_all)
+            group.save()
+            
+        x = 0
+        for u in queryset:
+            u.groups.add(group)
+            u.save()
+            x += 1
 
-
-
-
-
-
-
-
-
-
-
-
-
+        self.message_user(request, "%i users were granted access to the full ESIL!" % x)
+        
+    actions = [allow_to_see_full_ESIL]
+    
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
 
 
 

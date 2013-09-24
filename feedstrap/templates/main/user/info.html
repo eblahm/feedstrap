@@ -22,10 +22,11 @@
             <table><tr><td><h2>Profile</h2></td><td>(<a href="/account/edit">edit</a>)</td></tr></table>
                 <p>
                     <table>
-                    <tr><td style="width: 100px;"><strong>User Name:</strong></td><td>{{ user.username }}</td></tr>
+                    <tr><td style="width: 100px;"><strong>User Name:</strong></td><td>{{ user.username|title }}</td></tr>
                     <tr><td><strong>Password:</strong></td><td>****** (<a href="/account/change_password">change</a>)</td></tr>
                     <tr><td><strong>First Name:</strong></td><td>{{ user.first_name }}</td></tr>
                     <tr><td><strong>Last Name:</strong></td><td>{{ user.last_name }}</td></tr>
+                    <tr><td><strong>Office:</strong></td><td>{{ user_xtd_office.name }}</td></tr>
                     <tr><td><strong>Email:</strong></td><td>{{ user.email }}</td></tr>
                     </table>
                 </p>

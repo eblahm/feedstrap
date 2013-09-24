@@ -65,9 +65,18 @@ class Topic(models.Model):
     capabilities = models.ManyToManyField(Capability, null=True, blank=True)
     attachment = models.FileField(upload_to="final", null=True, blank=True)
     published = models.BooleanField()
+    
+    class Meta:
+        permissions = (
+            ("view_all", "Can see all the ESIL topics"),
+        )
+
 
 class Office(models.Model):
     name = models.CharField(max_length=50, choices=office_choices)
+    
+    def __unicode__(self):
+        return self.name
 
 
 class Feed(models.Model):
@@ -81,9 +90,12 @@ class Feed(models.Model):
     reports = models.ManyToManyField(Report, blank=True, null=True)
     last_updated = models.DateTimeField()
     fetching = models.BooleanField()
+    
+    def __unicode__(self):
+        return self.name
+
 
 class Resource(models.Model):
-    # for versioning
     date = models.DateTimeField()
     date_added = models.DateTimeField(auto_now=True)
     title = models.CharField(max_length=500)
@@ -135,9 +147,12 @@ class StaticPage(models.Model):
 class PostIt(models.Model):
     user = models.OneToOneField(User)
     feed = models.OneToOneField(Feed)
-    office = models.OneToOneField(Office, blank=True, null=True)
+    office = models.ForeignKey(Office, blank=True, null=True)
     sidebar_links = models.ManyToManyField(SidebarLink, blank=True, null=True)
     
+    class Meta:
+        verbose_name = "User Extended"
+        verbose_name_plural = "User Extended"
     
 class Invitee(models.Model):
     date = models.DateTimeField(auto_now=True)
