@@ -67,7 +67,9 @@ def main(request):
             v['Profile'] = f
             
         else:
-            input = {'email': usr.email, 'first_name': usr.first_name, 'last_name': usr.last_name, 'office': usr_xtd.office.name}
+            input = {'email': usr.email, 'first_name': usr.first_name, 'last_name': usr.last_name}
+            if usr_xtd.office:
+                input['office'] = usr_xtd.office.name
             v['Profile'] = Profile(initial=input)
 
         v.update(csrf(request))
