@@ -25,18 +25,20 @@ class Profile(forms.Form):
     email = forms.EmailField()
 
 def info(request):
-    v = {}
-    v['nav'] = "info"
-    v['host_url'] = request.get_host()
-    if str(v['host_url'])[:3] != 'htt':
-        v['host_url'] = 'http://' + v['host_url']
-        
-    usr_xtd, created = PostIt.objects.get_or_create(user=request.user)
-    v['user_xtd_office'] = usr_xtd.office
-    
-    template_file = "main/user/info.html"
-    return render.response(request, template_file, v)
+    if request.user.is_authenticated():
+        v = {}
+        v['nav'] = "info"
+        v['host_url'] = request.get_host()
+        if str(v['host_url'])[:3] != 'htt':
+            v['host_url'] = 'http://' + v['host_url']
 
+        usr_xtd, created = PostIt.objects.get_or_create(user=request.user)
+        v['user_xtd_office'] = usr_xtd.office
+
+        template_file = "main/user/info.html"
+        return render.response(request, template_file, v)
+    else:
+        return HttpResponseRedirect('/signin?redirect=%s' % (urllib.quote(request.get_full_path())))
 
 def main(request):
     errors = False
