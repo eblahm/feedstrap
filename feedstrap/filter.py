@@ -12,6 +12,7 @@ from django.db.models import Q
 
 import pysolr
 import operator
+import json
 
 from edit import get_tags
 
@@ -211,3 +212,10 @@ def main(request):
                 f = FilterForm()
                 new_input = str(f[perams['selected']])
                 return HttpResponse(new_input)
+
+def data(request, model=None):
+    response = HttpResponse(content_type='application/json')
+    response.write(json.dumps(get_tags()))
+    return response
+
+

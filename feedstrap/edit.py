@@ -21,7 +21,7 @@ def en(s):
 def get_tags():
     tag_cache = cache.get('all_tags')
     if tag_cache == None:
-        all_tags = sorted([t for t in Tag.objects.all()])
+        all_tags = sorted([t.name for t in Tag.objects.all()])
         cache.set('all_tags', all_tags)
     else:
         all_tags = tag_cache

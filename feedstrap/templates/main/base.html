@@ -1,74 +1,57 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    {% block head %}
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="/rss?{{ get_query }}" type="application/rss+xml" rel="alternate" title="Feedstrap RSS" />
-    
-    {% block stylesheets %}
-    <!-- jquery -->
-    <link href="/static/css/jquery-ui.css" rel="stylesheet" type="text/css" />
-    <!-- twitter bootstrap -->
-    <link href="/static/css/bootstrap.css" rel="stylesheet">  
-    <link href="/static/css/bootstrap-responsive.css" rel="stylesheet">     
-    <!-- my code -->
-    <link href="/static/css/main.css" rel="stylesheet" >
-    {% endblock %} 
+    <head>
+        {% block head %}
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link href="/rss?{{ get_query }}" type="application/rss+xml" rel="alternate" title="Feedstrap RSS" />
+
+            <!-- jquery ui css -->
+            <link href="/static/css/jquery-ui.css" rel="stylesheet" type="text/css" />
+            <!-- twitter bootstrap css -->
+            <link href="/static/css/bootstrap.css" rel="stylesheet">
+            <link href="/static/css/bootstrap-responsive.css" rel="stylesheet">
+            <!-- my css -->
+            <link href="/static/css/main.css" rel="stylesheet" >
 
 
-    {% block javascript %}
 
-    <!-- jquery -->
-    <script src="/static/js/jquery.min.js"></script>
-    <script src="/static/js/jquery-ui.js"></script>
-    <script type="text/javascript" src="/static/js/jquery.tablesorter.js"></script>
+            <script src="/static/js/require.js"></script>
+            <!-- jquery -->
+            <script src="/static/js/jquery.min.js"></script>
+            <script src="/static/js/jquery-ui.js"></script>
+            <script type="text/javascript" src="/static/js/jquery.tablesorter.js"></script>
 
-    <!-- underscore -->
-    <script src="/static/js/underscore-min.js"></script>
+            <!-- twitter bootstrap js -->
+            <script src="/static/js/bootstrap.min.js"></script>
 
-    <!-- twitter bootstrap -->
-    <script src="/static/js/bootstrap.min.js"></script>
-    <!-- my code -->
-    <script type="text/javascript" rel="js" src="/static/js/main.1.js"></script>
+            <!-- my js -->
+            {% block feedstrapjs %}
+                <script type="text/javascript" rel="js" src="/static/js/feedstrap/main.js"></script>
+                <script type="text/javascript" rel="js" src="/static/js/feedstrap/feed.js"></script>
+                <script type="text/javascript" rel="js" src="/static/js/feedstrap/postit.js"></script>
+                <script type="text/javascript" rel="js" src="/static/js/feedstrap/sidebar.js"></script>
+                <script type="text/javascript" rel="js" src="/static/js/feedstrap/esil.js"></script>
+                <script type="text/javascript" rel="js" src="/static/js/feedstrap/comments.js"></script>
+                <script type="text/javascript" rel="js" src="/static/js/feedstrap/advancedfilter.js"></script>
+            {% endblock %}
 
-    {% endblock %}
-    
+            {% block google_analytics %}
+                <script type="text/javascript" rel="js" src="/static/js/resources/google_analytics.js"></script>
+            {% endblock %}
 
-    
-    {% block google_analytics %}
-    <!-- google analytics -->
-    <script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-41066277-1', 'feedstrap.vacloud.us');
-    ga('send', 'pageview');
-
-    </script>
-    {% endblock %}
-
-    <title>{% block title %}FeedStrap{% endblock %}</title>
-    {% endblock %}
-  </head>  
-  <body>
-  {% block modal %}{% endblock %}
-
-    <div class="container-fluid">
-            
-        {% block content_box %}
+            <title>{% block title %}FeedStrap{% endblock %}</title>
         {% endblock %}
-    <!--<div id="footer"-->
-    <!--    style="position:fixed;width:100%;left:0px; bottom:0px; background-color:#F5F5F5;">-->
-    <!--    <div class="container-fluid">-->
-    <!--        <p style="margin-top:10px" class="muted credit">-->
-    <!--     Developed by the Strategic Studies Group, Department of Veterans-->
-    <!--     Affairs. -->
-    <!--        </p>-->
-    <!--    </div>-->
-    </div>
-  </body>
-  
+    </head>
+    <body>
+        {% block modal %}{% endblock %}
+
+        <div class="container-fluid">
+
+            {% block content_box %}
+            {% endblock %}
+
+        </div>
+    </body>
+
 </html>

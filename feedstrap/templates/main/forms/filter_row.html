@@ -6,9 +6,9 @@
     </td>
 </tr>
 {% endif %}
-<tr id="f{{ filter_count }}" class="af_row">
+<tr id="f{% if filter_count %}{{ filter_count }}{% else %}1{% endif %}" class="af_row">
     <td>
-        <select class="field_selector" name="field" data-filter_count="{{ filter_count }}">
+        <select class="field_selector" name="field" data-filter_count="{% if filter_count %}{{ filter_count }}{% else %}1{% endif %}">
             <option value="tags" selected="selected">Tag</option>
             <option value="person">Person</option>
             <option value="feeds">Feed</option>
@@ -19,8 +19,8 @@
             <option value="esil">Emerging Issue</option>
         </select>
     </td>
-    <td id="{{ filter_count }}_value">
-        <input class="primary_filter" id="fe{{ filter_count }}" name="{{ filter_count }}_tags" type="text">
+    <td id="{% if filter_count %} {{ filter_count }}{% else %}1{% endif %}_value">
+        <input class="primary_filter" id="fe{% if filter_count %}{{ filter_count }}{% else %}1{% endif %}" name="{% if filter_count %}{{ filter_count }}{% else %}1{% endif %}_tags" type="text">
     </td>
 </tr>
 

@@ -1,84 +1,26 @@
-<script type="text/javascript">
-var all_tags = [{% for t in all_tags %}{% ifequal t all_tags|first %}{% else %}, {% endifequal %}"{{ t.name }}"{% endfor %}];
-document.getElementById("advanced_search_form").reset();
-$(function() {$( "#fe1" ).autocomplete({source: all_tags});});
+{% extends 'main/modal.html' %}
 
-$("#add_new_filter").click(function (event){
-    var filter_count =  String($('.af_row').length + 1);
-    var url = "/filter?a=new&filter_count=" + filter_count;
-    $.ajax({
-           type: "GET",
-           url: url,
-           success: function(data){
-               $("#advanced_search").append(data);
-               $(function() {$("#fe"+filter_count).autocomplete({source: all_tags});});
-           }
-    });
+{% block modal_id %}advanced_search_modal{% endblock %}
+{% block modal_title %}Advanced Search{% endblock %}
+{% block modal_body %}
 
-});
+    <form id="advanced_search_form" action="/q" method="GET">
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+        <table id="advanced_search" align="center">
+            <tr>
+                <td style="width:50%; text-align:center"><strong>Field</strong></td>
+                <td style="width:50%; text-align:center"><strong>Value</strong></td>
+            </tr>
+            {% include "main/forms/filter_row.html" %}
+        </table>
+    </form>
+{% endblock %}
 
-$("#advanced_search").on("change", ".field_selector", function (event) {
-    var filter_count = $(this).data('filter_count');
-    var selected = $(this).val();
-    var url = "/filter?a=field&filter_count=" + filter_count + "&selected=" + selected;
-    $.ajax({
-           type: "GET",
-           url: url,
-           success: function(data){
-               var new_form_element = $(data).attr({'id':"fe"+filter_count});
-               var new_name = filter_count + "_" + new_form_element.attr("name");
-               new_form_element.attr({'name': new_name}).addClass("primary_filter");
-               $("#"+filter_count+"_value").html(new_form_element);
-               if (selected == 'dateto'| selected == 'datefrom') {
-                   $("#fe"+filter_count).datepicker();
-                   $("#fe"+filter_count).datepicker( "option", "dateFormat", 'yy-mm-dd' );
-               };
-               if (selected == 'tags') {
-                   $(function() {$("#fe"+filter_count).autocomplete({source: all_tags});});
-               };
-           }
-    });
-
-})
-
-$("#submit_advanced_filter").click(function (event){
-    var q = $(".primary_filter");
-    for (var i=0;i<q.length;i++) {
-        var e = $(q[i]);
-        if (e.val() == 'AND') {
-            q[i] = "";
-        };
-    }
-    var perams = q.serialize();
-    var url = "/q?"+ perams;
-    window.open(url, "_self");
-});
-</script>
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel">Advanced Search</h3>
-    </div>
-    <div class="modal-body">
-
-        <form id="advanced_search_form" action="/q" method="GET">
-
-                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
-                <table id="advanced_search" align="center">
-                    <tr>
-                        <td style="width:50%; text-align:center"><strong>Field</strong></td>
-                        <td style="width:50%; text-align:center"><strong>Value</strong></td>
-                    </tr>
-                    {% include "main/forms/filter_row.html" %}
-                </table>
-
-        </form>
-    </div>
-    <div class="modal-footer">
-        <button style="float:left" class="modal_view"  data-url="/filter" data-dbk="">Reset</button>
-        <button id="add_new_filter"><i class="icon-plus"></i></button>
-        <button id="submit_advanced_filter">Submit</button>
-    </div>
-
+{% block modal_footer %}
+    <button style="float:left" class="modal_view"  data-url="/filter" data-dbk="">Reset</button>
+    <button id="add_new_filter"><i class="icon-plus"></i></button>
+    <button id="submit_advanced_filter">Submit</button>
+{% endblock %}
 
          
 
