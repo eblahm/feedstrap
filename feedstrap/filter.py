@@ -1,6 +1,6 @@
 from feedstrap import config
 import models
-from models import Resource, ResourceForm, Topic
+from models import Resource, ResourceForm, Topic, Tag
 from django.contrib.auth.models import User
 from datetime import datetime
 
