@@ -4,8 +4,12 @@
 
 require(["/static/js/feedstrap/utils.js"], function(utils) {
     $(document).ready(function () {
-
-        document.getElementById("advanced_search_form").reset();
+        
+        function reset_advanced_form() {
+            $('#additional_perams').html('');
+            document.getElementById('advanced_search_form').reset();
+        };
+        reset_advanced_form();
         
         $("#as_toggle").click(function(){
             $(function() {
@@ -20,7 +24,7 @@ require(["/static/js/feedstrap/utils.js"], function(utils) {
                 type: "GET",
                 url: url,
                 success: (function(data){
-                    $("#advanced_search").append(data);
+                    $("#additional_perams").append(data);
                     $(function() {
                         $("#fe"+filter_count).autocomplete({source: all_tags.getData()});
                     });

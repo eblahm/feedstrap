@@ -12,12 +12,13 @@
                 <td style="width:50%; text-align:center"><strong>Value</strong></td>
             </tr>
             {% include "main/forms/filter_row.html" %}
+            <tbody id="additional_perams"></tbody>
         </table>
     </form>
 {% endblock %}
 
 {% block modal_footer %}
-    <button style="float:left" class="modal_view"  data-url="/filter" data-dbk="">Reset</button>
+    <button style="float:left" onclick="$('#additional_perams').html('');document.getElementById('advanced_search_form').reset()">Reset</button>
     <button id="add_new_filter"><i class="icon-plus"></i></button>
     <button id="submit_advanced_filter">Submit</button>
 {% endblock %}
