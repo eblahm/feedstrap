@@ -18,15 +18,6 @@ def en(s):
     else:
         return str(s)
 
-def get_tags():
-    tag_cache = cache.get('all_tags')
-    if tag_cache == None:
-        all_tags = sorted([t.name for t in Tag.objects.all()])
-        cache.set('all_tags', all_tags)
-    else:
-        all_tags = tag_cache
-    return all_tags
-
 def save_tags(rec, tags_list):
     tag_inputs = [t.strip() for t in tags_list]
     for tag in rec.tags.all():
@@ -121,7 +112,6 @@ def create_new_postit(user):
 def main(request):
     if request.method == "GET":
         v = {}
-        v['all_tags'] = get_tags()
         rec_key = request.GET.dict()['k']
         rec = Resource.objects.get(pk=rec_key)
         rec.all_reports = [r.pk for r in rec.reports.all()]
@@ -197,7 +187,6 @@ def add_new(request):
         errors = False
         v = {}
         if request.user.is_authenticated():
-            v['all_tags'] = get_tags()
             g = request.GET
             recq = Resource.objects.filter(link=g['l'])
             if recq.count() == 0:

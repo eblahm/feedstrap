@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from datetime import datetime
 
 import render
+from django.core.cache import cache
 from django.http import HttpResponse
 from django.core.context_processors import csrf
 from django import forms
@@ -14,7 +15,14 @@ import pysolr
 import operator
 import json
 
-from edit import get_tags
+def get_tags():
+    tag_cache = cache.get('all_tags')
+    if tag_cache == None:
+        all_tags = sorted([t.name for t in Tag.objects.all()])
+        cache.set('all_tags', all_tags)
+    else:
+        all_tags = tag_cache
+    return all_tags
 
 class Filter():
     def __init__(self, name, qstring, qmodel=models.Resource):
