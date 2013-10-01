@@ -1,3 +1,6 @@
+
+
+
 var loader_gif = '<div style="text-align:center; vertical-align: middle;"><img src="/static/img/loader.gif" /></div>';
 
 function load_modal(page) {
@@ -72,18 +75,22 @@ function enableSimpleAutoComplete(domReference, AutoCompleteArray) {
     $(domReference).autocomplete({
         source: AutoCompleteArray
     });
-}
+};
 
-var all_tags = ['health care'];
-
-(function(){
-    $.ajax({
-        url: '/data/tags/',
-        dataType: 'json',
-        success: (function(data){
-            all_tags = data;
+var ajax = function(dbModelName){
+    var data = [];
+    this.dbModelName = dbModelName;
+    this.getData = function(){ return data };
+    this.update = function(new_data){ data = new_data; };
+    this.fetch = function() {
+        $.ajax({
+            url: '/data/' + this.dbModelName,
+            dataType: 'json',
+            success: this.update
         })
-    })
-})();
+        return this;
+    };
+};
 
-
+var all_tags = new ajax('tags');
+all_tags.fetch();

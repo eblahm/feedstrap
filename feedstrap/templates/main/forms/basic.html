@@ -6,8 +6,8 @@
   
 </style>
  <script>
-     require(["static/js/feedstrap/utils"], function(utils) {
-        enableAutoComplete('#tags', all_tags );
+     require(["/static/js/feedstrap/utils.js"], function(utils) {
+        enableAutoComplete('#tags', all_tags.getData() );
      });
 </script>
 

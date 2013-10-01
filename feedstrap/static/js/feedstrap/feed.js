@@ -2,9 +2,9 @@
 
 
 
-require(["static/js/feedstrap/utils"], function(utils) {
+require(["/static/js/feedstrap/utils.js"], function(utils) {
     $(document).ready(function () {
-
+        
         // when the mouse hovers over a feed item, show the edit button
         // when the mouse leaves, hide the edit button
         $("body")

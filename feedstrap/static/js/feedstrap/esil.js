@@ -1,6 +1,6 @@
 
 
-require(["static/js/feedstrap/utils"], function(utils) {
+require(["/static/js/feedstrap/utils.js"], function(utils) {
     $(document).ready(function () {
 
         $("#esil").tablesorter();

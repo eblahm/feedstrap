@@ -2,11 +2,16 @@
 
 
 
-require(["static/js/feedstrap/utils"], function(utils) {
+require(["/static/js/feedstrap/utils.js"], function(utils) {
     $(document).ready(function () {
 
         document.getElementById("advanced_search_form").reset();
-        enableSimpleAutoComplete('#fe1', all_tags);
+        
+        $("#as_toggle").click(function(){
+            $(function() {
+                $("#fe1").autocomplete({source: all_tags.getData()});
+            });
+        });
 
         $("#add_new_filter").click(function (event){
             var filter_count =  String($('.af_row').length + 1);
@@ -16,7 +21,9 @@ require(["static/js/feedstrap/utils"], function(utils) {
                 url: url,
                 success: (function(data){
                     $("#advanced_search").append(data);
-                    $(function() {$("#fe"+filter_count).autocomplete({source: all_tags});});
+                    $(function() {
+                        $("#fe"+filter_count).autocomplete({source: all_tags.getData()});
+                    });
                 })
             });
         });
@@ -38,7 +45,7 @@ require(["static/js/feedstrap/utils"], function(utils) {
                         $("#fe"+filter_count).datepicker( "option", "dateFormat", 'yy-mm-dd' );
                     };
                     if (selected == 'tags') {
-                        $(function() {$("#fe"+filter_count).autocomplete({source: all_tags});});
+                        $(function() {$("#fe"+filter_count).autocomplete({source: all_tags.getData()});});
                     };
                 }
             });
