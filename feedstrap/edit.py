@@ -31,9 +31,9 @@ def save_tags(rec, tags_list):
     for tag in tag_inputs:
         if tag != "":
             try:
-                tag_rec = models.Tag.objects.get(name=tag)
+                tag_rec = Tag.objects.get(name=tag)
             except:
-                tag_rec = models.Tag.objects.create(name=tag)
+                tag_rec = Tag.objects.create(name=tag)
             rec.tags.add(tag_rec)
     return True
 

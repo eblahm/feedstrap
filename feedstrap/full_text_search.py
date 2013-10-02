@@ -1,7 +1,6 @@
 import pysolr
 from feedstrap import render
 from feedstrap.models import Resource
-from jinja2 import Environment, PackageLoader
 
 def normalize(x):
     try:

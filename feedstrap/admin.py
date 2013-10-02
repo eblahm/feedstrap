@@ -2,12 +2,10 @@ from django.contrib import admin
 from django.contrib.auth.models import Group, Permission
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
-from django.contrib.admin import widgets
 
 from django import forms
 from feedstrap.models import *
 from django.core.cache import cache
-from django.contrib.flatpages.models import FlatPage
 from tinymce.widgets import TinyMCE
 from django.core import mail
 
