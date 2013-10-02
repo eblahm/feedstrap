@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.shortcuts import render_to_response
@@ -75,8 +75,11 @@ def load(template_file, template_values={}):
 
 
 def not_found(request):
-    log_file = open('/var/www/media/feedstrap/404_log', 'a')
-    error = "%s - %s - %s\n" % (datetime.now().strftime("%X %x"), request.META.get('REMOTE_ADDR', '?'), request.get_full_path())
-    log_file.writelines(error)
-    log_file.close()
-    return HttpResponse(load('main/404.html'))
+    try:
+        log_file = open('/var/www/media/feedstrap/404_log', 'a')
+        error = "%s - %s - %s\n" % (datetime.now().strftime("%X %x"), request.META.get('REMOTE_ADDR', '?'), request.get_full_path())
+        log_file.writelines(error)
+        log_file.close()
+    except:
+        pass
+    return HttpResponseNotFound(load('main/404.html'))
