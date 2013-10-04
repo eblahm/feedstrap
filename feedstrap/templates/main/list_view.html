@@ -19,10 +19,10 @@
 
 
     <div style="text-align:center;">
-        {% if next_offset %}
+        {% if show_more_perams %}
         <span class="eb"><button class="btn btn-primary show_more" data-parent="content_view" data-query="/q/ajax/?{{ show_more_perams }}"> Show More </button></span>
         {% else %}
-        <strong>------ END -----</strong>
+        <strong>------ {{ end_info }} -----</strong>
         {% endif %}
     </div>
 

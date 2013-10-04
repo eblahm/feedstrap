@@ -55,8 +55,8 @@
         {% if not alert %}
         {% block content_header %}
                 <div style="float: left; margin-top: .6em">
-                {% for t in filter_tags %}
-                    <span class="filter_tag" style="{{ t.css }}">{{ t.name }}<a class="xtag" href="{{ t.link }}">×</a></span>
+                {% for af in search.applied_filters %}
+                    <span class="filter_tag" style="background-color: {{ af.color }};">{{ af.name }}{% if af.display_value %}: {{ af.display_value }}{% endif %}<a class="xtag" href="{{ af.inverse }}">×</a></span>
                 {% endfor %}
                 </div>
                 <div class="hidden-phone" style="float: right;">
@@ -78,7 +78,7 @@
     <div class="row-fluid">
         <div id="sidebar_zone" class="span2 hidden-phone">
             {% block sidebar %}
-                {% include 'main/sidebar.html' %}
+                 include 'main/sidebar.html'
             {% endblock %}
         </div>
         {% block content_view %}
