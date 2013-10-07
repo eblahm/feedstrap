@@ -6,6 +6,7 @@ import urllib
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.cache import cache
 from django.core.context_processors import csrf
+from filter import get_tags
 
 from models import Resource, ResourceForm, Topic, Tag
 import models
@@ -204,6 +205,7 @@ def add_new(request):
             v.update(csrf(request))
             v['resource_form'] = ResourceForm(instance=rec)
             v['topics'] = Topic.objects.all().order_by('name')
+            v['all_tags'] = get_tags()
             template_file = 'main/forms/post_it.html'
             return render.response(request, template_file, v)
         else:
