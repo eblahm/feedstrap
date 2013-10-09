@@ -3,7 +3,11 @@
 {% block modal_id %}advanced_search_modal{% endblock %}
 {% block modal_title %}Advanced Search{% endblock %}
 {% block modal_body %}
-
+<div>
+{% for f in advanced_form %}
+    {{ f.form_element.as_p }}
+{% endfor %}
+</div>
     <form id="advanced_search_form" action="/q" method="GET">
         <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
         <table id="advanced_search" align="center">

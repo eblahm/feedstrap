@@ -78,7 +78,7 @@
     <div class="row-fluid">
         <div id="sidebar_zone" class="span2 hidden-phone">
             {% block sidebar %}
-                 include 'main/sidebar.html'
+                 {% include 'main/sidebar.html' %}
             {% endblock %}
         </div>
         {% block content_view %}

@@ -1,4 +1,4 @@
-from filter import apply_filter, generate_filter_tags
+from filter import advanced_filters
 import render
 from models import StaticPage as StaticPageModel
 from search import AdvancedSearch
@@ -17,13 +17,12 @@ def MainPage(request, template=""):
             v['alert'] = alert_query.get().content
 
     # load info pertaining to database queries
-    class pageinfo(AdvancedSearch): pass
-    PG = pageinfo()
-    v['results'] = PG.get_results(request.GET)
-    v['total'] = len(v['results'])
-    v['search'] = PG
-    
-     
+    AS = AdvancedSearch()
+    v['advanced_form'] = [f() for f in advanced_filters]
+    v['results'] = AS.get_results(request.GET)
+    v['total'] = v['results'].count()
+    v['search'] = AS
+
     # where are we in terms of offset?
     try:
         start_offset = int(request.GET.get('s', 0))

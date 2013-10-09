@@ -9,14 +9,9 @@
 <tr id="f{% if filter_count %}{{ filter_count }}{% else %}1{% endif %}" class="af_row">
     <td>
         <select class="field_selector" name="field" data-filter_count="{% if filter_count %}{{ filter_count }}{% else %}1{% endif %}">
-            <option value="tags" selected="selected">Tag</option>
-            <option value="person">Person</option>
-            <option value="feeds">Feed</option>
-            <option value="dateto">Date To</option>
-            <option value="datefrom">Date From</option>
-            <option value="report">Report</option>
-            <option value="office">Office</option>
-            <option value="esil">Emerging Issue</option>
+        {% for af in advanced_form %}
+            <option value="{{ af.name }}">{{ af.name }}</option>
+        {% endfor %}
         </select>
     </td>
     <td id="{% if filter_count %}{{ filter_count }}{% else %}1{% endif %}_value">
