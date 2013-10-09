@@ -99,8 +99,6 @@ def create_new_postit(user):
     )
     feed.save()
     feed.url += str(feed.pk)
-    if user.first_name in ['James', 'Matt', 'Sharaelle', 'Joe', 'Thomas']:
-        feed.offices.add(models.Office.objects.get(name='SSG'))
     feed.save()
     postit = models.PostIt(
         user = user,
