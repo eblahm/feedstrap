@@ -17,6 +17,19 @@
         padding-bottom: 40px;
       }
     </style>
+
+     <script>
+         require(["/static/js/feedstrap/utils.js"], function(utils) {
+            $.ajax({
+                url: '/data/offices',
+                dataType: 'json',
+                success: (function(data){
+                    enableSimpleAutoComplete('#id_office', data);
+                })
+            })
+         });
+    </script>
+
 {% endblock %}
 
 {% block content_header %}{% endblock %}

@@ -1,6 +1,6 @@
 from feedstrap import config
 import models
-from models import Resource, ResourceForm, Topic, Tag
+from models import Resource, ResourceForm, Topic, Tag, Office
 from django.contrib.auth.models import User
 from datetime import datetime
 
@@ -230,7 +230,11 @@ def main(request):
 
 def data(request, model=None):
     response = HttpResponse(content_type='application/json')
-    response.write(json.dumps(get_tags()))
+    dtypes = {
+        'tags': get_tags(),
+        'offices': [o.name for o in Office.objects.all()]
+    }
+    response.write(json.dumps(dtypes.get(model, ['error'])))
     return response
 
 
