@@ -142,13 +142,14 @@ admin.site.register(SidebarLink, SidebarLinkAdmin)
 
 
 class PostItForm(forms.ModelForm):
-    # def __init__(self, *args, **kwargs):
-    #     super(PostItForm, self).__init__(*args, **kwargs)
-    #     for k in ['sidebar_links', 'office']:
-    #         self.fields[k].required = False
-    # sidebar_links = forms.MultipleChoiceField(choices=generate_choices(SidebarLink))
     class Meta:
         model = PostIt
+
+class PostItAdmin(admin.ModelAdmin):
+    list_display = ('user', 'feed', 'office')
+
+admin.site.register(PostIt, PostItAdmin)
+
 
 class PostItInline(admin.StackedInline):
     model = PostIt
