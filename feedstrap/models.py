@@ -165,6 +165,7 @@ class Invitee(models.Model):
         editable_template = StaticPage.objects.filter(slug = 'invite')
         if not editable_template:
             text = render_to_string('admin/invitee/email.txt', {'url_secret': self.url_secret})
+            subject = "The Strategic Studies Group Invites you to Sign Up for FeedStrap!"
             html = None
         else:
             raw_text = []
@@ -174,7 +175,8 @@ class Invitee(models.Model):
 
             cxt = Context({'url_secret': self.url_secret})
             editable_template = editable_template.get()
-
+            subject = editable_template.name
+            
             html = Template(editable_template.content).render(cxt)
 
             text_parser = text_only()
@@ -184,7 +186,7 @@ class Invitee(models.Model):
 
 
         email = EmailMultiAlternatives(
-            "The Strategic Studies Group Invites you to Sign Up for FeedStrap!",
+            subject,
             text,
             settings.DEFAULT_FROM_EMAIL, [self.email], 
             connection=connection,

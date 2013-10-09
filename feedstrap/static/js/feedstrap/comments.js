@@ -41,7 +41,7 @@ $(document).ready(function () {
         if (!/^\s*$/.test($("#id_comment").val())) {
             $.ajax({
                 method: 'POST',
-                url: '/comments/post/',
+                url: '/esil/comments/post/',
                 data: $('#comment_form').serialize(),
                 success: (function (data) {
 

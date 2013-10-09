@@ -189,7 +189,7 @@ def add_new(request):
             g = request.GET
             recq = Resource.objects.filter(link=g['l'])
             if recq.count() == 0:
-                rec = Resource(title=g['t'], link=g['l'], description=g['d'], date=datetime.now())
+                rec = Resource(title=g.get('t', 'Untitled'), link=g['l'], description=g.get('d', ''), date=datetime.now())
                 v['topics_pks'] = []
                 v['tags'] = ""
                 v['wr'] = False
