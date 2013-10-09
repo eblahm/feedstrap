@@ -72,7 +72,7 @@ class TopicForm(forms.ModelForm):
 class TopicAdmin(admin.ModelAdmin):
     form = TopicForm
     ordering = ('name',)
-    list_display = ('name',)
+    list_display = ('name', 'published')
 
 admin.site.register(Topic, TopicAdmin)
 
@@ -137,7 +137,7 @@ class SidebarLinkAdmin(admin.ModelAdmin):
         cache.clear()
         obj.save()
 admin.site.register(SidebarLink, SidebarLinkAdmin)
-    
+
 
 
 
@@ -162,14 +162,14 @@ class PostItInline(admin.StackedInline):
 class UserAdmin(UserAdmin):
     inlines = (PostItInline, )
 
-    
+
     def allow_to_see_full_ESIL(self, request, queryset):
         group, created = Group.objects.get_or_create(name='Can see full ESIL')
         if created:
             esil_view_all = Permission.objects.get(codename='view_all')
             group.permissions.add(esil_view_all)
             group.save()
-            
+
         x = 0
         for u in queryset:
             u.groups.add(group)
@@ -177,9 +177,9 @@ class UserAdmin(UserAdmin):
             x += 1
 
         self.message_user(request, "%i users were granted access to the full ESIL!" % x)
-        
+
     actions = [allow_to_see_full_ESIL]
-    
+
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 

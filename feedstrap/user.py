@@ -55,11 +55,11 @@ def main(request):
                 usr.first_name = user_input['first_name']
                 usr.last_name = user_input['last_name']
                 usr.save()
-                
+
                 office, created = Office.objects.get_or_create(name=user_input['office'])
                 usr_xtd.office = office
                 usr_xtd.save()
-                
+
                 v['saved'] = True
                 v['datetime'] = datetime.now().replace(tzinfo=pytz.timezone('America/New_York')).strftime('%I:%M:%S%p').lower() + " EST"
             else:
@@ -67,7 +67,7 @@ def main(request):
 
         if errors == True:
             v['Profile'] = f
-            
+
         else:
             input = {'email': usr.email, 'first_name': usr.first_name, 'last_name': usr.last_name}
             if usr_xtd.office:
@@ -76,7 +76,7 @@ def main(request):
 
         v.update(csrf(request))
         v['nav'] = "profile"
-        
+
         template_file = "main/user/edit.html"
         return render.response(request, template_file, v)
 
@@ -171,23 +171,19 @@ def signup(request, secret):
                 user.last_name = inputs['last_name']
             esil_view_all = Permission.objects.get(codename='view_all')
             user.save()
-            
             postit = create_new_postit(user)
             if inputs.get('office', '').strip():
-                
                 office, created = Office.objects.get_or_create(name=inputs['office'])
                 postit.office = office
                 postit.feed.offices.add(office)
                 postit.save()
 
-            
             password = f.cleaned_data['password1']
             user = authenticate(username=user.username, password=password)
             login(request, user)
-            
             invitee.has_accepted = True
             invitee.save()
-            return HttpResponseRedirect("/")
+            return HttpResponseRedirect("/esil")
         else:
             return render.response(request,
                                    'main/user/signup.html',
@@ -198,7 +194,7 @@ def signup(request, secret):
 def parse(request):
     if request.method == "POST" and request.user.is_superuser:
         import re
-        
+
         emails = request.POST['emails'].encode('utf8').strip()
         if emails:
             emails = [e.strip() for e in emails.split(';')]
@@ -237,7 +233,7 @@ def parse(request):
                     if '(' in p:
                         p = p.split('(')[-1]
                     add_if_non_existant(p)
-                    
+
                     continue
 
                 # test 4 > is the email formated like: joe@gmail.com
@@ -245,10 +241,10 @@ def parse(request):
                 if found:
                     add_if_non_existant(found.group(1).strip())
                     continue
-                
+
                 # reject > malformed email
                 malformed.append(e)
-                    
+
             return render.response(request, 'admin/invitee/confirm.html', {
                 'parsed': parsed,
                 'malformed': malformed,
@@ -258,13 +254,13 @@ def parse(request):
             return render.not_found(request)
     else:
         return render.not_found(request)
-    
-        
+
+
 def confirmed_invite(request):
     if request.method == "POST" and request.user.is_superuser:
         email_connection = mail.get_connection()
         email_connection.open()
-        
+
         emails = request.POST.getlist('email')
         messages = []
         for e in emails:
@@ -274,14 +270,14 @@ def confirmed_invite(request):
 
         email_connection.send_messages(messages)
         email_connection.close()
-        
+
         return HttpResponseRedirect('/admin/feedstrap/invitee/')
     else:
         return render.not_found(request)
-    
-    
+
+
 def invite(request, action):
-    
+
     _run_action = {
         'parse': parse,
         'add': confirmed_invite
