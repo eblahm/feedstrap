@@ -43,8 +43,14 @@ def info(request):
 def main(request):
     errors = False
     if request.user.is_authenticated():
+
         usr = request.user
-        usr_xtd, created = PostIt.objects.get_or_create(user=usr)
+        usr_xtd = PostIt.objects.filter(user=usr)
+        if not usr_xtd:
+            usr_xtd = create_new_postit(usr)
+        else:
+            usr_xtd = usr_xtd.get()
+
         v = {}
         if request.method == "POST":
             user_input = request.POST.copy()
