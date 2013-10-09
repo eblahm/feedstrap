@@ -20,13 +20,6 @@ def generate_choices(model, displayed_value='name', real_value="pk"):
         options += ((str(getattr(r, real_value)), getattr(r, displayed_value)),)
     return tuple(sorted(set(options), key=lambda opt: opt[1]))
 
-office_choices = (
-    ('SSG', 'Strategic Stuides Group'),
-    ('PAS', 'Policy Analysis Service'),
-    ('SPS', 'Strategic Planning Service'),
-    ('AS', 'Front Office'),
-)
-
 
 class Tag(models.Model):
     name = models.CharField(max_length=50)
@@ -72,7 +65,8 @@ class Topic(models.Model):
 
 
 class Office(models.Model):
-    name = models.CharField(max_length=50, choices=office_choices)
+    name = models.CharField(max_length=200)
+    acronym = models.CharField(max_length=50, default=None, null=True)
     
     def __unicode__(self):
         return self.name

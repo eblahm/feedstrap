@@ -77,10 +77,20 @@ class TopicAdmin(admin.ModelAdmin):
 admin.site.register(Topic, TopicAdmin)
 
 
+class OfficeForm(forms.ModelForm):
+    class Meta:
+        model = Office
+
+class OfficeAdmin(admin.ModelAdmin):
+    form = OfficeForm
+    ordering = ('name',)
+    list_display = ('name','acronym')
+
+admin.site.register(Office, OfficeAdmin)
 
 
-## Tag, Report, Office ##
-for simple_model in [Tag, Office, Report]:
+## Tag, Report ##
+for simple_model in [Tag, Report]:
     class simple_admin(admin.ModelAdmin):
         ordering = ('name',)
         list_display = ('name',)

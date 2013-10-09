@@ -58,12 +58,19 @@ labels = {
     'esil': 'background-color: red',
 }
 
+
+def office_choices():
+    c = ()
+    for o in models.Office.objects.all():
+        c += ((o.name, o.acronym or o.name),)
+    return c
+
 class FilterForm(forms.Form):
     tags = forms.CharField(max_length=100)
     datefrom = forms.DateField('%Y-%m-%d')
     dateto = forms.DateField('%Y-%m-%d')
     esil = forms.ChoiceField(choices=models.generate_choices(models.Topic))
-    office = forms.ChoiceField(choices=models.generate_choices(models.Office,'name', 'name'))
+    office = forms.ChoiceField(choices=office_choices())
     person = forms.ChoiceField(choices=models.generate_choices(User, 'first_name', 'first_name'))
     feeds = forms.ChoiceField(choices=models.generate_choices(models.Feed))
     report = forms.ChoiceField(choices=models.generate_choices(models.Report, 'name', 'name'))
