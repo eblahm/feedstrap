@@ -20,13 +20,6 @@ def generate_choices(model, displayed_value='name', real_value="pk"):
         options += ((str(getattr(r, real_value)), getattr(r, displayed_value)),)
     return tuple(sorted(set(options), key=lambda opt: opt[1]))
 
-office_choices = (
-    ('SSG', 'Strategic Stuides Group'),
-    ('PAS', 'Policy Analysis Service'),
-    ('SPS', 'Strategic Planning Service'),
-    ('AS', 'Front Office'),
-)
-
 
 class Tag(models.Model):
     name = models.CharField(max_length=50)
@@ -72,7 +65,8 @@ class Topic(models.Model):
 
 
 class Office(models.Model):
-    name = models.CharField(max_length=50, choices=office_choices)
+    name = models.CharField(max_length=200)
+    acronym = models.CharField(max_length=50, default=None, null=True)
     
     def __unicode__(self):
         return self.name
@@ -171,6 +165,7 @@ class Invitee(models.Model):
         editable_template = StaticPage.objects.filter(slug = 'invite')
         if not editable_template:
             text = render_to_string('admin/invitee/email.txt', {'url_secret': self.url_secret})
+            subject = "The Strategic Studies Group Invites you to Sign Up for FeedStrap!"
             html = None
         else:
             raw_text = []
@@ -180,7 +175,8 @@ class Invitee(models.Model):
 
             cxt = Context({'url_secret': self.url_secret})
             editable_template = editable_template.get()
-
+            subject = editable_template.name
+            
             html = Template(editable_template.content).render(cxt)
 
             text_parser = text_only()
@@ -190,7 +186,7 @@ class Invitee(models.Model):
 
 
         email = EmailMultiAlternatives(
-            "The Strategic Studies Group Invites you to Sign Up for FeedStrap!",
+            subject,
             text,
             settings.DEFAULT_FROM_EMAIL, [self.email], 
             connection=connection,

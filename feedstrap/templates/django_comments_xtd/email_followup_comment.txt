@@ -1,9 +1,9 @@
 {{ user_name }},
 
-There is New Comment.
+Someone posted a New Comment.
 
 Post: {{ content_object.name }}
-URL: http://feedstrap.vacloud.us/esil/{{ content_object.name }}/
+URL: http://feedstrap.vacloud.us/esil/{{ content_object.pk }}/
 Sent by: {{ comment.name }}, {{ comment.submit_date|date:"SHORT_DATE_FORMAT" }}
 
 --- Comment: ---

@@ -6,8 +6,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.forms.models import model_to_dict
 from django.template import Template, Context
 from django.core.mail import send_mail, mail_admins
+from django.contrib.auth.models import User
 from django.contrib.comments.views.comments import post_comment
 from django_comments_xtd.models import XtdComment as Comment
+from django.conf import settings
 
 from datetime import datetime
 import csv
@@ -67,13 +69,16 @@ def single_topic(request, pk):
         return render.not_found(request)
 
 
+
 def comment_handler(request):
     if request.user.is_authenticated():
-        topic_pk = request.GET.get('object_pk', None)
+        topic_pk = request.POST['object_pk']
+        comment_content = request.POST['comment']
+        name = request.user.email or request.user.username
         topic = Topic.objects.get(pk=topic_pk)
-        subject = 'New Comment for ' + topic.name
-        mail_admins(subject, subject)
-
+        subject = 'New Comment under ' + topic.name
+        text = 'http://feedstrap.vacloud.us/esil/%s/ \r%s:  "%s"' % (topic_pk, name, comment_content)
+        mail_admins(subject, text)
         return post_comment(request)
     else:
         return HttpResponse('you must be logged in to post comments')

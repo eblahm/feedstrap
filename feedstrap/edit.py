@@ -6,6 +6,7 @@ import urllib
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.cache import cache
 from django.core.context_processors import csrf
+from filter import get_tags
 
 from models import Resource, ResourceForm, Topic, Tag
 import models
@@ -98,8 +99,6 @@ def create_new_postit(user):
     )
     feed.save()
     feed.url += str(feed.pk)
-    if user.first_name in ['James', 'Matt', 'Sharaelle', 'Joe', 'Thomas']:
-        feed.offices.add(models.Office.objects.get(name='SSG'))
     feed.save()
     postit = models.PostIt(
         user = user,
@@ -190,7 +189,7 @@ def add_new(request):
             g = request.GET
             recq = Resource.objects.filter(link=g['l'])
             if recq.count() == 0:
-                rec = Resource(title=g['t'], link=g['l'], description=g['d'], date=datetime.now())
+                rec = Resource(title=g.get('t', 'Untitled'), link=g['l'], description=g.get('d', ''), date=datetime.now())
                 v['topics_pks'] = []
                 v['tags'] = ""
                 v['wr'] = False
@@ -204,6 +203,7 @@ def add_new(request):
             v.update(csrf(request))
             v['resource_form'] = ResourceForm(instance=rec)
             v['topics'] = Topic.objects.all().order_by('name')
+            v['all_tags'] = get_tags()
             template_file = 'main/forms/post_it.html'
             return render.response(request, template_file, v)
         else:

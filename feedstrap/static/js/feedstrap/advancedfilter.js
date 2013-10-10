@@ -9,7 +9,6 @@ require(["/static/js/feedstrap/utils.js"], function(utils) {
             $('#additional_perams').html('');
             document.getElementById('advanced_search_form').reset();
         };
-        reset_advanced_form();
         
         $("#as_toggle").click(function(){
             $(function() {

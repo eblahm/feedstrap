@@ -72,15 +72,25 @@ class TopicForm(forms.ModelForm):
 class TopicAdmin(admin.ModelAdmin):
     form = TopicForm
     ordering = ('name',)
-    list_display = ('name',)
+    list_display = ('name', 'published')
 
 admin.site.register(Topic, TopicAdmin)
 
 
+class OfficeForm(forms.ModelForm):
+    class Meta:
+        model = Office
+
+class OfficeAdmin(admin.ModelAdmin):
+    form = OfficeForm
+    ordering = ('name',)
+    list_display = ('name','acronym')
+
+admin.site.register(Office, OfficeAdmin)
 
 
-## Tag, Report, Office ##
-for simple_model in [Tag, Office, Report]:
+## Tag, Report ##
+for simple_model in [Tag, Report]:
     class simple_admin(admin.ModelAdmin):
         ordering = ('name',)
         list_display = ('name',)
@@ -127,18 +137,19 @@ class SidebarLinkAdmin(admin.ModelAdmin):
         cache.clear()
         obj.save()
 admin.site.register(SidebarLink, SidebarLinkAdmin)
-    
+
 
 
 
 class PostItForm(forms.ModelForm):
-    # def __init__(self, *args, **kwargs):
-    #     super(PostItForm, self).__init__(*args, **kwargs)
-    #     for k in ['sidebar_links', 'office']:
-    #         self.fields[k].required = False
-    # sidebar_links = forms.MultipleChoiceField(choices=generate_choices(SidebarLink))
     class Meta:
         model = PostIt
+
+class PostItAdmin(admin.ModelAdmin):
+    list_display = ('user', 'feed', 'office')
+
+admin.site.register(PostIt, PostItAdmin)
+
 
 class PostItInline(admin.StackedInline):
     model = PostIt
@@ -152,14 +163,14 @@ class PostItInline(admin.StackedInline):
 class UserAdmin(UserAdmin):
     inlines = (PostItInline, )
 
-    
+
     def allow_to_see_full_ESIL(self, request, queryset):
         group, created = Group.objects.get_or_create(name='Can see full ESIL')
         if created:
             esil_view_all = Permission.objects.get(codename='view_all')
             group.permissions.add(esil_view_all)
             group.save()
-            
+
         x = 0
         for u in queryset:
             u.groups.add(group)
@@ -167,9 +178,9 @@ class UserAdmin(UserAdmin):
             x += 1
 
         self.message_user(request, "%i users were granted access to the full ESIL!" % x)
-        
+
     actions = [allow_to_see_full_ESIL]
-    
+
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 

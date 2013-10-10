@@ -41,11 +41,12 @@ $(document).ready(function () {
         if (!/^\s*$/.test($("#id_comment").val())) {
             $.ajax({
                 method: 'POST',
-                url: '/comments/post/',
+                url: '/esil/comments/post/',
                 data: $('#comment_form').serialize(),
                 success: (function (data) {
-
+                    
                     $("#comment_list").html(data);
+                    $(commentID).val("")
                     var focuscomment = $( $('.comment' + reply_to)[ ($('.comment' + reply_to).length - 1) ] );
                     scroll_to_me(focuscomment);
 

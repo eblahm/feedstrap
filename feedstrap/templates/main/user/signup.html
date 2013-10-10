@@ -22,6 +22,18 @@
     };
     </script>
 
+     <script>
+         require(["/static/js/feedstrap/utils.js"], function(utils) {
+            $.ajax({
+                url: '/data/offices',
+                dataType: 'json',
+                success: (function(data){
+                    enableSimpleAutoComplete('#office', data);
+                })
+            })
+         });
+    </script>
+
    <style type="text/css">
       body {
         background-color: #f5f5f5;
