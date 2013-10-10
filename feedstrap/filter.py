@@ -107,11 +107,13 @@ class OfficeFilter(Filter):
 
 advanced_filters = [TagsFilter, PersonFilter, FeedsFilter, ESILFilter, ReportFilter, DateToFilter, DateFromFilter, OfficeFilter]
 
-def advanced_form():
-    class asf(forms.Form): pass
-    for af in advanced_filters:
-        setattr(asf, af.query_expression, af.form_element)
-    return formset_factory(asf)
+class advanced_form(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(advanced_form, self).__init__(args, kwargs)
+
+        for af in advanced_filters:
+            self.fields[af.name] = af.form_element
+
 
 
 def get_tags():

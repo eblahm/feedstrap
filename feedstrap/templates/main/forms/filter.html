@@ -3,11 +3,20 @@
 {% block modal_id %}advanced_search_modal{% endblock %}
 {% block modal_title %}Advanced Search{% endblock %}
 {% block modal_body %}
-<div>
-{% for f in advanced_form %}
-    {{ f.form_element.as_p }}
-{% endfor %}
-</div>
+
+    <div style="display: none">
+    {{ advanced_form }}
+    <table>
+        <tr class="a_o" style="text-align: center">
+            <td colspan="2">
+                <input style="margin: 10px 10px 10px 0" class="primary_filter" name="1_andor" type="radio" value="AND" checked="checked">AND</input>
+                <input style="margin: 10px 10px 10px 30px;" class="primary_filter" name="1_andor" type="radio" value="OR">OR</input>
+            </td>
+        </tr>
+    </table>
+
+    </div>
+
     <form id="advanced_search_form" action="/q" method="GET">
         <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
         <table id="advanced_search" align="center">
@@ -15,10 +24,27 @@
                 <td style="width:50%; text-align:center"><strong>Field</strong></td>
                 <td style="width:50%; text-align:center"><strong>Value</strong></td>
             </tr>
-            {% include "main/forms/filter_row.html" %}
+
+            <tr class="af_row">
+
+                <td>
+                    <select class="field_selector" name="field" data-filter_count="1">
+                        {% for af in advanced_filters %}
+                            <option value="{{ af.name }}">{{ af.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+
+                <td id="1_value">
+                    <input class="primary_filter" id="fv1" name="1_tags" type="text">
+                </td>
+
+            </tr>
+
             <tbody id="additional_perams"></tbody>
         </table>
     </form>
+
 {% endblock %}
 
 {% block modal_footer %}

@@ -1,4 +1,4 @@
-from filter import advanced_filters
+from filter import advanced_filters, advanced_form
 import render
 from models import StaticPage as StaticPageModel
 from search import AdvancedSearch
@@ -18,7 +18,8 @@ def MainPage(request, template=""):
 
     # load info pertaining to database queries
     AS = AdvancedSearch()
-    v['advanced_form'] = [f() for f in advanced_filters]
+    v['advanced_filters'] = advanced_filters
+    v['advanced_form'] = advanced_form()
     v['results'] = AS.get_results(request.GET)
     v['total'] = v['results'].count()
     v['search'] = AS

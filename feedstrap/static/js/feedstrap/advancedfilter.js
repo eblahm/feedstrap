@@ -18,17 +18,14 @@ require(["/static/js/feedstrap/utils.js"], function(utils) {
 
         $("#add_new_filter").click(function (event){
             var filter_count =  String($('.af_row').length + 1);
-            var url = "/filter?a=new&filter_count=" + filter_count;
-            $.ajax({
-                type: "GET",
-                url: url,
-                success: (function(data){
-                    $("#additional_perams").append(data);
-                    $(function() {
-                        $("#fe"+filter_count).autocomplete({source: all_tags.getData()});
-                    });
-                })
-            });
+            var new_row = $( $('.af_row')[0]).clone();
+            var new_ao = $( $('.a_o')[0]).clone();
+
+            $("#additional_perams").append(new_ao);
+            $("#additional_perams").append(new_row);
+//            $(function() {
+//                $("#fe"+filter_count).autocomplete({source: all_tags.getData()});
+//            });
         });
 
         $("#advanced_search").on("change", ".field_selector", function (event) {
