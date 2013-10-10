@@ -125,5 +125,9 @@ def get_tags():
 
 def data(request, model=None):
     response = HttpResponse(content_type='application/json')
-    response.write(json.dumps(get_tags()))
+    dtypes = {
+        'tags': get_tags(),
+        'offices': [o.name for o in Office.objects.all()]
+    }
+    response.write(json.dumps(dtypes.get(model, ['error'])))
     return response
