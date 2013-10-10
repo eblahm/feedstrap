@@ -54,7 +54,8 @@ class TagsFilter(Filter):
     color = '#0088CC'
     query_expression = 'tags__name'
     condition_model = Tag
-    form_element = forms.CharField(max_length=100)
+    form_element = forms.CharField(max_length=100, widget= forms.TextInput(attrs={'data-ui': 'tags_autocomplete'}))
+
 
 class PersonFilter(Filter):
     name = 'person'
@@ -90,7 +91,7 @@ class DateToFilter(Filter):
     name = 'Date To'
     color = 'purple'
     query_expression = 'date__lte'
-    form_element = forms.DateField('%Y-%m-%d')
+    form_element = forms.DateField('%Y-%m-%d', widget=forms.TextInput(attrs={'data-ui': 'datepicker'}))
     def process_string_input(self, sinput):
         return datetime.strptime(sinput, '%Y-%m-%d')
 

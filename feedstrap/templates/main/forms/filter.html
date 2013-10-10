@@ -6,13 +6,30 @@
 
     <div style="display: none">
     {{ advanced_form }}
-    <table>
-        <tr class="a_o" style="text-align: center">
-            <td colspan="2">
-                <input style="margin: 10px 10px 10px 0" class="primary_filter" name="1_andor" type="radio" value="AND" checked="checked">AND</input>
-                <input style="margin: 10px 10px 10px 30px;" class="primary_filter" name="1_andor" type="radio" value="OR">OR</input>
+    <table >
+        <tbody id="filter_widget">
+        <tr class="af_row">
+            <tr class="a_o" style="text-align: center">
+                <td colspan="2">
+                    <input style="margin: 10px 10px 10px 0" class="primary_filter" name="{% verbatim %}{{filter_count}}{% endverbatim %}_andor" type="radio" value="AND" checked="checked">AND</input>
+                    <input style="margin: 10px 10px 10px 30px;" class="primary_filter" name="{% verbatim %}{{filter_count}}{% endverbatim %}_andor" type="radio" value="OR">OR</input>
+                </td>
+            </tr>
+            <td>
+                <select class="field_selector" data-filter_count="{% verbatim %}{{filter_count}}{% endverbatim %}">
+                    {% for af in advanced_filters %}
+                        <option value="{{ af.name }}">{{ af.name }}</option>
+                    {% endfor %}
+                </select>
             </td>
+
+            <td id="{% verbatim %}{{filter_count}}{% endverbatim %}_value">
+                <input class="primary_filter" id="fv{% verbatim %}{{filter_count}}{% endverbatim %}" name="{% verbatim %}{{filter_count}}{% endverbatim %}_tags" type="text">
+            </td>
+
         </tr>
+
+    </tbody>
     </table>
 
     </div>
@@ -28,7 +45,7 @@
             <tr class="af_row">
 
                 <td>
-                    <select class="field_selector" name="field" data-filter_count="1">
+                    <select class="field_selector" data-filter_count="1">
                         {% for af in advanced_filters %}
                             <option value="{{ af.name }}">{{ af.name }}</option>
                         {% endfor %}

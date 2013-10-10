@@ -18,38 +18,34 @@ require(["/static/js/feedstrap/utils.js"], function(utils) {
 
         $("#add_new_filter").click(function (event){
             var filter_count =  String($('.af_row').length + 1);
-            var new_row = $( $('.af_row')[0]).clone();
-            var new_ao = $( $('.a_o')[0]).clone();
+            var additional_peram = $.mustache($('#filter_widget').html(), {'filter_count': filter_count});
 
-            $("#additional_perams").append(new_ao);
-            $("#additional_perams").append(new_row);
-//            $(function() {
-//                $("#fe"+filter_count).autocomplete({source: all_tags.getData()});
-//            });
+            $("#additional_perams").append(additional_peram);
+
+            $(function() {
+                $("#fv"+filter_count).autocomplete({source: all_tags.getData()});
+            });
         });
 
         $("#advanced_search").on("change", ".field_selector", function (event) {
             var filter_count = $(this).data('filter_count');
-            var selected = $(this).val();
-            var url = "/filter?a=field&filter_count=" + filter_count + "&selected=" + selected;
-            $.ajax({
-                type: "GET",
-                url: url,
-                success: function(data){
-                    var new_form_element = $(data).attr({'id':"fe"+filter_count});
-                    var new_name = filter_count + "_" + new_form_element.attr("name");
-                    new_form_element.attr({'name': new_name}).addClass("primary_filter");
-                    $("#"+filter_count+"_value").html(new_form_element);
-                    if (selected == 'dateto'| selected == 'datefrom') {
-                        $("#fe"+filter_count).datepicker();
-                        $("#fe"+filter_count).datepicker( "option", "dateFormat", 'yy-mm-dd' );
-                    };
-                    if (selected == 'tags') {
-                        $(function() {$("#fe"+filter_count).autocomplete({source: all_tags.getData()});});
-                    };
-                }
-            });
+            var widget = $('[name="' + $(this).val() +'"]').clone().attr({id: null});
+            var this_ui = widget.data('ui');
 
+            widget.attr({name: filter_count + '_' + widget.attr('name')}).addClass("primary_filter");
+            $("#"+filter_count+"_value").html(widget);
+
+            var ui_options = {
+                datepicker: function() {
+                widget.datepicker();
+                widget.datepicker( "option", "dateFormat", 'yy-mm-dd' );
+                },
+                tags_autocomplete: function() {
+                    $(function() {widget.autocomplete({source: all_tags.getData()});});
+                }
+            };
+
+            ui_options[this_ui]();
         })
 
         $("#submit_advanced_filter").click(function (event){
