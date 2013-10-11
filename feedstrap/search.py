@@ -26,7 +26,7 @@ class AdvancedSearch():
         self.applied_filters = []
 
     def _apply(self, name, condition):
-        if condition == 'OR' and name == "ANDOR":
+        if condition == 'OR' and name == "andor":
             # or statments are passed like conditions and provide information about what to do with the next condition
             # in this event modify _and_statment so the next condition passed to apply() will be included in a new subset
             self._and_statement = False
@@ -42,15 +42,15 @@ class AdvancedSearch():
             q = Q((exp, formated_condition))
     
             # django Q() allows for &,|
-            if self._and_statement:
-                # append this query to the most recent subset
-                self._pending_queries[-1].append(q)
-            else:
+            if not self._and_statement:
                 # create a new subset using this query as first item
-                self._pending_queries.append([q])
                 # any subsequent queryies will be treated as a part of this subset until "OR" appears again
+                self._pending_queries.append([])
                 self._and_statement = True
-                
+
+            # append this query to the most recent subset
+            self._pending_queries[-1].append(q)
+
             return filter
 
     def get_results(self, get_parameters):
@@ -78,11 +78,11 @@ class AdvancedSearch():
         for subset in self._pending_queries:
             if len(subset) > 0:
                 # use first item in list as the base for other queries
-                base = self._base_model.objects.all().filter(subset[0])
                 # if more than one query
                 # they each should be "AND"-ed together
+                base = subset[0]
                 for q in subset[1:]:
-                    base &= base.filter(q)
+                    base = base & q
                 processed_subsets.append(base)
                     
         if len(processed_subsets) == 0:
@@ -90,11 +90,11 @@ class AdvancedSearch():
             return self._base_model.objects.all().order_by('-date')
         elif len(processed_subsets) == 1:
             # no "OR" statments found, only one subset available
-            return processed_subsets[0].order_by('-date')
+            return self._base_model.objects.filter(processed_subsets[0]).order_by('-date')
         else:
             # subsets should be "OR" ed together
-            results = []
-            for ps in processed_subsets:
-                results | ps
-            return results.distinct().order_by('-date')
+            q = processed_subsets[0]
+            for ps in processed_subsets[1:]:
+                q = q | ps
+            return self._base_model.objects.filter(q).distinct().order_by('-date')
 

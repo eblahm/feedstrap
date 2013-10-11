@@ -21,6 +21,7 @@ require(["/static/js/feedstrap/utils.js"], function(utils) {
             var additional_peram = $.mustache($('#filter_widget').html(), {'filter_count': filter_count});
 
             $("#additional_perams").append(additional_peram);
+            $('#fv'+ filter_count).addClass("primary_filter");
 
             $(function() {
                 $("#fv"+filter_count).autocomplete({source: all_tags.getData()});
