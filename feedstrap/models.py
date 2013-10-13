@@ -106,8 +106,8 @@ class Resource(models.Model):
         cache.clear()
         super(Resource, self).save()
         if config.solr_enabled:
-            import full_text_search
-            solr = full_text_search.solr_server()
+            from feedstrap.search import solr
+            solr = solr()
             x = solr.add_resource(self)
         return self
 

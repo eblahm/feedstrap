@@ -1,15 +1,13 @@
 import render
 from models import Topic, Resource
-from filter import apply_filter
+from search import AdvancedSearch
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.forms.models import model_to_dict
 from django.template import Template, Context
-from django.core.mail import send_mail, mail_admins
-from django.contrib.auth.models import User
+from django.core.mail import mail_admins
 from django.contrib.comments.views.comments import post_comment
 from django_comments_xtd.models import XtdComment as Comment
-from django.conf import settings
 
 from datetime import datetime
 import csv
@@ -128,12 +126,13 @@ def weeklyreads(request):
     v = {}
     v.update(request.GET.dict())
     v['admin'] = request.user.is_authenticated()
-    v.update(apply_filter(request, slice=False))
     v['next_offset'] = False
     template_file = 'main/weekly_reads/export_view.html'
     v['headline'] = 'Weekly Reads Report'
     v['subheadline'] = 'Prepared by Strategic Studies Group, Office of Policy'
     v['date'] = datetime.now().strftime('%x')
+    AS = AdvancedSearch()
+    v['results'] = AS.get_results(request.GET)
     v['results'] = v['results'].order_by('tags__name')[:100]
     dedup = []
     for r in v['results']:
@@ -156,7 +155,8 @@ def en(s):
 
 def export_csv(request):
     v = {}
-    v.update(apply_filter(request, per_page_limit=5000))
+    AS = AdvancedSearch()
+    v['results'] = AS.get_results(request.GET)
 
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="search results.csv"'

@@ -3,17 +3,15 @@ import pytz
 import urllib
 
 from django.contrib.auth.models import Permission
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from django.core.context_processors import csrf
 from django import forms
-from django.forms import ModelForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm, UserCreationForm
 from django.core import mail
 
-from models import Feed, Invitee, Office, PostIt
-from admin import InviteeAdmin
+from models import Invitee, Office, PostIt
 from edit import create_new_postit
 import render
 

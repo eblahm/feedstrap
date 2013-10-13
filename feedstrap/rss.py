@@ -1,14 +1,13 @@
 from django.http import HttpResponse
-from filter import apply_filter
+from search import AdvancedSearch
 from ssg_site import PyRSS2Gen
-import datetime
 
 
 def main(request):
-    v = {}
-    v.update(apply_filter(request))
+    AS = AdvancedSearch()
+    results = AS.get_results(request.GET)[:20]
     rss_items = []
-    for i in v['results']:
+    for i in results:
         item = PyRSS2Gen.RSSItem(title=i.title,
                                  link=i.link,
                                  description=i.description,

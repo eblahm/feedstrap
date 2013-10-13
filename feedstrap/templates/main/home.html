@@ -55,10 +55,12 @@
         {% if not alert %}
         {% block content_header %}
                 <div style="float: left; margin-top: .6em">
-                    <span class="filter_tag" style="background-color: grey;"> {{ total }} found </span> {% if search.applied_filters %} {% endif %}
+                    <span class="filter_tag" style="background-color: grey;"> {{ total }} found </span>
                 {% for af in search.applied_filters %}
                     <span class="filter_tag" style="background-color: {{ af.color }};">{{ af.name }}{% if af.display_value %}: {{ af.display_value }}{% endif %}<a class="xtag" href="/?{{ af.inverse }}">×</a></span>
                 {% endfor %}
+
+
                 </div>
                 <div class="hidden-phone" style="float: right;">
                     <div class="btn-group">

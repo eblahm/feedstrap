@@ -1,12 +1,13 @@
 from datetime import datetime
 
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponseNotFound
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.shortcuts import render_to_response
 from django.core.cache import cache
 
 from feedstrap import config
+from feedstrap.filter import advanced_form, advanced_filters, MustacheDefault, TagsFilter
 from feedstrap.models import SidebarLink, StaticPage
 
 
@@ -55,6 +56,14 @@ def enable_navigation(get_query="", active_nav=False):
     
 
 def response(request, template_file, template_values={}):
+
+    # tell the view how to render the advanedd filter widget
+    template_values['advanced_form'] = advanced_form()
+    template_values['advanced_filters'] = advanced_filters
+
+    # load template inside the template for dynamic client side rendering of additional filter widgets
+    template_values['mustache_filter'] = [MustacheDefault()]
+    template_values['default_filter'] = [TagsFilter()]
 
     template_values['auth'] = request.user.is_authenticated()
     template_values['user'] = request.user

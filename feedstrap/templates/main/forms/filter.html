@@ -5,67 +5,53 @@
 {% block modal_body %}
 
     <div style="display: none">
-    {{ advanced_form }}
-    <table >
-        <tbody id="filter_widget">
-        <tr class="af_row">
-            <tr class="a_o" style="text-align: center">
-                <td colspan="2">
-                    <input style="margin: 10px 10px 10px 0" class="primary_filter" name="{% verbatim %}{{filter_count}}{% endverbatim %}__andor" type="radio" value="AND" checked="checked">AND</input>
-                    <input style="margin: 10px 10px 10px 30px;" class="primary_filter" name="{% verbatim %}{{filter_count}}{% endverbatim %}__andor" type="radio" value="OR">OR</input>
-                </td>
-            </tr>
-            <td>
-                <select class="field_selector" data-filter_count="{% verbatim %}{{filter_count}}{% endverbatim %}">
-                    {% for af in advanced_filters %}
-                        <option value="{{ af.name }}">{{ af.name }}</option>
-                    {% endfor %}
-                </select>
-            </td>
-
-            <td id="{% verbatim %}{{filter_count}}{% endverbatim %}_value">
-                <input id="fv{% verbatim %}{{filter_count}}{% endverbatim %}" name="{% verbatim %}{{filter_count}}{% endverbatim %}_tags" type="text">
-            </td>
-
-        </tr>
-
-    </tbody>
-    </table>
-
+    <form>
+        {% autoescape off %}
+            {{ advanced_form }}
+        {% endautoescape %}
+    </form>
+        <table>
+            <tbody id="mustache_template">
+            {% for applied in mustache_filter %}
+                {% include 'main/forms/filter_row.html' %}
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 
     <form id="advanced_search_form" action="/q" method="GET">
         <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
-        <table id="advanced_search" align="center">
-            <tr>
-                <td style="width:50%; text-align:center"><strong>Field</strong></td>
-                <td style="width:50%; text-align:center"><strong>Value</strong></td>
-            </tr>
+        <table align="center">
+            <thead>
+                <tr>
+                    <td style="width:50%; text-align:center"><strong>Field</strong></td>
+                    <td style="width:50%; text-align:center"><strong>Value</strong></td>
+                </tr>
+            </thead>
+            <tbody id="advanced_search">
+            {% if full_text_search %}
+                {% for applied in default_filter %}
+                    {% include 'main/forms/filter_row.html' %}
+                {% endfor %}
+            {% elif search.applied_filters %}
+                {% for applied in search.applied_filters %}
+                    {% include 'main/forms/filter_row.html' %}
+                {% endfor %}
+            {% else %}
+                {% for applied in default_filter %}
+                    {% include 'main/forms/filter_row.html' %}
+                {% endfor %}
+            {% endif %}
 
-            <tr class="af_row">
 
-                <td>
-                    <select class="field_selector" data-filter_count="1">
-                        {% for af in advanced_filters %}
-                            <option value="{{ af.name }}">{{ af.name }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-
-                <td id="1_value">
-                    <input class="primary_filter" id="fv1" name="1_tags" type="text">
-                </td>
-
-            </tr>
-
-            <tbody id="additional_perams"></tbody>
+            </tbody>
         </table>
     </form>
 
 {% endblock %}
 
 {% block modal_footer %}
-    <button style="float:left" onclick="$('#additional_perams').html('');document.getElementById('advanced_search_form').reset()">Reset</button>
+    <button id="reset" style="float:left">Reset</button>
     <button id="add_new_filter"><i class="icon-plus"></i></button>
     <button id="submit_advanced_filter">Submit</button>
 {% endblock %}

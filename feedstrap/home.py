@@ -1,41 +1,49 @@
-from filter import advanced_filters, advanced_form
 import render
 from models import StaticPage as StaticPageModel
-from search import AdvancedSearch
+from search import AdvancedSearch, full_text_search
 from config import per_page_limit
+from filter import TextFilter
 
 
 def MainPage(request, template=""):
-    v = {}
+    """
+    the main http request handler for feedstrap
+    traffic for common database queries go through this handler
+    """
 
+    v = {} # template values
     # Identify newcomers and give them some welcome content
-    filter_conditions = request.GET.dict()
-    v['auth'] = request.user.is_authenticated()
-    if len(filter_conditions) == 0 and v['auth'] == False:
-        alert_query = StaticPageModel.objects.filter(slug='welcome')
-        if alert_query.count() > 0:
-            v['alert'] = alert_query.get().content
+    if len(request.GET) == 0 and not request.user.is_authenticated():
+        alert = StaticPageModel.objects.filter(slug='welcome')
+        if alert:
+            v['alert'] = alert.get().content
 
     # load info pertaining to database queries
-    AS = AdvancedSearch()
-    v['advanced_filters'] = advanced_filters
-    v['advanced_form'] = advanced_form()
-    v['results'] = AS.get_results(request.GET)
-    v['total'] = v['results'].count()
-    v['search'] = AS
+    v['search'] = AdvancedSearch()
+    if request.GET.get('term', False):
+        # full text search terms look like regular db queries to the user but are actually handled by solr
+        # and involve entirely different search modules
+        text_filter = TextFilter()
+        text_filter.display_value = request.GET['term']
+        v['full_text_search'] = True
+        v['search'].applied_filters = [text_filter]
+        v['results'], v['total'] = full_text_search(request.GET['term'])
+        real_total = len(v['results'])
+    else:
+        v['results'] = v['search'].get_results(request.GET)
+        v['total'] = v['results'].count()
+        real_total = v['total']
 
     # where are we in terms of offset?
-    try:
-        start_offset = int(request.GET.get('s', 0))
-    except:
-        start_offset = 0
+    try: start_offset = int(request.GET.get('s', 0))
+    except: start_offset = 0
         
     # fetch db data according to offset and per page limit
     limit = start_offset + per_page_limit
     v['results'] = v['results'][start_offset:limit]
     
     # only allow for "show more" if there are actually more to show
-    if v['total'] >= (limit + 1):
+    if real_total >= (limit + 1):
         get_request_copy = request.GET.copy()
         get_request_copy.__setitem__('s', limit)
         v['show_more_perams'] = get_request_copy.urlencode()
@@ -64,3 +72,4 @@ def StaticPage(request, static_page=""):
         return render.response(request, template_file, v)
     else:
         return render.not_found(request)
+
