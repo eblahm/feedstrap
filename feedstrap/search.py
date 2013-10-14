@@ -37,7 +37,7 @@ class AdvancedSearch():
         self._base_model = Resource
         self.applied_filters = []
 
-    def _apply(self, name, condition):
+    def _construct_Q(self, name, condition):
         if condition == 'OR' and name == "andor":
             # or statments are passed like conditions and provide information about what to do with the next condition
             # in this event modify _and_statment so the next condition passed to apply() will be included in a new subset
@@ -66,16 +66,21 @@ class AdvancedSearch():
             return filter
 
     def get_results(self, get_parameters):
+        """
+        the primary method for returning search results
+        the get_get_parameters argument consists of conditions constructed by the javascript advanced search widget
+        get perams should look like {"1_tags": "Health Care", "2_reports": "weekly reads"}
+        return queryset that corresponds to get params
+        """
 
-        # apply all the filters, in order
-        # get perams should look like {"1_tags": "Health Care", "2_reports": "weekly reads"}
         sorted_params = sorted(get_parameters.iteritems(), key=operator.itemgetter(0))
         for condition_name, condition in sorted_params:
             filter_name = condition_name.split("_")[-1] # ex. 1_tags >> tags
-            
-            filter = self._apply(filter_name, condition)
+
+            # construct Q() objects for each filters, in order
+            filter = self._construct_Q(filter_name, condition)
             if filter:
-                # add some meta data and add filter to applied list
+                # also generate metadata for the view for each valid filter
                 inverse_get = get_parameters.copy()
                 del inverse_get[condition_name]
                 filter.inverse = inverse_get.urlencode() # the inverse get parameters allow for the X click
@@ -87,30 +92,30 @@ class AdvancedSearch():
                     filter.after_or = True
                 self.applied_filters.append(filter)
 
-        # construct query object using query expressions in each subset
+        # construct queryset for each subset
         processed_subsets = []
         for subset in self._pending_queries:
             if len(subset) > 0:
                 # use first item in list as the base for other queries
                 # if more than one query
                 # they each should be "AND"-ed together
-                base = subset[0]
-                for q in subset[1:]:
-                    base = base & q
+                base = self._base_model.objects.all()
+                for q in subset:
+                    base = base.filter(q) # this may be a memory suck, unfortunatly I can't get the alternative ie .filter(*[Q(),Q()]) to be properly restrictive
                 processed_subsets.append(base)
-                    
+
         if len(processed_subsets) == 0:
             # invalid query expressions or None found
             return self._base_model.objects.all().order_by('-date')
         elif len(processed_subsets) == 1:
             # no "OR" statments found, only one subset available
-            return self._base_model.objects.filter(processed_subsets[0]).order_by('-date')
+            return processed_subsets[0].order_by('-date')
         else:
             # subsets should be "OR" ed together
             q = processed_subsets[0]
             for ps in processed_subsets[1:]:
                 q = q | ps
-            return self._base_model.objects.filter(q).distinct().order_by('-date')
+            return q.distinct().order_by('-date')
 
 
 
