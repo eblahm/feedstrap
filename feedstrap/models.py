@@ -23,6 +23,10 @@ def generate_choices(model, displayed_value='name', real_value="pk"):
 
 class Tag(models.Model):
     name = models.CharField(max_length=50)
+    
+    def resource_count(self):
+        return Resource.objects.filter(tags=self).count()
+        
 
 
 class Report(models.Model):
