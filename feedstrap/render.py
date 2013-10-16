@@ -57,9 +57,9 @@ def response(request, template_file, template_values={}):
 
     template_values['get_query'] = encode_params(request.REQUEST)
 
-    usr_extended = PostIt.objects.filter(user=request.user)
-    if usr_extended:
-        template_values['user_feed_navs'] = [f for f in usr_extended.get().sidebar_links.all()]
+    if request.user.is_authenticated():
+        usr_extended, created = PostIt.objects.get_or_create(user=request.user)
+        template_values['user_feed_navs'] = [f for f in usr_extended.sidebar_links.all()]
     else:
         template_values['user_feed_navs'] = []
 

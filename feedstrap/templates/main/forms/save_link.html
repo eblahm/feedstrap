@@ -14,7 +14,7 @@
 
     <form id="save_link_form" action="/filter/link/save" method="post">
         {% csrf_token %}
-        Name: <input type="text" name="name">
+        Name: <input id="sl_name" type="text" name="name">
         <input id="sl_redirect" type="text" style="display: none" name="redirect" value="/?{{ get_query }}">
         <p> Parameters:
             <span id="filter_tags_modal" style="text-align: center">
@@ -27,7 +27,7 @@
 
 {% block modal_footer %}
     <button id="delete_link" style="float:left" data-url="/filter/link/delete"><i class="icon-trash"></i></button>
-    <button id="submit_save_link">Submit</button>
+    <button id="submit_save_link">Save</button>
 {% endblock %}
 
          

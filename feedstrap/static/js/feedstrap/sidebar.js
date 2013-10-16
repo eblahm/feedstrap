@@ -95,7 +95,13 @@ $(document).ready(function () {
     });
 
     $('#save_link_modal').on('click', '#submit_save_link', function(){
-        $('form#save_link_form').submit();
+        if ($('#sl_name').val() == "") {
+            alert('link name is required');
+            return false
+        }
+        else {
+            $('form#save_link_form').submit();
+        }
     });
 
     $('#save_link_modal').on('click', '#delete_link', function(){
