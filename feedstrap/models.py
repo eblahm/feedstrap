@@ -131,7 +131,10 @@ class SidebarLink(models.Model):
     name = models.CharField(max_length=100)
     parameters = models.CharField(max_length=500, blank=True)
     position = models.IntegerField()
+    for_all_users = models.BooleanField(default=False)
 
+    def __unicode__(self):
+        return self.name
 
 class StaticPage(models.Model):
     slug = models.CharField(max_length=100)

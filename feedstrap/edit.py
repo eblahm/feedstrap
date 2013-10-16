@@ -2,16 +2,17 @@ import pytz
 import json
 from datetime import datetime
 import urllib
+import operator
 
-from django.http import HttpResponse, HttpResponseRedirect
-from django.core.cache import cache
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+from django.http import HttpResponse, HttpResponseRedirect, HttpRequest
 from django.core.context_processors import csrf
 from filter import get_tags
 
 from models import Resource, ResourceForm, Topic, Tag
 import models
 import render
-
 
 def en(s):
     if isinstance(s, unicode):
@@ -244,14 +245,47 @@ def delete(request):
     else:
         return HttpResponse("not authorized")
 
+@login_required
+@require_POST
+def edit_link(request, action):
+    user_xtd, is_created = models.PostIt.objects.get_or_create(user=request.user)
 
+    if action == 'save':
+        params = request.POST.copy()
+        params.pop('csrfmiddlewaretoken')
+        params.pop('name')
+        params.pop('redirect')
 
+        if request.POST.get('pk', None):
+            params.pop('pk')
+            sbar_link = models.SidebarLink.objects.get(pk=request.POST['pk'])
+            sbar_link.name = request.POST['name']
+            sbar_link.save()
+        else:
+            position = user_xtd.sidebar_links.all().count() + 1
+            sbar_link = models.SidebarLink(
+                name=request.POST['name'],
+                parameters="",
+                position=position,
+                for_all_users=False
+            )
+            sbar_link.save()
+            user_xtd.sidebar_links.add(sbar_link)
 
+        conditions = []
+        for condition, value in sorted(params.iteritems(), key=operator.itemgetter(0)):
+            conditions.append(urllib.quote(condition) + "=" + urllib.quote(value))
+        conditions = "&".join(conditions)
 
-
-
-
-
-
-
+        sbar_link.parameters = conditions
+        sbar_link.save()
+        return HttpResponseRedirect('/?' + conditions)
+    elif action == 'delete':
+        sbar_link = models.SidebarLink.objects.get(pk=request.POST['pk'])
+        user_xtd.sidebar_links.remove(sbar_link)
+        user_xtd.save()
+        sbar_link.delete()
+        return HttpResponse('deleted!')
+    else:
+        return render.not_found(request)
 

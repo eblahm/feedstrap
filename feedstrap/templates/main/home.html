@@ -2,6 +2,7 @@
 {% block modal %}
     {% include "main/modal.html" %}
     {% include "main/forms/filter.html" %}
+    {% include "main/forms/save_link.html" %}
 {% endblock %}
 {% block content_box %}
 
@@ -28,9 +29,9 @@
                         </a>
                     </li>
                    <li class="visible-phone">
-                        <a class="modal_view" data-target="#modal_content" data-toggle="modal" href="#" data-url="/filter" data-dbk="">
-                            Advanced Search
-                        </a>
+                       <a id="as_toggle" data-target="#advanced_search_modal" data-toggle="modal" href="#">
+                           Advanced Search
+                       </a>
                     </li>
                     {% if staff %}<li><a href="/admin/">Admin</a></li>{% endif %}
                  </ul>
@@ -57,7 +58,9 @@
                 <div style="float: left; margin-top: .6em">
                     <span class="filter_tag" style="background-color: grey;"> {{ total }} found </span>
                 {% for af in search.applied_filters %}
+                    <span id="active_search_parameters">
                     <span class="filter_tag" style="background-color: {{ af.color }};">{{ af.name }}{% if af.display_value %}: {{ af.display_value }}{% endif %}<a class="xtag" href="/?{{ af.inverse }}">×</a></span>
+                    </span>
                 {% endfor %}
 
 
@@ -67,10 +70,13 @@
                       <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-share"></i> Export this Feed </a>
                       <ul class="dropdown-menu pull-right" style="text-align:left">
                         {% if auth %}
+                            {% if get_query %}
+                                <li><a class="save_link" data-target="#save_link_modal" data-active-params="{{ get_query }}" data-toggle="modal" href="#"><i class="icon-flag"></i> Save to Sidebar</a></li>
+                            {% endif %}
                         <li><a href="/weeklyreads?{{ get_query }}"><i class="icon-file"></i> Weekly Reads Format</a></li>
                         {% endif %}
                         <li><a href="/csv?{{ get_query }}"><i class="icon-file"></i> CSV Format</a></li>
-                        <li><a href="/rss?{{ get_query }}"><img style="margin-right: 3px" width="10px" src="/static/img/icons/glyphicons_417_rss.png"></i>  Subscribe to RSS</a></li>
+                        <li><a href="/rss?{{ get_query }}"><i class="icon-bell"></i>  Subscribe to RSS</a></li>
                       </ul>
                     </div>
                 </div>

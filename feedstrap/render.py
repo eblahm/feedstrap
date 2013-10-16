@@ -1,4 +1,6 @@
 from datetime import datetime
+import operator
+import urllib
 
 from django.http import HttpResponseNotFound
 from django.template import RequestContext
@@ -8,71 +10,59 @@ from django.core.cache import cache
 
 from feedstrap import config
 from feedstrap.filter import advanced_form, advanced_filters, MustacheDefault, TagsFilter
-from feedstrap.models import SidebarLink, StaticPage
+from feedstrap.models import SidebarLink, StaticPage, PostIt
 
 
-def enable_navigation(get_query="", active_nav=False):
-    """
-    Returns a dictionary with the necessary information to tell the view: 
-    1. how to name and order the sidebar and topbar
-    2. how to highlight navigation links as being active
-    3. wheater or not to show a full text search box in the topbar
-    """
-    
-    # cached list of ordered pairs representing links on the sidebar
-    feed_navs = cache.get('feed_navs')
-    if feed_navs == None:
-        feed_navs = []
-        for sidebarlink in SidebarLink.objects.all().order_by("position"):
-            feed_navs.append((sidebarlink.parameters, sidebarlink.name))
-        cache.set('feed_navs', feed_navs)
-        
-    # which link should be highlighted?
-    # the active sidebar link is by default "advanced search"
-    advanced_search = True
-    # unless ...
-    # 1. the search recongized ie hyperlinked in the sidebar 
-    # 2. 'nav' is defined explicitly in the view
-    is_recognized = dict(feed_navs).get(get_query, False)
-    is_nav_overriden = active_nav
-    if is_recognized or is_nav_overriden: 
-        advanced_search = False
-        
+def fixed_template_values():
+    template_values = {}
+    template_values['feed_navs'] = [f for f in SidebarLink.objects.filter(for_all_users=True)]
     # static pages represent the links on the top navbar, linking to static-ish html pages
-    static_pages = cache.get('static_pages')
-    if static_pages == None:
-        static_pages = [sp for sp in StaticPage.objects.filter(published=True).order_by('position')]
-        cache.set('static_pages', static_pages)
-        
+    template_values['static_pages'] = StaticPage.objects.filter(published=True).order_by('position')
     # to show or not to show searchbox
-    solr_enabled = config.solr_enabled
-    
-    return {
-        'feed_navs': feed_navs,
-        'advanced_search': advanced_search,
-        'static_pages': static_pages,
-        'solr_enabled': solr_enabled
-        }
-    
-
-def response(request, template_file, template_values={}):
-
+    template_values['solr_enabled'] = config.solr_enabled
     # tell the view how to render the advanedd filter widget
     template_values['advanced_form'] = advanced_form()
     template_values['advanced_filters'] = advanced_filters
-
     # load template inside the template for dynamic client side rendering of additional filter widgets
     template_values['mustache_filter'] = [MustacheDefault()]
     template_values['default_filter'] = [TagsFilter()]
+    cache.set('fixed_template_values', template_values)
+    return template_values
+
+
+def response(request, template_file, template_values={}):
+    template_values.update(
+        cache.get('fixed_template_values') or fixed_template_values()
+    )
 
     template_values['auth'] = request.user.is_authenticated()
     template_values['user'] = request.user
     template_values['staff'] = request.user.is_staff
-    
-    template_values.update(enable_navigation(
-        get_query = template_values.get('get_query', ''),
-        active_nav = template_values.get('nav', False)
-        ))
+
+    conditions = []
+    for condition, value in sorted(request.REQUEST.iteritems(), key=operator.itemgetter(0)):
+        conditions.append(urllib.quote(condition) + "=" + urllib.quote(value))
+    template_values['get_query'] = "&".join(conditions)
+
+    usr_extended = PostIt.objects.filter(user=request.user)
+    if usr_extended:
+        template_values['user_feed_navs'] = [f for f in usr_extended.get().sidebar_links.all()]
+    else:
+        template_values['user_feed_navs'] = []
+
+    # which link should be highlighted?
+    # the active sidebar link is by default "advanced search"
+    template_values['advanced_search'] = True
+    # unless ...
+    # 1. the search recongized ie hyperlinked in the sidebar
+    # 2. 'nav' is defined explicitly in the view
+
+    all_navs = [f.parameters for f in template_values['user_feed_navs'] + template_values['feed_navs']]
+    is_recognized = template_values['get_query'] in all_navs
+    is_nav_overriden = template_values.get('nav', False)
+    if is_recognized or is_nav_overriden:
+        template_values['advanced_search'] = False
+
 
     return render_to_response(template_file,
                               template_values,

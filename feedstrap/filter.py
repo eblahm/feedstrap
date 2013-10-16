@@ -7,7 +7,6 @@ from django.contrib.auth.models import User
 
 from models import *
 
-
 class Filter():
     form_element = forms.CharField()
     name = ''
@@ -156,3 +155,5 @@ def data(request, model=None):
     }
     response.write(json.dumps(dtypes.get(model, ['error'])))
     return response
+
+

@@ -57,7 +57,6 @@ def MainPage(request, template=""):
         template_file = 'main/list_view.html'
     else:
         template_file = 'main/home.html'
-        v['get_query'] = request.GET.urlencode()
 
     return render.response(request, template_file, v)
 

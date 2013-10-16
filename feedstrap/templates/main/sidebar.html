@@ -1,14 +1,22 @@
 
     <ul id="sidebar" class="nav nav-list well hidden-phone">
         <li class="nav-header">Feeds</li>
-        {% for nav_peramters, nav_name in feed_navs %}
-        <li {% if get_query == nav_peramters %}class="active"{% endif %}>
-            <a href="/?{{ nav_peramters }}">
-               {{ nav_name }}
+        {% for fn in feed_navs %}
+        <li {% if get_query == fn.parameters  %}class="active"{% endif %}>
+            <a href="/?{{ fn.parameters }}">
+               {{ fn.name }}
             </a>
         </li>
         {% endfor %}
 
+        {% for ufn in user_feed_navs %}
+                <li {% if get_query == ufn.parameters %}class="active" {% endif %}>
+                    <a href="/?{{ ufn.parameters }}" class="sidebar_link" data-x=".slx{{ forloop.counter }}">
+                        {{ ufn.name }}
+                        <span class="save_link slx slx{{ forloop.counter }}" data-target="#save_link_modal" data-active-params="{{ ufn.parameters }}" data-pk="{{ ufn.pk }}" data-name="{{ ufn.name }}" data-toggle="modal" href="#"><i class="icon-edit"></i></span>
+                    </a>
+                </li>
+        {% endfor %}
 
         <li class="nav-header">Tools</li>
         <li {% if nav == 'esil' %}class="active"{% endif %}>

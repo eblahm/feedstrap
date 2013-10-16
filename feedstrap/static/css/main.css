@@ -14,6 +14,14 @@ body {
     margin-bottom: 50px;
 }
 
+
+/* sidebar */
+.slx {
+    float: right;
+    display: none;
+}
+.slx:hover {font-weight: 900}
+
 .esil_column {text-align:center; vertical-align:top; line-height: 1em;}
 .eh {
     cursor: pointer; 
