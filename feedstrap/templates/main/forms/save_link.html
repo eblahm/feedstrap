@@ -1,0 +1,35 @@
+{% extends 'main/modal.html' %}
+
+{% block modal_id %}save_link_modal{% endblock %}
+{% block modal_title %}Save Link to Sidebar{% endblock %}
+{% block modal_body %}
+
+    <div id="pin_mustache" style="display: none" data-colors='{% verbatim %} { "": "black", {% endverbatim %}{% for af in advanced_filters %}{% if forloop.counter0 != 0 %},{% endif %}"{{ af.name }}": "{{ af.color }}"{% endfor %}{% verbatim %} } {% endverbatim %}'>
+
+        <span id="af{% verbatim %}{{count}}{% endverbatim %}">
+            <input style="display: none" name="{% verbatim %}{{name}}{% endverbatim %}" value="{% verbatim %}{{value}}{% endverbatim %}">
+            <span class="filter_tag" style="background-color: {% verbatim %}{{color}}{% endverbatim %};">{% verbatim %}{{ short_name }} {{value}}{% endverbatim %}<a class="xtag xpin" href="#" data-target="#af{% verbatim %}{{count}}{% endverbatim %}">×</a></span>
+        </span>
+    </div>
+
+    <form id="save_link_form" action="/filter/link/save" method="post">
+        {% csrf_token %}
+        Name: <input type="text" name="name">
+        <input id="sl_redirect" type="text" style="display: none" name="redirect" value="/?{{ get_query }}">
+        <p> Parameters:
+            <span id="filter_tags_modal" style="text-align: center">
+
+            </span>
+        </p>
+    </form>
+
+{% endblock %}
+
+{% block modal_footer %}
+    <button id="delete_link" style="float:left" data-url="/filter/link/delete"><i class="icon-trash"></i></button>
+    <button id="submit_save_link">Submit</button>
+{% endblock %}
+
+         
+
+    
