@@ -38,9 +38,15 @@ class AdvancedSearch():
         self.applied_filters = []
 
     def _construct_Q(self, name, condition):
+        """
+        lookup the filter and append a Q() object to the pending quiries list
+        the pending queries list should be aware of construct subsets according to OR statments
+        return filter
+        """
+
         if condition == 'OR' and name == "andor":
             # or statments are passed like conditions and provide information about what to do with the next condition
-            # in this event modify _and_statment so the next condition passed to apply() will be included in a new subset
+            # modify _and_statment so the next condition passed to apply() will be included in a new subset
             self._and_statement = False
             filter = OR_Statement()
             return filter
@@ -68,9 +74,9 @@ class AdvancedSearch():
     def get_results(self, get_parameters):
         """
         the primary method for returning search results
-        the get_get_parameters argument consists of conditions constructed by the javascript advanced search widget
-        get perams should look like {"1_tags": "Health Care", "2_reports": "weekly reads"}
-        return queryset that corresponds to get params
+        the get_parameters argument are constructed by the javascript advanced search widget
+        and should look like {"1_tags": "Health Care", "2_reports": "weekly reads"}
+        return queryset that corresponds to the paramenters
         """
 
         sorted_params = sorted(get_parameters.iteritems(), key=operator.itemgetter(0))
@@ -114,7 +120,7 @@ class AdvancedSearch():
             # subsets should be "OR" ed together
             q = processed_subsets[0]
             for ps in processed_subsets[1:]:
-                q = q | ps
+                q = q | ps # definitely a memory suck, can't get the alternative (Q()&Q()) | Q() to work properly
             return q.distinct().order_by('-date')
 
 
