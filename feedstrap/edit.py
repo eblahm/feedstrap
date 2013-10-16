@@ -272,14 +272,9 @@ def edit_link(request, action):
             sbar_link.save()
             user_xtd.sidebar_links.add(sbar_link)
 
-        conditions = []
-        for condition, value in sorted(params.iteritems(), key=operator.itemgetter(0)):
-            conditions.append(urllib.quote(condition) + "=" + urllib.quote(value))
-        conditions = "&".join(conditions)
-
-        sbar_link.parameters = conditions
+        sbar_link.parameters = render.encode_params(params)
         sbar_link.save()
-        return HttpResponseRedirect('/?' + conditions)
+        return HttpResponseRedirect('/?' + sbar_link.parameters)
     elif action == 'delete':
         sbar_link = models.SidebarLink.objects.get(pk=request.POST['pk'])
         user_xtd.sidebar_links.remove(sbar_link)

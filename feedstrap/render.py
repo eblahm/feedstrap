@@ -30,6 +30,22 @@ def fixed_template_values():
     return template_values
 
 
+def encode_params(get_request):
+    """
+    an alternative to HttpRequest.GET.urlencode()
+    with better mirroring to the way the browser encodes forms
+    also the params are ordered
+    """
+
+    def js_en(s):
+        return urllib.quote(s, safe='~()*!.\'') # get the uri encoding to mirror javascript encoding
+
+    conditions = []
+    for condition, value in sorted(get_request.iteritems(), key=operator.itemgetter(0)):
+        conditions.append(js_en(condition) + "=" + js_en(value))
+
+    return "&".join(conditions)
+
 def response(request, template_file, template_values={}):
     template_values.update(
         cache.get('fixed_template_values') or fixed_template_values()
@@ -39,10 +55,7 @@ def response(request, template_file, template_values={}):
     template_values['user'] = request.user
     template_values['staff'] = request.user.is_staff
 
-    conditions = []
-    for condition, value in sorted(request.REQUEST.iteritems(), key=operator.itemgetter(0)):
-        conditions.append(urllib.quote(condition) + "=" + urllib.quote(value))
-    template_values['get_query'] = "&".join(conditions)
+    template_values['get_query'] = encode_params(request.REQUEST)
 
     usr_extended = PostIt.objects.filter(user=request.user)
     if usr_extended:

@@ -59,15 +59,13 @@ $(document).ready(function () {
         for (var i = 0; i < fstrings.length; i++) {
             var name_value = fstrings[i].split('=')
             if (name_value[0].split('_').length > 1){
-                var short_name = name_value[0].split('_')[1];
-                var color = colors[short_name];
+                var short_name = decodeURIComponent(name_value[0].split('_')[1]);
             }
             else {
-                var short_name = name_value[0].split('_')[0];
-                var color = colors[short_name];
+                var short_name = decodeURIComponent(name_value[0].split('_')[0]);
             }
+            var color = colors[short_name];
             if (!(short_name=="")) {short_name=short_name+":"}
-
             var filter = {
                 count:i,
                 name:decodeURIComponent(name_value[0]),
