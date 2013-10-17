@@ -38,7 +38,7 @@ def encode_params(get_request):
     """
 
     def js_en(s):
-        return urllib.quote(s, safe='~()*!.\'') # get the uri encoding to mirror javascript encoding
+        return urllib.quote(s.encode('utf-8', 'ignore'), safe='~()*!.\'') # get the uri encoding to mirror javascript encoding
 
     conditions = []
     for condition, value in sorted(get_request.iteritems(), key=operator.itemgetter(0)):
