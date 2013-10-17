@@ -248,7 +248,12 @@ def delete(request):
 @login_required
 @require_POST
 def edit_link(request, action):
-    user_xtd, is_created = models.PostIt.objects.get_or_create(user=request.user)
+
+    user_xtd = models.PostIt.objects.filter(user=request.user)
+    if not user_xtd:
+        user_xtd = create_new_postit(request.user)
+    else:
+        user_xtd = user_xtd.get()
 
     if action == 'save':
         params = request.POST.copy()
