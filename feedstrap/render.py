@@ -11,6 +11,7 @@ from django.core.cache import cache
 from feedstrap import config
 from feedstrap.filter import advanced_form, advanced_filters, MustacheDefault, TagsFilter
 from feedstrap.models import SidebarLink, StaticPage, PostIt
+from feedstrap.edit import create_new_postit
 
 
 def fixed_template_values():
@@ -58,8 +59,12 @@ def response(request, template_file, template_values={}):
     template_values['get_query'] = encode_params(request.REQUEST)
 
     if request.user.is_authenticated():
-        usr_extended, created = PostIt.objects.get_or_create(user=request.user)
-        template_values['user_feed_navs'] = [f for f in usr_extended.sidebar_links.all()]
+        usr_ext = PostIt.objects.filter(user=request.user)
+        if not usr_ext:
+            usr_ext = create_new_postit(request.user)
+        else:
+            usr_ext = usr_ext.get()
+        template_values['user_feed_navs'] = [f for f in usr_ext.sidebar_links.all()]
     else:
         template_values['user_feed_navs'] = []
 
