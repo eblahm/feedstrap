@@ -10,13 +10,12 @@
             {{ advanced_form }}
         {% endautoescape %}
     </form>
-        <table>
-            <tbody id="mustache_template">
-            {% for applied in mustache_filter %}
-                {% include 'main/forms/filter_row.html' %}
-            {% endfor %}
-            </tbody>
-        </table>
+            <script id="mustache_template" type="text/html"< >
+                {% for applied in mustache_filter %}
+                    {% include 'main/forms/filter_row.html' %}
+                {% endfor %}
+            </script>
+
     </div>
 
     <form id="advanced_search_form" action="/q" method="GET">

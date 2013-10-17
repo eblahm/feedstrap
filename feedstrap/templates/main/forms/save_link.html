@@ -3,14 +3,12 @@
 {% block modal_id %}save_link_modal{% endblock %}
 {% block modal_title %}Save Search to Sidebar{% endblock %}
 {% block modal_body %}
-
-    <div id="pin_mustache" style="display: none" data-colors='{% verbatim %} { "term": "#0088CC", {% endverbatim %}{% for af in advanced_filters %}{% if forloop.counter0 != 0 %},{% endif %}"{{ af.name }}": "{{ af.color }}"{% endfor %}{% verbatim %} } {% endverbatim %}'>
-
-        <span id="af{% verbatim %}{{count}}{% endverbatim %}">
-            <input style="display: none" name="{% verbatim %}{{name}}{% endverbatim %}" value="{% verbatim %}{{value}}{% endverbatim %}">
-            <span style="background-color:{% verbatim %}{{color}}{% endverbatim %};" class="filter_tag">{% verbatim %}{{ short_name }} {{value}}{% endverbatim %}<a class="xtag xpin" href="#" data-target="#af{% verbatim %}{{count}}{% endverbatim %}">×</a></span>
-        </span>
-    </div>
+    <script id="pin_mustache" type="text/html" data-colors='{% verbatim %} { "term": "#0088CC", {% endverbatim %}{% for af in advanced_filters %}{% if forloop.counter0 != 0 %},{% endif %}"{{ af.name }}": "{{ af.color }}"{% endfor %}{% verbatim %} } {% endverbatim %}'>
+            <span id="af{% verbatim %}{{count}}{% endverbatim %}">
+                <input style="display: none" name="{% verbatim %}{{name}}{% endverbatim %}" value="{% verbatim %}{{value}}{% endverbatim %}">
+                <span style="background-color:{% verbatim %}{{color}}{% endverbatim %};" class="filter_tag">{% verbatim %}{{ short_name }} {{value}}{% endverbatim %}<a class="xtag xpin" href="#" data-target="#af{% verbatim %}{{count}}{% endverbatim %}">×</a></span>
+            </span>
+    </script>
 
     <form id="save_link_form" action="/filter/link/save" method="post">
         {% csrf_token %}
