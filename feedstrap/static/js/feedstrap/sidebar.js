@@ -19,7 +19,7 @@ $(document).ready(function () {
                         // as the user scrolls the sidebar follows
                         var top_offset = scrollposition + 50;
                         var sbar_width = $("#sidebar").width();
-                        sidebar.css({position: "absolute", width: sbar_width}).offset({top: top_offset});
+                        sidebar.css({position: "absolute", width: sbar_width, top: top_offset});
                     }
                     else
                     {
