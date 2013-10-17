@@ -1,10 +1,10 @@
 {% extends 'main/modal.html' %}
 
 {% block modal_id %}save_link_modal{% endblock %}
-{% block modal_title %}Save Link to Sidebar{% endblock %}
+{% block modal_title %}Save Search to Sidebar{% endblock %}
 {% block modal_body %}
 
-    <div id="pin_mustache" style="display: none" data-colors='{% verbatim %} { "": "black", {% endverbatim %}{% for af in advanced_filters %}{% if forloop.counter0 != 0 %},{% endif %}"{{ af.name }}": "{{ af.color }}"{% endfor %}{% verbatim %} } {% endverbatim %}'>
+    <div id="pin_mustache" style="display: none" data-colors='{% verbatim %} { "term": "#0088CC", {% endverbatim %}{% for af in advanced_filters %}{% if forloop.counter0 != 0 %},{% endif %}"{{ af.name }}": "{{ af.color }}"{% endfor %}{% verbatim %} } {% endverbatim %}'>
 
         <span id="af{% verbatim %}{{count}}{% endverbatim %}">
             <input style="display: none" name="{% verbatim %}{{name}}{% endverbatim %}" value="{% verbatim %}{{value}}{% endverbatim %}">

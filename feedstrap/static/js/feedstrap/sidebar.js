@@ -65,6 +65,9 @@ $(document).ready(function () {
                 var short_name = decodeURIComponent(name_value[0].split('_')[0]);
             }
             var color = colors[short_name];
+            if (color === undefined) {
+                color = 'black';
+            }
             if (!(short_name=="")) {short_name=short_name+":"}
             var filter = {
                 count:i,
