@@ -17,9 +17,9 @@ $(document).ready(function () {
                     if (scrollposition > sidebar_parent_offset - 50)
                     {
                         // as the user scrolls the sidebar follows
-                        var top_offset = scrollposition + 50;
+                        var top_offset = 50;
                         var sbar_width = $("#sidebar").width();
-                        sidebar.css({position: "absolute", width: sbar_width, top: top_offset});
+                        sidebar.css({position: "fixed", width: sbar_width, top: top_offset});
                     }
                     else
                     {
