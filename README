@@ -1,1 +1,10 @@
-VA Tool Box AKA Feedstrap AKA SSG_Site
+## Setup
+
+virtualevn suggested:
+
+    bin/virtualenv myenv
+    source bin/activate
+    
+intall requirements via pip:
+
+    pip install -r requirements.txt
