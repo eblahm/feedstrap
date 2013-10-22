@@ -31,7 +31,7 @@ intall requirements via pip:
         $ ./manage.py runserver --settings=feedstrap.xample_settings
     
 ## Option 2 - Full Install (recommended)
-    - edit dev_server/settings.py to reflect the following:
+- edit dev_server/settings.py to reflect the following:
     
         ### edit to reflect DATABASE backend  
         
@@ -65,7 +65,7 @@ intall requirements via pip:
             'feedstrap',
         )
         
-        ### add addtional app settings
+        ### add additional app settings
         
         COMMENTS_APP = 'django_comments_xtd'
         COMMENTS_XTD_MAX_THREAD_LEVEL = 1
@@ -81,7 +81,8 @@ intall requirements via pip:
         EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
         EMAIL_FILE_PATH = '/ect/dev_email_log/'
         
-    - intialize database and runserver
+- intialize database and runserver
     
         $ ./manage.py syncdb 
+        $ ./manage.py upload
         $ ./manage.py runserver
