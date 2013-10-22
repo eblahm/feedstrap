@@ -3,6 +3,4 @@
 .idea*
 *.db
 .c9revisions*
-migrations/\*
-old_config.py
-old_settings.py
+migrations*
