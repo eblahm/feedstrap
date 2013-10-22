@@ -1,4 +1,7 @@
+import os
 # Django settings for xample project.
+
+app_root = os.path.abspath(os.path.split(os.path.dirname(__file__))[0])
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -109,10 +112,10 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'xample.urls'
+ROOT_URLCONF = 'feedstrap.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'xample.wsgi.application'
+WSGI_APPLICATION = 'dev_server.wsgi.application'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -128,14 +131,21 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
-    'tinymce',
+    'django.contrib.admindocs',
     'django_comments_xtd',
     'django.contrib.comments',
+    'tinymce',
     'feedstrap',
 )
+COMMENTS_APP = 'django_comments_xtd'
+COMMENTS_XTD_MAX_THREAD_LEVEL = 1
+TINYMCE_DEFAULT_CONFIG = {
+    'theme': 'advanced'    
+}
+TINYMCE_SPELLCHECKER = True
+
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

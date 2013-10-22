@@ -6,3 +6,5 @@ pytz==2013b
 pysolr==3.0.6
 PyRSS2Gen==1.1
 feedparser==5.1.3
+six==1.4.1
+django-tinymce==1.5.1

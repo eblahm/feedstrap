@@ -30,7 +30,8 @@ def info(request):
         if str(v['host_url'])[:3] != 'htt':
             v['host_url'] = 'http://' + v['host_url']
 
-        usr_xtd, created = PostIt.objects.get_or_create(user=request.user)
+        if not PostIt.objects.filter(user=request.user): create_new_postit(request.user)
+        usr_xtd = PostIt.objects.get(user=request.user)
         v['user_xtd_office'] = usr_xtd.office
 
         template_file = "main/user/info.html"

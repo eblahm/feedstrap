@@ -1,7 +1,6 @@
 from feedstrap.models import *
-from feedstrap import models
+from feedstrap import config
 from django.core.management.base import BaseCommand, CommandError
-from ssg_site import config
 import csv
 from datetime import datetime
 import pytz
@@ -188,11 +187,11 @@ class Command(BaseCommand):
                     if obj not in rec.reports.all():
                         rec.reports.add(obj)
             rec.save()
-            logq = models.LinkLog.objects.filter(link=rec.link)
+            logq = LinkLog.objects.filter(link=rec.link)
             if logq.count() > 0:
                 log = logq.get()
             else:
-                log = models.LinkLog(link=rec.link)
+                log = LinkLog(link=rec.link)
                 log.save()
             for f in rec.feeds.all():
                 log.feeds.add(f)
