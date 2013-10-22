@@ -1,4 +1,4 @@
-## Setup
+### Setup
 
 install pip & virtualenv (if you don't have it installed already):
 
@@ -23,14 +23,14 @@ intall requirements via pip:
         $ cd feedstrap
         $ pip install -r requirements.txt
         
-## Option 1 - Quick Start (the fasted way to get up and running)
+### Option 1 - Quick Start (the fastest way to get up and running)
 
         $ ./manage.py syncdb --settings=feedstrap.xample_settings
         $ ./manage.py createcachetable temp --settings=feedstrap.xample_settings
         $ ./manage.py upload --settings=feedstrap.xample_settings
         $ ./manage.py runserver --settings=feedstrap.xample_settings
     
-## Option 2 - Full Install (recommended)
+### Option 2 - Full Install (recommended)
 - edit dev_server/settings.py to reflect the following:
     
         ### edit to reflect DATABASE backend  
