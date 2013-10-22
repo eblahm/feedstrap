@@ -62,6 +62,7 @@ intall requirements via pip:
         INSTALLED_APPS += (
             'django_comments_xtd',
             'django.contrib.comments',
+            'tinymce',
             'feedstrap',
         )
         
