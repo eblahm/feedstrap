@@ -7,10 +7,10 @@ install pip & virtualenv (if you don't have it installed already):
         $ rm get-pip.py
         $ sudo pip install virtualenv
 
-create virtual environment using [virtualevn](https://pypi.python.org/pypi/virtualenv) (recommended):
+create virtual environment (recommended):
 
         $ virtualenv feedstrap_env
-        $ source bin/activate && cd feedstrap_env
+        $ cd feedstrap_env && source bin/activate
         
 create django project:
         
