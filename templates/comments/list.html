@@ -1,0 +1,57 @@
+{% load comments %}
+{% load comments_xtd %}
+{% load url from future %}
+<div id="comment_list">
+<p><strong>
+    {% get_comment_count for topic as comment_count %}
+    {% with two=2 %}
+        there {% ifequal comment_count|add:"1" two  %}is{% else %}are{% endifequal %}
+        {{ comment_count }} comments...
+    {% endwith %}
+</strong>
+</p>
+{% if comment_list %}
+    <hr>
+{% endif %}
+  {% for comment in comment_list %}
+    <div id="c{{ comment.id }}" class="comment{% ifnotequal comment.id comment.parent_id %}{{ comment.parent_id }}{% else %}0{% endifnotequal %}">
+            <blockquote style="margin-left:{{ comment.level }}00px; line-height: 1em">
+                <table style="width: 100%">
+                    <tr>
+                        <td>
+                            <strong>{{ comment.name }}</strong>
+                             – <em style="margin-right: 5px;">{{ comment.submit_date|date:'d b y' | title }} </em>
+                            {% ifequal comment.user user  %}
+                              <span class="btn-group" style="padding-bottom: 7px">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                    <i class="icon-cog"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li>
+                                        <a class="btn-delete-comment javascript_link" data-delete_target="{{ comment.id }}">
+                                            <i class="icon-trash"></i>  Delete
+                                        </a>
+                                    </li>
+                                </ul>
+                            </span>
+                        </td>
+                            {% endifequal %}
+                        <td style="text-align: right">
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="inner_comment">
+                {{ comment.comment|linebreaks }}
+                </div>
+
+                {% if comment.allow_thread %}<p><a class="btn btn-mini btn-reply-thread" data-hide_target="#cform{{ comment.id }}" data-textarea_target="#nc{{ comment.id }}">reply →</a></p>{% endif %}
+
+
+            </blockquote>
+            {% if comment.allow_thread %}
+                {% include 'main/esil/comment_mini_form.html' %}
+            {% endif %}
+    </div>
+  {% endfor %}
+</div>

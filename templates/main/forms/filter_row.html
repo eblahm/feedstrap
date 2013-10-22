@@ -1,0 +1,27 @@
+
+
+{% if applied.value != "OR" %}
+
+    {% if applied.count > 1 %}
+
+        <tr class="a_o" style="text-align: center">
+            <td colspan="3">
+                <input style="margin: 10px 10px 10px 0" class="primary_filter" name="{{ applied.count }}__andor" type="radio" value="AND" {% if not applied.after_or %}checked="checked"{% endif %}>AND</input>
+                <input style="margin: 10px 10px 10px 30px;" class="primary_filter" name="{{ applied.count }}__andor" type="radio" value="OR"{% if applied.after_or %}checked="checked"{% endif %}>OR</input>
+            </td>
+        </tr>
+    {% endif %}
+
+        <tr class="af_row">
+            <td>
+                <select class="field_selector" data-filter_count="{{ applied.count }}">
+                    {% for af in advanced_filters %}
+                        <option value="{{ af.name }}"{% ifequal af.name applied.name %} selected="selected" {% endifequal %}>{{ af.name }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td id="fv{{ applied.count }}">
+                {{ applied.render_widget }}
+            </td>
+        </tr>
+{% endif %}

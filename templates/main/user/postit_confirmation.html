@@ -1,0 +1,13 @@
+{% extends "main/base.html" %}
+{% block title %}Done!{% endblock %}
+{% block content_box %}
+    <div class="row-fluid" style="margin-top: 2em">
+        <div class="span12">
+            <div style="padding: 20px">
+                <h1>Link Saved!</h1>
+                <p><a href="/q?feeds={{ feed_pk }}">Click Here</a> to view all of your Post It Button links.</p>
+                <p><br><a href="JavaScript:window.close()">Close</a></p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,8 @@
+Django==1.5.1
+South==0.8.1
+django-comments-xtd==1.2a1
+django-tinymce==1.5.1
+pytz==2013b
+pysolr==3.0.6
+PyRSS2Gen==1.1
+feedparser==5.1.3

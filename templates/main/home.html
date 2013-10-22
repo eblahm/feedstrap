@@ -1,0 +1,107 @@
+{% extends "main/base.html" %}
+{% block modal %}
+    {% include "main/modal.html" %}
+    {% include "main/forms/filter.html" %}
+    {% include "main/forms/save_link.html" %}
+{% endblock %}
+{% block content_box %}
+
+    <!-- navbar-->
+
+    <div id="my_nav" class="navbar navbar-fixed-top">
+        <div id="my_nav_inner" class="navbar-inner">
+            <div class="container-fluid">
+                 <a id="nav_expander" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <a class="brand" href="/">FeedStrap</a>
+
+                <div class="nav-collapse collapse">
+                <ul class="nav">
+                    {% for sp in static_pages %}
+                    <li {% if static_page %}{% if sp.slug == static_page.slug %} class="active"{% endif %}{% endif %}><a href="/{{ sp.slug }}">{{ sp.name }}</a></li>
+                    {% endfor %}
+                    <li class="visible-phone">
+                        <a href="/esil">
+                        ESIL
+                        </a>
+                    </li>
+                   <li class="visible-phone">
+                       <a id="as_toggle" data-target="#advanced_search_modal" data-toggle="modal" href="#">
+                           Advanced Search
+                       </a>
+                    </li>
+                    {% if staff %}<li><a href="/admin/">Admin</a></li>{% endif %}
+                 </ul>
+                </div>
+
+                {% if solr_enabled == True %}
+                <form action="/q" class="navbar-form pull-right hidden-phone">
+                    <input type="text" class="span2" name="term"{% if term %}value="{{ term }}"{% endif %}>
+                    <button type="submit" class="btn">Search</button>
+                </form>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+
+{% block full_content %}
+
+    <div id="content_header" class="row-fluid">
+        <div class="span8 offset2" >
+        {% if not alert %}
+        {% block content_header %}
+                <div style="float: left; margin-top: .6em">
+                    <span class="filter_tag" style="background-color: grey;"> {{ total }} found </span>
+                {% for af in search.applied_filters %}
+                    <span id="active_search_parameters">
+                    <span class="filter_tag" style="background-color: {{ af.color }};">{{ af.name }}{% if af.display_value %}: {{ af.display_value }}{% endif %}<a class="xtag" href="/?{{ af.inverse }}">×</a></span>
+                    </span>
+                {% endfor %}
+
+
+                </div>
+                <div class="hidden-phone" style="float: right;">
+                    <div class="btn-group">
+                      <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-share"></i> Export this Feed </a>
+                      <ul class="dropdown-menu pull-right" style="text-align:left">
+                        {% if auth %}
+                            {% if get_query %}
+                                <li><a class="save_link" data-target="#save_link_modal" data-active-params="{{ get_query }}" data-toggle="modal" href="#"><i class="icon-flag"></i> Save to Sidebar</a></li>
+                            {% endif %}
+                        <li><a href="/weeklyreads?{{ get_query }}"><i class="icon-file"></i> Weekly Reads Format</a></li>
+                        {% endif %}
+                        <li><a href="/csv?{{ get_query }}"><i class="icon-file"></i> CSV Format</a></li>
+                        <li><a href="/rss?{{ get_query }}"><i class="icon-bell"></i>  Subscribe to RSS</a></li>
+                      </ul>
+                    </div>
+                </div>
+        {% endblock %}
+        {% endif %}
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div id="sidebar_zone" class="span2 hidden-phone">
+            {% block sidebar %}
+                 {% include 'main/sidebar.html' %}
+            {% endblock %}
+        </div>
+        {% block content_view %}
+        <div id="article_list_zone" class="span8">
+            <div id="content_view">
+                    {% include 'main/list_view.html' %}
+            </div>
+        </div>
+        {% endblock %}
+    </div>
+    
+{% endblock %}
+
+
+    
+    
+{% endblock %} 

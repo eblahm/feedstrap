@@ -1,0 +1,28 @@
+{% if alert %}
+
+    <div id="outside_alert">
+        <div class="alrt">
+            {% autoescape off %}
+                {{ alert }}
+            {% endautoescape %}
+        </div>
+    </div>
+
+    
+{% endif %}
+
+{% for i in results %}
+        <div id="ar_{{ i.pk }}" class="feed_item">
+        {% include 'main/list_view_article.html' %}
+        </div>
+{% endfor %}
+
+
+    <div style="text-align:center;">
+        {% if show_more_perams %}
+        <span class="eb"><button class="btn btn-primary show_more" data-parent="content_view" data-query="/q/ajax/?{{ show_more_perams }}"> Show More </button></span>
+        {% else %}
+        <strong>------ {{ end_info }} -----</strong>
+        {% endif %}
+    </div>
+

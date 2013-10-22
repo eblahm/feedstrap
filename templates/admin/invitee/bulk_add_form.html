@@ -1,0 +1,11 @@
+<div style="width:500px">
+    <strong>Bulk Upload </strong> (NOTE: you can copy and paste an email distro or a list of emails separated by a ';'):<br>
+    <form action="/invite/parse/" method="POST">{% csrf_token %}
+        <textarea style="width:98%; height: 100px" name="emails"></textarea><br>
+        <div style="text-align:right">
+            <input type="submit" value="submit"></input>
+        </div>
+        
+    </form>
+
+</div>

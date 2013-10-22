@@ -1,0 +1,75 @@
+{% extends "main/home.html" %}
+
+{% block head %}
+    {{ block.super }}
+    <script type="text/javascript">
+    function validatelogin() {
+        if ($("#post_code").val() == "") {
+            alert("Please select a post!");
+            return false;
+        }
+    };
+    </script>
+
+   <style type="text/css">
+      body {
+        padding-top: 40px;
+        padding-bottom: 40px;
+      }
+    </style>
+
+     <script>
+         require(["/static/js/feedstrap/utils.js"], function(utils) {
+            $.ajax({
+                url: '/data/offices',
+                dataType: 'json',
+                success: (function(data){
+                    enableSimpleAutoComplete('#id_office', data);
+                })
+            })
+         });
+    </script>
+
+{% endblock %}
+
+{% block content_header %}{% endblock %}
+{% block title %}Profile{% endblock %}
+{% block content_view %}
+<div class="span10">
+    <div class="row-fluid">
+        <div class="span4">
+         {% block user_form %}
+            <form class="form-signin" action="/account/edit" method="POST" onsubmit="return validatelogin();">
+
+            {% if saved %}
+                <div class="alert alert-block">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Saved!</strong> Your {% if psw_change %}password{% else %}profile{% endif %} was updated at {{ datetime }}!
+                </div>
+            {% endif %}
+
+            {% if pchanged %}
+                <div class="alert alert-block">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Changed!</strong> Your password was changed at {{ datetime }}!
+                </div>
+            {% endif %}
+
+            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+
+            <h2>Edit Profile</h2>
+            User Name: {{ user.username }}<br>
+            Password: ******* (<a href="/account/change_password">change</a>)<br><br>
+            {{ Profile }}<br>
+
+            <input style="float: right" class="btn btn-primary" type="submit" value="Save" /><br>
+
+            </form>
+        {% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
