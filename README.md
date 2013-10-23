@@ -66,9 +66,9 @@ intall requirements via pip:
         
         COMMENTS_APP = 'django_comments_xtd'
         COMMENTS_XTD_MAX_THREAD_LEVEL = 1
-        TINYMCE_DEFAULT_CONFIG = (
+        TINYMCE_DEFAULT_CONFIG = {
             'theme': 'advanced'    
-        )
+        }
         TINYMCE_SPELLCHECKER = True
         
         ### edit to reflect your email backend
