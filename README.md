@@ -1,34 +1,30 @@
 ### Setup
 
-install pip & virtualenv (if you don't have it installed already):
 
-        $ wget https://raw.github.com/pypa/pip/master/contrib/get-pip.py
-        $ python get-pip.py
-        $ rm get-pip.py
-        $ sudo pip install virtualenv
+create virtual environment via [virtualenv](https://pypi.python.org/pypi/virtualenv) (recommended):
 
-create virtual environment (recommended):
-
-        $ virtualenv feedstrap_env
-        $ cd feedstrap_env && source bin/activate
+    $ virtualenv feedstrap_env
+    $ cd feedstrap_env && source bin/activate
         
 create django project:
         
-        $ django-admin.py startproject dev_server
-        $ cd dev_server
+    $ django-admin.py startproject dev_server
+    $ cd dev_server
         
 intall requirements via pip:
         
-        $ git clone https://github.com/eblahm/feedstrap.git
-        $ cd feedstrap
-        $ pip install -r requirements.txt
+    $ git clone https://github.com/eblahm/feedstrap.git
+    $ cd feedstrap
+    $ pip install -r requirements.txt
         
 ### Option 1 - Quick Start (the fastest way to get up and running)
+
+- intialize database, upload seed data and runserver - using example settings
 
         $ ./manage.py syncdb --settings=feedstrap.xample_settings
         $ ./manage.py createcachetable temp --settings=feedstrap.xample_settings
         $ ./manage.py upload --settings=feedstrap.xample_settings
-        $ ./manage.py runserver --settings=feedstrap.xample_settings
+        $ ./manage.py runserver localhost:8000 --settings=feedstrap.xample_settings
     
 ### Option 2 - Full Install (recommended)
 - edit dev_server/settings.py to reflect the following:
