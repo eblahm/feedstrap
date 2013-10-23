@@ -71,6 +71,10 @@ intall requirements via pip:
         }
         TINYMCE_SPELLCHECKER = True
         
+        # point url configuration to feedstrap
+
+        ROOT_URLCONF = 'feedstrap.urls'
+        
         ### edit to reflect your email backend
         
         SERVER_EMAIL = 'you@example.com'
