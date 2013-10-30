@@ -165,7 +165,6 @@ def add_new(request):
                     relevance = en(request.POST['relevance']),
                 )
                 rec.save()
-                save_manytomany(rec, 'offices', [o.pk for o in feed.offices.all()])
             else:
                 rec = recq[0]
                 rec.title = en(request.POST['title'])
@@ -176,8 +175,6 @@ def add_new(request):
             if rec.feeds.filter(pk=feed.pk).count() == 0:
                 rec.feeds.add(feed)
                 rec.save()
-                all_offices = [o.pk for o in feed.offices.all()] + [o.pk for o in rec.offices.all()]
-                save_manytomany(rec, 'offices', list(set(all_offices)))
 
             rec = save_wr_topic_tags(rec, request)
             return HttpResponse("/q?feeds=" + str(feed.pk))
@@ -226,7 +223,6 @@ def add_simple(request):
         if recq.count() == 0:
             rec = Resource(title=en(g['t']), link=en(g['l']), description=en(g['d']), date=datetime.now())
             rec.save()
-            save_manytomany(rec, 'offices', [o.pk for o in feed.offices.all()])
         else:
             rec = recq[0]
         if rec.feeds.filter(pk=feed.pk).count() == 0:
