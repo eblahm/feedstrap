@@ -122,7 +122,7 @@ class DateFromFilter(DateToFilter):
 class OfficeFilter(Filter):
     name = 'office'
     color = 'green'
-    query_expression = 'offices__name'
+    query_expression = 'feeds__offices__name'
     condition_model = Office
     form_element = forms.Select(choices=generate_choices(Office,'name', 'name'), )
 

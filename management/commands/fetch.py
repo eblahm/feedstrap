@@ -108,10 +108,9 @@ class Command(BaseCommand):
                     for tag in feed.tags.all():
                         r.tags.add(tag)
 
-                    for office in feed.offices.all():
-                        r.offices.add(office)
                     for report in feed.reports.all():
                         r.reports.add(report)
+
                     for topic in feed.topics.all():
                         r.topics.add(topic)
 

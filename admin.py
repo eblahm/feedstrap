@@ -161,18 +161,7 @@ class PostItAdmin(admin.ModelAdmin):
 admin.site.register(PostIt, PostItAdmin)
 
 
-class PostItInline(admin.StackedInline):
-    model = PostIt
-    form = PostItForm
-    can_delete = False
-    verbose_name_plural = 'Additional Fields'
-    exclude = ('feed', 'sidebar_links')
-    list_display = ('office',)
-
-
 class UserAdmin(UserAdmin):
-    inlines = (PostItInline, )
-
 
     def allow_to_see_full_ESIL(self, request, queryset):
         group, created = Group.objects.get_or_create(name='Can see full ESIL')

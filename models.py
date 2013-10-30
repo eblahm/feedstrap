@@ -89,7 +89,6 @@ class Resource(models.Model):
     description = models.TextField(null=True, blank=True)
     relevance = models.TextField(null=True, blank=True)
     content = models.TextField(null=True, blank=True)
-    offices = models.ManyToManyField(Office, null=True, blank=True)
     feeds = models.ManyToManyField(Feed, null=True, blank=True)
     topics = models.ManyToManyField(Topic, null=True, blank=True)
     tags = models.ManyToManyField(Tag, null=True, blank=True)

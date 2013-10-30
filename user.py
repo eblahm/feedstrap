@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm, UserCreationForm
 from django.core import mail
 
-from models import Invitee, Office, PostIt
+from models import Invitee, Office, PostIt, Feed
 from edit import create_new_postit
 import render
 
@@ -55,15 +55,19 @@ def main(request):
             user_input = request.POST.copy()
             f = Profile(user_input)
             if f.is_valid():
+
                 usr = User.objects.get(pk=usr.pk)
                 usr.email = user_input['email']
                 usr.first_name = user_input['first_name']
                 usr.last_name = user_input['last_name']
                 usr.save()
 
+                existing_feeds = Feed.objects.filter(user=usr)
+                for f in existing_feeds: f.offices.remove(usr_xtd.office)
                 office, created = Office.objects.get_or_create(name=user_input['office'])
                 usr_xtd.office = office
                 usr_xtd.save()
+                for f in existing_feeds: f.offices.add(usr_xtd.office)
 
                 v['saved'] = True
                 v['datetime'] = datetime.now().replace(tzinfo=pytz.timezone('America/New_York')).strftime('%I:%M:%S%p').lower() + " EST"
