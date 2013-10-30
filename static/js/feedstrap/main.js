@@ -12,10 +12,6 @@ require(["/static/js/feedstrap/utils.js"], function(utils) {
             load_modal(page);
         });
 
-        $('#modal_content').on('shown', function () {
-            $('#description').focus();
-        })
-
 
         $("#modal_content").on("click", ".delete", function (event) {
             var d = 'l=' + encodeURIComponent($(this).data('l')) +"&csrfmiddlewaretoken=" + $("#csrf").val();

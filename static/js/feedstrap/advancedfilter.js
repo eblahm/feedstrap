@@ -43,7 +43,6 @@ require(["/static/js/feedstrap/utils.js"], function(utils) {
             $('.primary_filter').each(function(){
                 ui_options.apply($(this));
             });
-            $($('.primary_filter')[0]).focus();
         })
 
 
