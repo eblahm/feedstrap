@@ -39,11 +39,12 @@ require(["/static/js/feedstrap/utils.js"], function(utils) {
             ui_options.apply(new_filter);
         }
 
-        $("#as_toggle").click(function(){
+        $('#advanced_search_modal').on('shown', function () {
             $('.primary_filter').each(function(){
                 ui_options.apply($(this));
             });
-        });
+            $($('.primary_filter')[0]).focus();
+        })
 
 
         $("#add_new_filter").click(function (event){
