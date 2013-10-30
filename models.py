@@ -32,26 +32,15 @@ class Tag(models.Model):
 class Report(models.Model):
     name = models.CharField(max_length=50)
 
-imperative_choices = (
-    ('Be A Pro-Active and Agile Institution', 'Be A Pro-Active and Agile Institution'),
-    ('Be Recognized for Providing a Quality Experience', 'Be Recognized for Providing a Quality Experience'),
-    ('Be a Trusted Partner', 'Be a Trusted Partner'),
-)
 
 class Imperative(models.Model):
     name = models.CharField(max_length=100)
-    category = models.CharField(max_length=100, choices=imperative_choices)
+    category = models.CharField(max_length=100)
 
-capability_choices = (
-    ('Provide Services for Veterans and Eligible Beneficiaries', 'Provide Services for Veterans and Eligible Beneficiaries'),
-    ('Support Delivery of Services', 'Support Delivery of Services'),
-    ('Manage Government Resources', 'Manage Government Resources'),
-)
 
 class Capability(models.Model):
     name = models.CharField(max_length=100)
-    category = models.CharField(max_length=100, choices=capability_choices)
-
+    category = models.CharField(max_length=100)
 
 
 class Topic(models.Model):
