@@ -26,12 +26,11 @@ admin.site.register(StaticPage, StaticPageAdmin)
 class ResourceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ResourceForm, self).__init__(*args, **kwargs)
-        for k in ['tags', 'topics', 'offices', 'reports']:
+        for k in ['tags', 'topics', 'reports']:
             self.fields[k].required = False
     tags = forms.MultipleChoiceField(choices=generate_choices(Tag))
     feeds = forms.MultipleChoiceField(choices=generate_choices(Feed))
     topics = forms.MultipleChoiceField(choices=generate_choices(Topic))
-    offices = forms.MultipleChoiceField(choices=generate_choices(Office))
     reports = forms.MultipleChoiceField(choices=generate_choices(Report))
     class Meta:
         model = Resource
