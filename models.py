@@ -43,6 +43,30 @@ class Capability(models.Model):
     category = models.CharField(max_length=100)
 
 
+class RatingThreshold(models.Model):
+    name = models.CharField(max_length=100, choices=[('intensity','intensity'), ('relevance','relevance'), ('impact','impact')], unique=True)
+    factor = models.CharField(max_length=100, choices=[('capabilities','capabilities'), ('imperatives','imperatives'), ('linked resources','linked resources')], default='resources')
+    med_threshold = models.IntegerField(default=2)
+    high_threshold = models.IntegerField(default=4)
+    
+    def low_threshold(self): return 0
+    
+    def _get_count(self, topic):
+        try: factor = getattr(topic, self.factor)
+        except: factor = Resource.objects.filter(topics=topic)
+        
+        if factor: return factor.count()
+        else: return 0
+        
+    def rate(self, topic):
+        count = self._get_count(topic)
+        if count >= self.high_threshold: 
+            return {'num': 3, 'name': 'HIGH', 'class': 'label-important'}
+        elif count >= self.med_threshold: 
+            return {'num': 2, 'name': 'MED', 'class': 'label-warning'}
+        else: 
+            return {'num': 1, 'name': 'LOW', 'class': ''}
+
 class Topic(models.Model):
     name = models.CharField(max_length=500)
     description = models.TextField()
@@ -51,10 +75,23 @@ class Topic(models.Model):
     attachment = models.FileField(upload_to="final", null=True, blank=True)
     published = models.BooleanField()
     
+    def intensity(self):
+        rating_threshold, created = RatingThreshold.objects.get_or_create(name='intensity')
+        return rating_threshold.rate(self)
+        
+    def relevance(self):
+        rating_threshold, created = RatingThreshold.objects.get_or_create(name='relevance')
+        return rating_threshold.rate(self)
+        
+    def impact(self):
+        rating_threshold, created = RatingThreshold.objects.get_or_create(name='impact')
+        return rating_threshold.rate(self)
+        
     class Meta:
         permissions = (
             ("view_all", "Can see all the ESIL topics"),
         )
+
 
 
 class Office(models.Model):

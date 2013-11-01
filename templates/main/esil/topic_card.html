@@ -40,11 +40,9 @@
                     <th style="text-align:center">Impact</th></tr>
                 </thead>
                 <tbody>
-                {% autoescape off %}
-                    <tr><td style="text-align:center">{{ topic.intensity }}</td>
-                    <td style="text-align:center">{{ topic.relevance }}</td>
-                    <td style="text-align:center">{{ topic.impact }}</td></tr>
-                {% endautoescape %}
+                    <tr><td style="text-align:center"><span class="label {{ topic.intensity.class }}">{{ topic.intensity.name }}</span></td>
+                    <td style="text-align:center"><span class="label {{ topic.relevance.class }}">{{ topic.relevance.name }}</span></td>
+                    <td style="text-align:center"><span class="label {{ topic.impact.class }}">{{ topic.impact.name }}</span></td></tr>
                 </tbody>
             </table>
         </div>

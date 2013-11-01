@@ -61,6 +61,18 @@ class FeedAdmin(admin.ModelAdmin):
 
 admin.site.register(Feed, FeedAdmin)
 
+## RatingThreshold ##
+class RatingThresholdForm(forms.ModelForm):
+    class Meta:
+        model = RatingThreshold
+
+class RatingThresholdAdmin(admin.ModelAdmin):
+    form = RatingThresholdForm
+    ordering = ('name',)
+    list_display = ('name', 'factor', 'low_threshold', 'med_threshold', 'high_threshold')
+
+admin.site.register(RatingThreshold, RatingThresholdAdmin)
+
 ## Topic ##
 class TopicForm(forms.ModelForm):
     imperatives = forms.MultipleChoiceField(choices=generate_choices(Imperative))

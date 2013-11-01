@@ -52,15 +52,11 @@ def single_topic(request, pk):
         v['imperatives'] = [model_to_dict(t, fields=['name', 'category']) for t in topic.imperatives.all()]
         v['capabilities'] = [model_to_dict(c, fields=['name', 'category']) for c in topic.capabilities.all()]
         v['next'] = request.path + 'comments'
-
-        rsearch = Resource.objects.filter(topics=topic).order_by('-date')
-        topic.link_count = rsearch.count()
-        topic.intensity = get_rating(rsearch.count(), 'intensity')
-        topic.impact = get_rating(topic.capabilities.all().count(), 'impact')
-        topic.relevance = get_rating(topic.imperatives.all().count(), 'relevance')
-
+        topic.impact = topic.impact()
+        topic.relevance = topic.relevance()
+        topic.intensity = topic.intensity()
         v['topic'] = topic
-        v['resources'] = rsearch
+        v['resources'] = Resource.objects.filter(topics=topic).order_by('-date')
         v['get_url'] = request.GET.urlencode()
         return render.response(request, "main/esil/topic_card.html", v)
     else:
@@ -111,9 +107,9 @@ def all_topics(request):
         for t in q.order_by('name'):
             rsearch = Resource.objects.filter(topics=t)
             t.link_count = rsearch.count()
-            t.intensity = get_rating(rsearch.count(), 'intensity')
-            t.impact = get_rating(t.capabilities.all().count(), 'impact')
-            t.relevance = get_rating(t.imperatives.all().count(), 'relevance')
+            t.impact = t.impact()
+            t.relevance = t.relevance()
+            t.intensity = t.intensity()            
             topics.append(t)
         v['topics'] = topics
         v['nav'] = 'esil'

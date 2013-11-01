@@ -159,22 +159,6 @@ class Command(BaseCommand):
                     if obj not in rec.topics.all():
                         rec.topics.add(obj)
 
-            for i in offices:
-                if i.strip() in ignored_values:
-                    pass
-                else:
-                    if i.strip() == "Front Office":
-                        O = "AS"
-                    else:
-                        O = i
-                    try:
-                        obj = Office.objects.get(name=O.strip())
-                    except:
-                        obj = Office(name=O.strip())
-                        obj.save()
-                    if obj not in rec.offices.all():
-                        rec.offices.add(obj)
-
             for i in reports:
                 if i.strip() in ignored_values:
                     pass

@@ -26,11 +26,11 @@
           <td class="rpoint">{{ topic.name }}</td>
           <td id="des_{{ topic.pk }}" class="rpoint">{{ topic.description|slice:":100" }}
           <span class="show_des javascript_link" data-parent="des_{{ topic.pk }}" data-full="{{ topic.description }}"><em> (expand...)</em></span></td>
-          {% autoescape off %}
-          <td class="rpoint" style="text-align:center">{{ topic.intensity }}</td>
-          <td class="rpoint" style="text-align:center">{{ topic.relevance }}</td>
-          <td class="rpoint" style="text-align:center">{{ topic.impact }}</td>
-          {% endautoescape %}
+          
+          <td class="rpoint" style="text-align:center"><span style="color:white">{{ topic.intensity.num }}</span><span class="label {{ topic.intensity.class }}">{{ topic.intensity.name }}</span></td>
+          <td class="rpoint" style="text-align:center"><span style="color:white">{{ topic.relevance.num }}</span><span class="label {{ topic.relevance.class }}">{{ topic.relevance.name }}</span></td>
+          <td class="rpoint" style="text-align:center"><span style="color:white">{{ topic.impact.num }}</span><span class="label {{ topic.impact.class }}">{{ topic.impact.name }}</span></td>
+          
           <td class="rpoint esil_count" style="">
               {% get_comment_count for topic as comment_count %}
               {{ comment_count }}
