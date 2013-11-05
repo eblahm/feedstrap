@@ -1,5 +1,6 @@
 import render
 from models import StaticPage as StaticPageModel
+from models import Report
 from search import AdvancedSearch, full_text_search
 from config import per_page_limit
 from filter import TextFilter
@@ -28,15 +29,31 @@ def MainPage(request, template=""):
         v['full_text_search'] = True
         v['search'].applied_filters = [text_filter]
         v['results'], v['total'] = full_text_search(request.GET['term'])
-        real_total = len(v['results'])
     else:
         v['results'] = v['search'].get_results(request.GET)
+
+
+    # excude articles based on the users permission to the report
+    for r in Report.objects.filter(restricted=True):
+        if not request.user.has_perm('can_see_%s_report' % r.name):
+            # unfortunatly there are two different ways of excluding based on permissions
+            # according to search type
+            if request.GET.get('term', False):
+                v['results'] = [result for result in v['results'] if r not in result.reports.all()]
+            else:
+                v['results'] = v['results'].exclude(reports=r)
+
+
+    # again, unfortunatly two different ways of getting the count
+    if request.GET.get('term', False):
+        real_total = len(v['results'])
+    else:
         v['total'] = v['results'].count()
         real_total = v['total']
 
     # where are we in terms of offset?
-    try: start_offset = int(request.GET.get('s', 0))
-    except: start_offset = 0
+    try: start_offset = int(request.GET.get('s', 0)) # somewhere in the middle
+    except: start_offset = 0 # the begining
         
     # fetch db data according to offset and per page limit
     limit = start_offset + per_page_limit

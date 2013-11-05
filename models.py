@@ -12,6 +12,8 @@ from tinymce.models import HTMLField
 from feedstrap import config
 
 import hashlib
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 
 
 def generate_choices(model, displayed_value='name', real_value="pk"):
@@ -31,7 +33,24 @@ class Tag(models.Model):
 
 class Report(models.Model):
     name = models.CharField(max_length=50)
+    color = models.CharField(max_length=50, default='green', choices=(
+        ('green', 'green'),('blue', 'blue'),('#2D6987', 'dark blue'), ('red', 'red'),('orange', 'orange'))
+    )
+    restricted = models.BooleanField(default=False)
 
+    def acronym(self):
+        return "".join([w[0] for w in self.name.split(' ')]).upper()
+
+    def save(self):
+        for action in ['edit', 'see']:
+            ck_permission = 'can_%s_%s_report' % (action, str(self.name))
+            if not Permission.objects.filter(codename=ck_permission):
+                content_type = ContentType.objects.get_for_model(Report)
+                new_permission = Permission.objects.create(codename=ck_permission,
+                                                       name='Can %s %s Report' % (action.title(), self.name),
+                                                       content_type=content_type)
+                new_permission.save()
+        super(Report, self).save()
 
 class Imperative(models.Model):
     name = models.CharField(max_length=100)

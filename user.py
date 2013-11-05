@@ -178,7 +178,6 @@ def signup(request, secret):
                 user.first_name = inputs['first_name']
             if inputs.get('last_name', ''):
                 user.last_name = inputs['last_name']
-            esil_view_all = Permission.objects.get(codename='view_all')
             user.save()
             postit = create_new_postit(user)
             if inputs.get('office', '').strip():

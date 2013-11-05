@@ -2,7 +2,7 @@ import pytz
 import json
 from datetime import datetime
 import urllib
-from util import en
+from util import en, get_reports_with_permissions
 
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
@@ -15,48 +15,24 @@ import models
 import render
 
 
-def save_tags(rec, tags_list):
-    tag_inputs = [t.strip() for t in tags_list]
-    for tag in rec.tags.all():
-        if tag.name not in tag_inputs:
-            rec.tags.remove(tag)
-            rec.save()
-            if Resource.objects.filter(tags=tag).count() == 0:
-                tag.delete()
-        if tag.name == "":
-            rec.tags.remove(tag)
-    for tag in tag_inputs:
-        if tag != "":
-            try:
-                tag_rec = Tag.objects.get(name=tag)
-            except:
-                tag_rec = Tag.objects.create(name=tag)
-            rec.tags.add(tag_rec)
-    return True
+def get_tags_from_names(tags_string):
+    tags = []
+    if tags_string.strip():
+        for tname in [name.strip() for name in tags_string.split(',')]:
+            tag, created = models.Tag.objects.get_or_create(name=tname)
+            tags.append(tag)
+    return tags
 
-def save_manytomany(rec, property, key_list):
-    if key_list in [[""], "", None]:
-        key_list = []
-    mmField = getattr(rec, property)
-    for mm in mmField.all():
-        mmField.remove(mm)
-    for k in key_list:
-        mmRec = getattr(models, property.title()[:-1]).objects.get(pk=int(k))
-        mmField.add(mmRec)
-    return True
-
-def save_wr_topic_tags(rec, request):
-    data_lists = dict(request.POST.lists())
-    wrr = models.Report.objects.get(name="Weekly Reads")
-    if request.POST.get("weekly_reads", "") == "on":
-        rec.reports.add(wrr)
-    else:
-        rec.reports.remove(wrr)
+def save_resource(rec, data):
+    lists = dict(data.lists())
+    rec.title = en(data['title'])
+    rec.description = en(data['description'])
+    rec.relevance = en(data['relevance'])
+    rec.tags = get_tags_from_names(data.get('tags', ''))
+    rec.reports = [models.Report.objects.get(pk=ipk) for ipk in lists.get('reports', [])]
+    rec.topics = [models.Topic.objects.get(pk=ipk) for ipk in lists.get('topics', [])]
     rec.save()
-    save_manytomany(rec, 'topics', data_lists.get('topics', []))
-    tags_list = data_lists.get('tags', [""])[0].split(',')
-    save_tags(rec, tags_list)
-    return rec
+
 
 def write_access(rec, user):
     WA = False
@@ -109,21 +85,17 @@ def main(request):
         v = {}
         rec_key = request.GET.dict()['k']
         rec = Resource.objects.get(pk=rec_key)
-        rec.all_reports = [r.pk for r in rec.reports.all()]
         v['rec'] = rec
         v.update(csrf(request))
-        v['resource_form'] = ResourceForm(instance=rec)
         v['topics'] = Topic.objects.all().order_by('name')
+        v['reports'] = get_reports_with_permissions(request.user, 'edit')
         template_file = 'main/forms/basic.html'
         return render.response(request, template_file, v)
     elif request.method == "POST":
         rec = Resource.objects.get(pk=int(request.POST['pk']))
         response_data = {}
         if write_access(rec, request.user):
-            rec.title = en(request.POST['title'])
-            rec.description = en(request.POST['description'])
-            rec.relevance = en(request.POST['relevance'])
-            rec = save_wr_topic_tags(rec, request)
+            save_resource(rec, request.POST)
             now_est = datetime.now().replace(tzinfo=pytz.timezone('America/New_York'))
             message = '<em>updated %s</em>' % (now_est.strftime('%I:%M:%S%p'))
             message = message.lower() + " EST"
@@ -156,22 +128,19 @@ def add_new(request):
                     date = datetime.now(),
                     title = en(request.POST['title']),
                     link = en(request.POST['link']),
-                    description = en(request.POST['description']),
-                    relevance = en(request.POST['relevance']),
                 )
                 rec.save()
             else:
                 rec = recq[0]
-                rec.title = en(request.POST['title'])
-                rec.description = en(request.POST['description'])
-                rec.relevance = en(request.POST['relevance'])
-                rec.save()
 
             if rec.feeds.filter(pk=feed.pk).count() == 0:
                 rec.feeds.add(feed)
+                for rpt in feed.reports.all():
+                    rec.reports.add(rpt)
                 rec.save()
 
-            rec = save_wr_topic_tags(rec, request)
+            save_resource(rec, request.POST)
+
             return HttpResponse("/q?feeds=" + str(feed.pk))
         else:
             return HttpResponseRedirect('/signin?redirect=%s' % (urllib.quote(request.get_full_path())))
@@ -182,21 +151,20 @@ def add_new(request):
             g = request.GET
             recq = Resource.objects.filter(link=g['l'])
             if recq.count() == 0:
-                rec = Resource(title=g.get('t', 'Untitled'), link=g['l'], description=g.get('d', ''), date=datetime.now())
-                v['topics_pks'] = []
-                v['tags'] = ""
-                v['wr'] = False
+                rec = Resource(title=g.get('t', 'Untitled'),
+                               link=g['l'],
+                               description=g.get('d', ''),
+                               date=datetime.now())
             else:
                 rec = recq[0]
-                v['topics_pks'] = [t.pk for t in rec.topics.all()]
-                v['tags'] = ", ".join([t.name for t in rec.tags.all()])
-                if rec.reports.filter(name="Weekly Reads").count() > 0:
-                    v['wr'] = True
             v['rec'] = rec
             v.update(csrf(request))
-            v['resource_form'] = ResourceForm(instance=rec)
             v['topics'] = Topic.objects.all().order_by('name')
+            v['reports'] = get_reports_with_permissions(request.user, 'edit')
             v['all_tags'] = get_tags()
+            v['postit'] = True
+            v['feed'] = models.PostIt.objects.get(user=request.user).feed
+
             template_file = 'main/forms/post_it.html'
             return render.response(request, template_file, v)
         else:

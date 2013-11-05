@@ -157,6 +157,14 @@ h1.alrt {
     text-align: center;
 }
 
+#postit textarea {
+    width: 95%;
+}
+
+#postit textarea {
+    width: 95%;
+}
+
 @media (max-width: 979px) {
     body {
         padding-top:0;

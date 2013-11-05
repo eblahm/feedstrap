@@ -8,7 +8,7 @@ from django.template.loader import render_to_string
 from django.shortcuts import render_to_response
 from django.core.cache import cache
 
-from feedstrap import config
+from feedstrap import config, util
 from feedstrap.filter import advanced_form, advanced_filters, MustacheDefault, TagsFilter
 from feedstrap.models import SidebarLink, StaticPage, PostIt
 
@@ -54,6 +54,7 @@ def response(request, template_file, template_values={}):
     template_values['auth'] = request.user.is_authenticated()
     template_values['user'] = request.user
     template_values['staff'] = request.user.is_staff
+    template_values['authorized_reports'] = util.get_reports_with_permissions(request.user, 'see')
 
     template_values['get_query'] = encode_params(request.REQUEST)
 

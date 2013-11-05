@@ -38,8 +38,8 @@
                     <a href="/q?tags={{ tag.name }}">{{ tag.name }}</a>
                 {% endfor %}
             {% endif %}
-            {% if i.reports.all %}
-                {% for report in i.reports.all %}{% if report.name == 'Weekly Reads' %}<span class="spacer">|</span><a href="/q?report={{ report.name }}" class="label label-info">WR</a>{% endif %}{% endfor %}
+            {% if i.reports.all %}<span class="spacer">|</span>
+                    {% for report in i.reports.all %}{% if report in authorized_reports %}<a href="/q?report={{ report.name }}" class="label" style="background-color: {{ report.color }}; margin-right: .5em">{{ report.acronym }}</a>{% endif %}{% endfor %}
             {% endif %}
 
         {% if auth == True %}

@@ -31,7 +31,7 @@ class ResourceForm(forms.ModelForm):
     tags = forms.MultipleChoiceField(choices=generate_choices(Tag))
     feeds = forms.MultipleChoiceField(choices=generate_choices(Feed))
     topics = forms.MultipleChoiceField(choices=generate_choices(Topic))
-    reports = forms.MultipleChoiceField(choices=generate_choices(Report))
+    reports = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple(), choices=generate_choices(Report))
     class Meta:
         model = Resource
 
@@ -110,12 +110,13 @@ class TagAdmin(admin.ModelAdmin):
 
 admin.site.register(Tag, TagAdmin)
 
-## Tag, Report ##
-for simple_model in [Report]:
-    class simple_admin(admin.ModelAdmin):
-        ordering = ('name',)
-        list_display = ('name',)
-    admin.site.register(simple_model, simple_admin)
+
+## Report ##
+class ReportAdmin(admin.ModelAdmin):
+    ordering = ('name',)
+    list_display = ('name','acronym', 'color')
+
+admin.site.register(Report, ReportAdmin)
 
 ## Capabilities, Imperatives, Resource Origins ##
 for simple_model in [Capability, Imperative]:
