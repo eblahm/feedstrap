@@ -14,19 +14,6 @@ import csv
 import urllib
 
 
-def get_rating(val, factor):
-    rate_dic = {'intensity': (15, 30),
-                'relevance': (4, 10),
-                'impact':(3, 8),}
-    if val >= 0:
-        button = '<span style="color:white">1</span><span class="label">LOW</span>'
-    if val >= rate_dic[factor][0]:
-        button = '<span style="color:white">2</span><span class="label label-warning">MED</span>'
-    if val >= rate_dic[factor][1]:
-        button = '<span style="color:white">3</span><span class="label label-important">HIGH</span>'
-    return button
-
-
 def all_comments(request, pk):
     topic = Topic.objects.get(pk=int(pk))
     context = Context({

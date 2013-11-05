@@ -2,7 +2,6 @@ import pytz
 import json
 from datetime import datetime
 import urllib
-import operator
 
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
@@ -207,30 +206,6 @@ def add_new(request):
         else:
             return HttpResponseRedirect('/signin?redirect=%s' % (urllib.quote(request.get_full_path())))
 
-
-def add_simple(request):
-    js = ""
-    if request.user.is_authenticated():
-        user = request.user
-        postitq = models.PostIt.objects.filter(user=user)
-        if postitq.count() == 0:
-            postit = create_new_postit(user)
-            feed = postit.feed
-        elif postitq.count() == 1:
-            feed = postitq[0].feed
-        g = request.GET
-        recq = Resource.objects.filter(link=g['l'])
-        if recq.count() == 0:
-            rec = Resource(title=en(g['t']), link=en(g['l']), description=en(g['d']), date=datetime.now())
-            rec.save()
-        else:
-            rec = recq[0]
-        if rec.feeds.filter(pk=feed.pk).count() == 0:
-            rec.feeds.add(feed)
-            rec.save()
-        return HttpResponse("alert('saved!')")
-    else:
-        return HttpResponse("alert('Please Log into FeedStrap before attempting to Post links')")
 
 def delete(request):
     link = request.REQUEST['l']
