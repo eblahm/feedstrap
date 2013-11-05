@@ -35,7 +35,7 @@ def MainPage(request, template=""):
 
     # excude articles based on the users permission to the report
     for r in Report.objects.filter(restricted=True):
-        if not request.user.has_perm('can_see_%s_report' % r.name):
+        if not request.user.has_perm('can_see_report%s' % str(r.pk)):
             # unfortunatly there are two different ways of excluding based on permissions
             # according to search type
             if request.GET.get('term', False):
