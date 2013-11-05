@@ -43,7 +43,7 @@
         {% endif %}
         <td stlye="margin-right:2em; width:95%">
             {% for rpt in reports %}
-                {% if not rpt.hidden %}<span>{{ rpt.name }} Report?{% else %}<span display="none"> {% endif %} <input name="reports" value="{{ rpt.pk }}" type='checkbox'
+                {% if not rpt.hidden %}<span>{{ rpt.name }} Report?{% else %}<span style="display:none"> {% endif %} <input name="reports" value="{{ rpt.pk }}" type='checkbox'
                         {% if not postit %}
                                 {% if rpt in rec.reports.all %} checked{% endif %}
                         {% else %}
