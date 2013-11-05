@@ -126,13 +126,10 @@ class AdvancedSearch():
 
 
 def normalize(x):
-    try:
+    if not isinstance(x, unicode):
         return str(x)
-    except:
-        try:
-            return x.decode('utf8').encode('ascii', 'xmlcharrefreplace')
-        except:
-            return x.encode('ascii', 'xmlcharrefreplace')
+    else:
+        return x.encode('ascii', 'xmlcharrefreplace')
 
 def remove_control_characters(s):
     return "".join(c for c in s if ord(c) >= 32)

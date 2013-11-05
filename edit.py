@@ -2,6 +2,7 @@ import pytz
 import json
 from datetime import datetime
 import urllib
+from util import en
 
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
@@ -13,11 +14,6 @@ from models import Resource, ResourceForm, Topic, Tag
 import models
 import render
 
-def en(s):
-    if isinstance(s, unicode):
-        return s.encode('utf-8', 'ignore')
-    else:
-        return str(s)
 
 def save_tags(rec, tags_list):
     tag_inputs = [t.strip() for t in tags_list]
