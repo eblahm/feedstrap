@@ -11,7 +11,7 @@ def en(s):
 def get_reports_with_permissions(user, action):
     reports = []
     for r in Report.objects.all():
-        if user.has_perm('can_%s_%s_report' % (action, r.name)):
+        if user.has_perm('feedstrap.can_%s_%s_report' % (action, r.name)):
             reports.append(r)
         elif action == 'edit':
             r.hidden = True
