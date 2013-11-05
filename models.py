@@ -43,14 +43,14 @@ class Report(models.Model):
 
     def save(self):
         for action in ['edit', 'see']:
-            ck_permission = 'can_%s_%s_report' % (action, str(self.name))
+            super(Report, self).save()
+            ck_permission = 'can_%s_report%s' % (action, str(self.pk))
             if not Permission.objects.filter(codename=ck_permission):
                 content_type = ContentType.objects.get_for_model(Report)
                 new_permission = Permission.objects.create(codename=ck_permission,
                                                        name='Can %s %s Report' % (action.title(), self.name),
                                                        content_type=content_type)
                 new_permission.save()
-        super(Report, self).save()
 
 class Imperative(models.Model):
     name = models.CharField(max_length=100)
