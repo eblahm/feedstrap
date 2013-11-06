@@ -10,7 +10,7 @@ def en(s):
 
 def get_reports_with_permissions(user, action):
     reports = []
-    for r in Report.objects.all():
+    for r in Report.objects.all().order_by('name'):
         if user.has_perm('feedstrap.can_%s_report%s' % (action, str(r.pk))):
             reports.append(r)
         elif action == 'edit':

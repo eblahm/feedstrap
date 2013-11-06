@@ -29,8 +29,8 @@ def save_resource(rec, data):
     rec.description = en(data['description'])
     rec.relevance = en(data['relevance'])
     rec.tags = get_tags_from_names(data.get('tags', ''))
-    rec.reports = [models.Report.objects.get(pk=ipk) for ipk in lists.get('reports', [])]
-    rec.topics = [models.Topic.objects.get(pk=ipk) for ipk in lists.get('topics', [])]
+    rec.reports = [models.Report.objects.get(pk=ipk) for ipk in lists.get('reports', []) if ipk]
+    rec.topics = [models.Topic.objects.get(pk=ipk) for ipk in lists.get('topics', []) if ipk]
     rec.save()
 
 
