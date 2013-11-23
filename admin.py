@@ -2,12 +2,14 @@ from django.contrib import admin
 from django.contrib.auth.models import Group, Permission
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
-
-from django import forms
-from feedstrap.models import *
 from django.core.cache import cache
-from tinymce.widgets import TinyMCE
 from django.core import mail
+from django import forms
+
+from feedstrap.models import *
+import util
+
+from tinymce.widgets import TinyMCE
 
 
 ## Static Page ##
@@ -28,10 +30,10 @@ class ResourceForm(forms.ModelForm):
         super(ResourceForm, self).__init__(*args, **kwargs)
         for k in ['tags', 'topics', 'reports']:
             self.fields[k].required = False
-    tags = forms.MultipleChoiceField(choices=generate_choices(Tag))
-    feeds = forms.MultipleChoiceField(choices=generate_choices(Feed))
-    topics = forms.MultipleChoiceField(choices=generate_choices(Topic))
-    reports = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple(), choices=generate_choices(Report))
+    tags = forms.MultipleChoiceField(choices=util.generate_choices(Tag))
+    feeds = forms.MultipleChoiceField(choices=util.generate_choices(Feed))
+    topics = forms.MultipleChoiceField(choices=util.generate_choices(Topic))
+    reports = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple(), choices=util.generate_choices(Report))
     class Meta:
         model = Resource
 
@@ -48,10 +50,10 @@ class FeedForm(forms.ModelForm):
         super(FeedForm, self).__init__(*args, **kwargs)
         for k in ['tags', 'topics', 'offices', 'reports']:
             self.fields[k].required = False
-    tags = forms.MultipleChoiceField(choices=generate_choices(Tag))
-    topics = forms.MultipleChoiceField(choices=generate_choices(Topic))
-    offices = forms.MultipleChoiceField(choices=generate_choices(Office))
-    reports = forms.MultipleChoiceField(choices=generate_choices(Report))
+    tags = forms.MultipleChoiceField(choices=util.generate_choices(Tag))
+    topics = forms.MultipleChoiceField(choices=util.generate_choices(Topic))
+    offices = forms.MultipleChoiceField(choices=util.generate_choices(Office))
+    reports = forms.MultipleChoiceField(choices=util.generate_choices(Report))
     class Meta:
         model = Feed
 
@@ -75,8 +77,8 @@ admin.site.register(RatingThreshold, RatingThresholdAdmin)
 
 ## Topic ##
 class TopicForm(forms.ModelForm):
-    imperatives = forms.MultipleChoiceField(choices=generate_choices(Imperative))
-    capabilities = forms.MultipleChoiceField(choices=generate_choices(Capability))
+    imperatives = forms.MultipleChoiceField(choices=util.generate_choices(Imperative))
+    capabilities = forms.MultipleChoiceField(choices=util.generate_choices(Capability))
     class Meta:
         model = Topic
 

@@ -6,6 +6,7 @@ from django import forms
 from django.contrib.auth.models import User
 
 from models import *
+import util
 
 class Filter():
     form_element = forms.CharField()
@@ -81,7 +82,7 @@ class PersonFilter(Filter):
     color = 'orange'
     query_expression = 'feeds__user__first_name'
     condition_model = Feed
-    form_element = forms.Select(choices=generate_choices(User, 'first_name', 'first_name'))
+    form_element = forms.Select(choices=util.generate_choices(User, 'first_name', 'first_name'))
 
 class FeedsFilter(Filter):
     name = 'feeds'
@@ -89,7 +90,7 @@ class FeedsFilter(Filter):
     query_expression = 'feeds__pk'
     condition_model = Feed
     pk_search = True
-    form_element = forms.Select(choices=generate_choices(Feed))
+    form_element = forms.Select(choices=util.generate_choices(Feed))
 
 class ESILFilter(Filter):
     name = 'esil'
@@ -97,14 +98,14 @@ class ESILFilter(Filter):
     query_expression = 'topics__pk'
     condition_model = Topic
     pk_search = True
-    form_element = forms.Select(choices=generate_choices(Topic))
+    form_element = forms.Select(choices=util.generate_choices(Topic))
 
 class ReportFilter(Filter):
     name = 'report'
     color = '#2D6987'
     query_expression = 'reports__name'
     condition_model = Report
-    form_element = forms.Select(choices=generate_choices(Report, 'name', 'name'))
+    form_element = forms.Select(choices=util.generate_choices(Report, 'name', 'name'))
 
 class DateToFilter(Filter):
     name = 'date to'
@@ -124,7 +125,7 @@ class OfficeFilter(Filter):
     color = 'green'
     query_expression = 'feeds__offices__name'
     condition_model = Office
-    form_element = forms.Select(choices=generate_choices(Office,'name', 'name'), )
+    form_element = forms.Select(choices=util.generate_choices(Office,'name', 'name'), )
 
 advanced_filters = [TagsFilter, PersonFilter, FeedsFilter, ESILFilter, ReportFilter, DateToFilter, DateFromFilter, OfficeFilter]
 

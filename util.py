@@ -21,3 +21,9 @@ def get_reports_with_permissions(user, action):
 
     return reports
 
+def generate_choices(model, displayed_value='name', real_value="pk"):
+    options = ()
+    for r in model.objects.all():
+        options += ((str(getattr(r, real_value)), getattr(r, displayed_value)),)
+    return tuple(sorted(set(options), key=lambda opt: opt[1]))
+

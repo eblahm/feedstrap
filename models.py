@@ -16,11 +16,6 @@ from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 
 
-def generate_choices(model, displayed_value='name', real_value="pk"):
-    options = ()
-    for r in model.objects.all():
-        options += ((str(getattr(r, real_value)), getattr(r, displayed_value)),)
-    return tuple(sorted(set(options), key=lambda opt: opt[1]))
 
 
 class Tag(models.Model):
