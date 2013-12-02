@@ -16,6 +16,7 @@ import render
 
 
 def get_tags_from_names(tags_string):
+    tags_string = tags_string.replace(';', ",") # making ";" an acceptable delimiter
     tags = []
     if tags_string.strip():
         for tname in [name.strip() for name in tags_string.split(',')]:
@@ -28,10 +29,20 @@ def save_resource(rec, data):
     rec.title = en(data['title'])
     rec.description = en(data['description'])
     rec.relevance = en(data['relevance'])
-    rec.tags = get_tags_from_names(data.get('tags', ''))
+
+    # the tag property is more complex because the text input has to be parsed, then associated with the proper Tag in the Database
+    new_tags = get_tags_from_names(data.get('tags', ''))
+    deleted_tags = set(rec.tags.all()).difference(set(new_tags))
+    rec.tags = new_tags
+
     rec.reports = [models.Report.objects.get(pk=ipk) for ipk in lists.get('reports', []) if ipk]
     rec.topics = [models.Topic.objects.get(pk=ipk) for ipk in lists.get('topics', []) if ipk]
     rec.save()
+
+    # as a bonus, permanently delete tags that are  no longer associated with Resources
+    for tag in deleted_tags:
+        if Resource.objects.filter(tags=tag).count() == 0:
+            tag.delete()
 
 
 def write_access(rec, user):
