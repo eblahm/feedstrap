@@ -20,8 +20,9 @@ def get_tags_from_names(tags_string):
     tags = []
     if tags_string.strip():
         for tname in [name.strip() for name in tags_string.split(',')]:
-            tag, created = models.Tag.objects.get_or_create(name=tname)
-            tags.append(tag)
+            if tname != "":
+                tag, created = models.Tag.objects.get_or_create(name=tname)
+                tags.append(tag)
     return tags
 
 def save_resource(rec, data):
@@ -111,7 +112,7 @@ def main(request):
             message = '<em>updated %s</em>' % (now_est.strftime('%I:%M:%S%p'))
             message = message.lower() + " EST"
             response_data['id'] = 'ar_%s' % (rec.pk)
-            response_data['ajax_html'] = render.load('main/list_view_article.html', 
+            response_data['ajax_html'] = render.load('main/list_view_article.html',
                 {'i': rec, 'auth': True, 'authorized_reports': get_reports_with_permissions(request.user, 'see')})
             response_data['save_status'] = message
             json_response = json.dumps(response_data)
